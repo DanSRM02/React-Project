@@ -1,7 +1,7 @@
 import React from 'react';
 import PlantillaUno from '../PlantillaUno';
 
-export const Home = () => {
+const Home = () => {
   return (
     <PlantillaUno title="Inicio de sesión">
       <section className="hero align-items-stretch">
