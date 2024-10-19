@@ -5,6 +5,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './Components/GeneralPages/Home';
 import Register from './Components/GeneralPages/Register';
 import Login from './Components/GeneralPages/Login';
+import './Components/Styles/index.css';
+
+
 
 function App() {
   return (

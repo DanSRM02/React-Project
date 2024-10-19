@@ -1,0 +1,200 @@
+/* Navegación */
+.navbar {
+    background-color: #fff;
+    border-bottom: 0.3rem solid #8f8f8f;
+}
+
+.navbar-collapse {
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar-nav a {
+    color: #333333;
+    font-size: 1.2rem;
+}
+
+.navbar-nav a:hover {
+    color: #000;
+    border-bottom: 0.2rem solid #008A16;
+    transition: 0.1s;
+}
+
+.navbar-brand img {
+    width: 100px;
+}
+
+/* Submenu col-3 */
+.imgrol img {
+    width: 50%;
+    border: 1px solid #858282;
+    box-shadow: 0 0 10px #ffffff;
+    border-radius: 100%;
+    background-color: #aeaeae;
+}
+
+.tarjeta2 {
+    display: flex;
+    justify-content: space-around;
+}
+
+.menu {
+    background-color: #fff;
+    padding-bottom: 20px;
+}
+
+.menu li {
+    padding-left: 20px;
+}
+
+.menu a:hover {
+    border: 0.2rem solid #008A16;
+    color: #000;
+    transition: 0.3s all ease-out;
+    border-radius: 10px;
+    padding: 10px;    
+}
+
+.menu h3 {
+    padding-left: 10px;
+}
+
+/* Contenido col-9*/
+.cuerpocontenido {
+    background-color: #f2f2f2;
+    padding: 10px;
+    min-height: 800px;
+}
+
+.cuerpocontenido h1 {
+    text-align: center;
+    padding: 15px;
+}
+
+.card-body:hover {
+    background-color: #008A16;    
+    transition: 0.3s all ease-out;
+    border-radius: 10px;
+    cursor: pointer;
+    && {
+        color: #fff ;
+    }
+}
+
+/* Estilos Generales */
+section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+h1 {
+    font-size: 2rem;
+    font-family: "Cabin Sketch", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    color: #333333;
+}
+
+.seccion-oscura {
+    background-color: #333333;
+    color: #fff;
+}
+
+.seccion-clara {
+    background-color: #fff;
+    color: #03332d;
+}
+
+.seccion-titulo {
+    font-size: 2rem;
+    font-family: "Cabin Sketch", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    padding: 15px 0px;
+}
+
+.seccion-descripcion {
+    font-size: 1.2rem;
+    color: #03332d;
+}
+
+.seccion-texto {
+    font-size: 1.2rem;
+}
+
+.texto-negro {
+    color: black;
+}
+
+.texto-blanco {
+    color: white;
+}
+
+/* Pie de pagina(footer) */
+footer {
+    min-height: 500px;
+}
+
+.footer-logo {
+    height: 150px;
+    width: 150px;
+    margin: 10px;
+}
+
+.footer-texto {
+    font-size: 1.5rem;
+    padding: 20px;
+    margin-bottom: 30px;
+    font-family: "Rubik", sans-serif;
+}
+
+.iconos-redes-sociales a {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    margin: 10px;
+    border: 2px solid white;
+    border-radius: 50%;
+    transition: all 0.2s ease-in;
+}
+
+.iconos-redes-sociales i {
+    color: white;
+    font-size: 1.5rem;
+    transition: all 0.2s ease-in;
+}
+
+.iconos-redes-sociales a:hover {
+    background-color: white;
+    border: 2px solid #008A16;
+}
+
+.iconos-redes-sociales a:hover i {
+    color: black;
+}
+
+.derechos-de-autor {
+    font-size: 15px;
+    color: #aeaeae;
+    padding: 20px;
+}
+
+/* Adaptable (responsivo) */
+
+@media screen and (max-width: 767px) {
+       .navbar {
+           flex-direction: column;
+       }
+       .navbar-brand {
+           display: none;
+       }
+
+       .nav-link{
+           text-align: center;             
+       }
+}
