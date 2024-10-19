@@ -1,9 +1,7 @@
 
 import './App.css';
 import 'react-bootstrap';
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-
-// Importa la página
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './Components/GeneralPages/Home';
 
 function App() {
