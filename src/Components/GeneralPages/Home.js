@@ -3,7 +3,7 @@ import PlantillaUno from '../PlantillaUno';
 
 const Home = () => {
   return (
-    <PlantillaUno title="Inicio de sesión">
+    <PlantillaUno title="Oxidustriales">
       <section className="hero align-items-stretch">
         <div className="hero-principal justify-content-center align-items-center">
           <div className="hero-principal-contenedor">
