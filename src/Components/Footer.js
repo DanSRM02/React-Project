@@ -1,10 +1,13 @@
 import React from 'react';
+import "../Styles/Footer.css"
+import logo from "../Styles/img/logo.svg"
+
 
 function Footer() {
   return (
     <footer id="footer" className="seccion-oscura d-flex flex-column align-items-center justify-content-center">
       <div className="row">
-        <img className="footer-logo" src="img/logo.svg" alt="Logo del portafolio" />
+        <img className="footer-logo" src={logo} alt="Logo del portafolio" />
         <p className="footer-texto text-center">
           ¡Bienvenidos a Oxindustriales!
           <br /> Ofrecemos el mejor gas a precios accesibles.

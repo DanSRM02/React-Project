@@ -1,4 +1,5 @@
 import React from 'react';
+import logo from "../Styles/img/logo.svg"
 
 function Header() {
   return (
@@ -11,7 +12,7 @@ function Header() {
           </button>
           <div className="collapse navbar-collapse" id="navbar-toggler">
             <a className="navbar-brand" href="home.html">
-              <img src="img/logo.svg" alt="OXI" />
+              <img src={logo} alt="OXI" />
             </a>
             <ul className="navbar-nav d-flex justify-content-center align-items-center">
               <li className="nav-item">
