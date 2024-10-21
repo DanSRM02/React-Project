@@ -16,7 +16,7 @@ function Header() {
             </a>
             <ul className="navbar-nav d-flex justify-content-center align-items-center">
               <li className="nav-item">
-                <a className="nav-link" aria-current="page" href="home.html">
+                <a className="nav-link" aria-current="page" href="#footer">
                   <i className="bi bi-people"></i> / Nosotros
                 </a>
               </li>
@@ -31,7 +31,7 @@ function Header() {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="login.html">
+                <a className="nav-link" href="Login.html">
                   <i className="bi bi-person"></i> / Iniciar sesión
                 </a>
               </li>

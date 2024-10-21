@@ -1,36 +1,63 @@
-/* Barra de navegacion */
-
+/* Barra de navegación */
 .navbar {
-  background-color: #f3f2f2;
-  border-bottom: 0.3rem solid #a8a8a8;
+  background-color: #ffffff;
+  border-bottom: 0.2rem solid #008A16;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 100;
   width: 100%;
-  box-shadow: 0px 4rem 4rem rgba(0, 0, 0, 0.6);
-  box-sizing: border-box;
+  height: 120px; /* Aumentar la altura para más espacio */
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 2rem; /* Aumentar el padding */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+.navbar:hover {
+  background-color: #f0f0f0;
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.2);
+}
+
+/* Disposición del contenido en el navbar */
 .navbar .navbar-collapse {
   align-items: center;
   justify-content: space-between;
 }
 
+.navbar ul {
+  list-style: none;
+  padding-left: 0;
+}
+
 .navbar ul a {
   color: #333333;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  transition: color 0.3s ease, border-bottom 0.3s ease;
 }
 
 .navbar ul a:hover {
-  color: #000;
+  color: #008A16;
   border-bottom: 0.1rem solid #008A16;
-  transition: 0.1s;
 }
 
+/* Estilos para la imagen del logo */
 .navbar-brand img {
-  width: 100px;
+  width: 100px; /* Aumentar tamaño del logo */
+  transition: transform 0.3s ease;
 }
+
+.navbar-brand img:hover {
+  transform: scale(1.1);
+}
+
+/* Espaciado para el contenido debajo de la barra de navegación */
+body {
+  padding-top: 90px; /* Ajustar margen superior para compensar la barra de navegación */
+}
+
 
 /* Sección Hero */
 
