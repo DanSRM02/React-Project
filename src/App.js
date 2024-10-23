@@ -7,6 +7,7 @@ import Register from './Components/GeneralPages/Register';
 import Login from './Components/GeneralPages/Login';
 import Products from './Components/GeneralPages/Products';
 import "./Styles/index.css";
+import CreateUser from './Components/User/CreateUser';
 
 
 
@@ -18,6 +19,7 @@ function App() {
         <Route path='/Login' element={<Login />} />
         <Route path='/Register' element={<Register />} />
         <Route path='/Products' element={<Products/>}/>
+        <Route path='/User/Create' element={<CreateUser/>}/>
       </Routes>
     </Router>
   );
