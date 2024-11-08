@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import "./../../Styles/user.css";
 import PlantillaUno from '../PlantillaUno';
+import UserPicture1 from "../../Styles/img/UsersBack/user1.svg";
 
 function CreateUser({ productStocks = [] }) {
   const [orderItems, setOrderItems] = useState([{ productstock_id: '', quantity: 1 }]);
+  const [showProfile, setShowProfile] = useState(false);
 
   const addOrderItem = () => {
     setOrderItems([...orderItems, { productstock_id: '', quantity: 1 }]);
@@ -27,19 +30,21 @@ function CreateUser({ productStocks = [] }) {
 
   return (
     <PlantillaUno>
-      {/* Contenedor padre con clase row para alinear la barra lateral y el contenido principal */}
       <div className="row">
         <div className="col-md-3 menu">
-          {/* Barra lateral */}
-          <div className="imgrol text-center mt-4 mb-3">
-            <img className="rounded img-fluid" src="/static/img/UsersBack/user1.jpg" alt="Usuario1" />
+          <div className="imgrol text-center mt-2 mb-3">
+            <img className="rounded img-fluid" src={UserPicture1} alt="Usuario1" />
           </div>
           <div className="infoROl text-center p-3 mt-3">
             <h5>Nombre de Usuario</h5>
             <h6>Rol</h6>
           </div>
           <div className="masInfo text-center mb-3">
-            <button type="button" className="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setShowProfile(true)}
+            >
               Ver perfil
             </button>
           </div>
@@ -74,8 +79,7 @@ function CreateUser({ productStocks = [] }) {
           <hr />
         </div>
 
-        {/* Contenedor principal de Solicitar Pedido */}
-        <div className="col-md-9">
+        <div className="col-md-9" style={{ marginTop: '100px' }}>
           <h1 className="text-center seccion-titulo">Solicitar Pedido</h1>
           <p className="text-center seccion-texto">Selecciona los productos y cantidades que deseas solicitar</p>
           <div className="container-fluid">
@@ -140,6 +144,31 @@ function CreateUser({ productStocks = [] }) {
           </div>
         </div>
       </div>
+
+      {showProfile && (
+        <div className="modal show d-block" tabIndex="-1" role="dialog">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Perfil de Usuario</h5>
+                <button type="button" className="close" onClick={() => setShowProfile(false)} aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div className="modal-body text-center">
+                <img src={UserPicture1} alt="Usuario1" className="rounded-circle img-fluid mb-3" style={{ width: '100px', height: '100px' }} />
+                <p><strong>Nombre de Usuario:</strong> Nombre de Usuario</p>
+                <p><strong>Rol:</strong> Rol</p>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={() => setShowProfile(false)}>
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </PlantillaUno>
   );
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import "../Styles/user.css"
 import logo from "../Styles/img/logo.svg"
 
 function Header() {

@@ -2,6 +2,11 @@
 .navbar {
     background-color: #fff;
     border-bottom: 0.3rem solid #8f8f8f;
+    position: fixed; /* Cambiado a fixed */
+    top: 0;
+    width: 100%;
+    z-index: 100;
+
 }
 
 .navbar-collapse {
@@ -62,7 +67,8 @@
 /* Contenido col-9*/
 .cuerpocontenido {
     background-color: #f2f2f2;
-    padding: 10px;
+    position: relative;
+    top: 100px;
     min-height: 800px;
 }
 
