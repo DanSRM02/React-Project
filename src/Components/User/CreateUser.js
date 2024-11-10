@@ -57,12 +57,12 @@ function CreateUser({ productStocks = [] }) {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/cancel">
+              <a className="nav-link" href="/User/CancelOrder">
                 <i className="bi bi-bag-x"></i> Cancelar Pedido
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/create">
+              <a className="nav-link" href="/User/Create">
                 <i className="bi bi-bag-plus"></i> Solicitar Pedido
               </a>
             </li>
