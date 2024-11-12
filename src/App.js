@@ -11,6 +11,11 @@ import CreateUser from './Components/User/CreateUser';
 import DataChange from './Components/User/DataChange';
 import HomeUser from './Components/User/HomeUser';
 import CancelOrder from './Components/User/CancelOrder';
+import InventoryHome from './Components/Inventory/InventoryHome';
+import InventoryCreate from './Components/Inventory/InventoryCreate';
+import InventoryForm from './Components/Inventory/InventoryForm';
+import InventoryEdit from './Components/Inventory/InventoryEdit';
+
 
 
 
@@ -27,6 +32,10 @@ function App() {
         <Route path='/data-change' element={<DataChange/>}/>
         <Route path='/Home/User' element={<HomeUser/>}/>
         <Route path='/User/CancelOrder' element={<CancelOrder/>}/>
+        <Route path='/Inventory/Home' element={<InventoryHome/>}/>
+        <Route path='/Inventory/Create' element={<InventoryCreate/>}/>
+        <Route path='/Inventory/Form' element={<InventoryForm/>}/>
+        <Route path='/Inventory/Edit' element={<InventoryEdit/>}/>
       </Routes>
     </Router>
   );
