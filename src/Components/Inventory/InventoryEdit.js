@@ -26,9 +26,6 @@ const InventoryEdit = ({ initialData, onSubmit }) => {
     return (
         <PlantillaUno>   
         <div className="col-md-9 cuerpocontenido">
-            <h1 className="text-center seccion-titulo">Lista De Domicilios</h1>
-            <p className="text-center seccion-texto">Aquí puedes ver la lista de domiciliarios</p>
-            
             <div className="row p-1">
                 <div className="col-md-12">
                     <h1 className="mt-4">{inventario.id ? 'Editar Producto' : 'Nuevo Producto'}</h1>

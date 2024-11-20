@@ -2,24 +2,39 @@ import React, { useState } from 'react';
 import './../../Styles/user.css';
 import PlantillaUno from '../PlantillaUno';
 import UserPicture1 from './../../Styles/img/UsersBack/user1.svg';
+import axiosInstance from '../../api/axios';
 
 const InventoryCreate = () => {
-    const [showProfile, setShowProfile] = useState(false);
-    const [inventarios, setInventarios] = useState([
-        { id: 1, nombreProducto: 'Producto A', quantity: 10, price: 100.00 },
-        { id: 2, nombreProducto: 'Producto B', quantity: 5, price: 50.00 }
-    ]);
+    const [nombreProducto, setNombreProducto] = useState('');
+    const [quantity, setQuantity] = useState('');
+    const [price, setPrice] = useState('');
+    const [state, setState] = useState(true);  // Suponiendo que el estado es un booleano (activo/inactivo)
+    const [showProfile, setShowProfile] = useState(false); // Agregado el estado de showProfile
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Lógica para crear domiciliario
-        console.log("Domiciliario creado");
+
+        // Crear un objeto con los datos del formulario
+        const productData = {
+            name: nombreProducto,
+            quantity: quantity,
+            price: price,
+            state: state,  // Asegúrate de manejar correctamente el estado (activo/inactivo)
+        };
+
+        try {
+            const response = await axiosInstance.post('/Inventory/Create', productData);
+            console.log('Producto creado:', response.data);
+        } catch (error) {
+            console.error('Error al crear el producto:', error);
+        }
     };
 
     return (
         <PlantillaUno>
             <div className="row">
                 <div className="col-md-3 menu">
+                    {/* Menú lateral */}
                     <div className="imgrol text-center mt-2 mb-3">
                         <img className="rounded img-fluid" src={UserPicture1} alt="Usuario1" />
                     </div>
@@ -36,36 +51,13 @@ const InventoryCreate = () => {
                             Ver perfil
                         </button>
                     </div>
-                    <hr />
-                    <h3 className="border border-light rounded p-2">Inventario</h3>
-                    <ul className="navbar-nav">
-                        <li className="nav-item">
-                            <a className="nav-link" href="/products">
-                                <i className="bi bi-bag-check"></i> Ver inventario
-                            </a>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="/User/CancelOrder">
-                                <i className="bi bi-bag-x"></i> Añadir inventario
-                            </a>
-                        </li>
-                    </ul>
-                    <hr />
-                    <h3 className="mt-3 border border-light rounded p-2">Cuenta</h3>
-                    <ul className="navbar-nav">
-                        <li className="nav-item">
-                            <a className="nav-link" href="/data-change">
-                                <i className="bi bi-globe"></i> Cambiar datos
-                            </a>
-                        </li>
-                    </ul>
+                    {/* Menú adicional */}
                     <hr />
                 </div>
 
-                {/* Cuerpo Contenido */}
+                {/* Contenido principal */}
                 <div className="col-md-9 cuerpocontenido">
-                    <h1 className="text-center seccion-titulo">Lista De Productos</h1>
-                    <p className="text-center seccion-texto">Aquí puedes ver la lista de Productos</p>
+                    <h1 className="text-center seccion-titulo">Añadir Productos</h1>
                     <div className="container-fluid">
                         <div className="row">
                             <div className="col-md-12">
@@ -75,9 +67,52 @@ const InventoryCreate = () => {
                                     </div>
                                     <div className="card-body bg-white">
                                         <form onSubmit={handleSubmit} role="form">
-                                            {/* Añadir campos de formulario aquí si es necesario */}
+                                            <div className="form-group">
+                                                <label htmlFor="nombreProducto">Nombre del Producto</label>
+                                                <input
+                                                    type="text"
+                                                    id="nombreProducto"
+                                                    className="form-control"
+                                                    value={nombreProducto}
+                                                    onChange={(e) => setNombreProducto(e.target.value)}
+                                                    required
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                <label htmlFor="quantity">Cantidad</label>
+                                                <input
+                                                    type="number"
+                                                    id="quantity"
+                                                    className="form-control"
+                                                    value={quantity}
+                                                    onChange={(e) => setQuantity(e.target.value)}
+                                                    required
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                <label htmlFor="price">Precio</label>
+                                                <input
+                                                    type="number"
+                                                    step="0.01"
+                                                    id="price"
+                                                    className="form-control"
+                                                    value={price}
+                                                    onChange={(e) => setPrice(e.target.value)}
+                                                    required
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                <label htmlFor="state">Estado</label>
+                                                <input
+                                                    type="checkbox"
+                                                    id="state"
+                                                    checked={state}
+                                                    onChange={(e) => setState(e.target.checked)}
+                                                />
+                                                <span> ¿Está disponible?</span>
+                                            </div>
                                             <div className="mt-3" style={{ textAlign: 'right' }}>
-                                                <button type="submit" className="btn btn-primary">Crear Productos</button>
+                                                <button type="submit" className="btn btn-primary">Crear Producto</button>
                                             </div>
                                         </form>
                                     </div>
@@ -87,6 +122,7 @@ const InventoryCreate = () => {
                     </div>
                 </div>
 
+                {/* Modal */}
                 {showProfile && (
                     <div className="modal show d-block" tabIndex="-1" role="dialog">
                         <div className="modal-dialog" role="document">
