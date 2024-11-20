@@ -64,20 +64,20 @@ const InventoryCreate = () => {
 
                 {/* Cuerpo Contenido */}
                 <div className="col-md-9 cuerpocontenido">
-                    <h1 className="text-center seccion-titulo">Lista De Domicilios</h1>
-                    <p className="text-center seccion-texto">Aquí puedes ver la lista de domiciliarios</p>
+                    <h1 className="text-center seccion-titulo">Lista De Productos</h1>
+                    <p className="text-center seccion-texto">Aquí puedes ver la lista de Productos</p>
                     <div className="container-fluid">
                         <div className="row">
                             <div className="col-md-12">
                                 <div className="card card-default">
                                     <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span className="card-title">Crear Domiciliario</span>
+                                        <span className="card-title">Crear Producto</span>
                                     </div>
                                     <div className="card-body bg-white">
                                         <form onSubmit={handleSubmit} role="form">
                                             {/* Añadir campos de formulario aquí si es necesario */}
                                             <div className="mt-3" style={{ textAlign: 'right' }}>
-                                                <button type="submit" className="btn btn-primary">Crear Domiciliario</button>
+                                                <button type="submit" className="btn btn-primary">Crear Productos</button>
                                             </div>
                                         </form>
                                     </div>

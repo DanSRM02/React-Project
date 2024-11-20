@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PlantillaUno from '../PlantillaUno';
 
 const InventoryEdit = ({ initialData, onSubmit }) => {
     const [inventario, setInventario] = useState({
@@ -23,6 +24,7 @@ const InventoryEdit = ({ initialData, onSubmit }) => {
     };
 
     return (
+        <PlantillaUno>   
         <div className="col-md-9 cuerpocontenido">
             <h1 className="text-center seccion-titulo">Lista De Domicilios</h1>
             <p className="text-center seccion-texto">Aquí puedes ver la lista de domiciliarios</p>
@@ -89,7 +91,8 @@ const InventoryEdit = ({ initialData, onSubmit }) => {
                 </div>
             </div>
         </div>
+        </PlantillaUno>
     );
-};
-
-export default InventoryEdit;
+    }
+    
+    export default InventoryEdit;
