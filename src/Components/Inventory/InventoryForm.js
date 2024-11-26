@@ -51,10 +51,10 @@ const InventoryForm = () => {
                     </ul>
                     <hr />
                 </div>
-
-                <div className="col-md-9 cuerpocontenido">
-                    <h1 className="text-center seccion-titulo">Lista De Domicilios</h1>
-                    <p className="text-center seccion-texto">Aquí puedes ver la lista de domiciliarios</p>
+                <div className="col-md-9" style={{ marginTop: '100px' }}>
+                    <h1 className="text-center seccion-titulo">Inventario</h1>
+                    <p className="text-center seccion-texto">Aquí puedes agregar productos
+                    </p>
                     <div className="row p-1">
                         <div className="col-md-12">
                             <h1>{false ? 'Editar Producto' : 'Nuevo Producto'}</h1>
@@ -62,10 +62,6 @@ const InventoryForm = () => {
                                 <div className="mb-3">
                                     <label htmlFor="nombreProducto" className="form-label">Nombre del Producto</label>
                                     <input type="text" className="form-control" id="nombreProducto" name="nombreProducto" required />
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="productID" className="form-label">ID del Producto</label>
-                                    <input type="number" className="form-control" id="productID" name="productID" required />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="cantidad" className="form-label">Cantidad</label>

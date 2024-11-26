@@ -6,7 +6,6 @@
     top: 0;
     width: 100%;
     z-index: 100;
-
 }
 
 .navbar-collapse {
@@ -64,7 +63,7 @@
     padding-left: 10px;
 }
 
-/* Contenido col-9*/
+/* Contenido col-9 */
 .cuerpocontenido {
     background-color: #f2f2f2;
     position: relative;
@@ -77,14 +76,12 @@
     padding: 15px;
 }
 
+/* Asegura que el texto se vea en .card-body */
 .card-body:hover {
-    background-color: #008A16;    
+    background-color: #008A16;
     transition: 0.3s all ease-out;
     border-radius: 10px;
     cursor: pointer;
-    && {
-        color: #fff ;
-    }
 }
 
 /* Estilos Generales */
@@ -193,14 +190,14 @@ footer {
 /* Adaptable (responsivo) */
 
 @media screen and (max-width: 767px) {
-       .navbar {
-           flex-direction: column;
-       }
-       .navbar-brand {
-           display: none;
-       }
+    .navbar {
+        flex-direction: column;
+    }
+    .navbar-brand {
+        display: none;
+    }
 
-       .nav-link{
-           text-align: center;             
-       }
+    .nav-link {
+        text-align: center;             
+    }
 }

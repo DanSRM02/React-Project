@@ -8,8 +8,8 @@ const InventoryCreate = () => {
     const [nombreProducto, setNombreProducto] = useState('');
     const [quantity, setQuantity] = useState('');
     const [price, setPrice] = useState('');
-    const [state, setState] = useState(true);  // Suponiendo que el estado es un booleano (activo/inactivo)
-    const [showProfile, setShowProfile] = useState(false); // Agregado el estado de showProfile
+    const [state, setState] = useState('Disponible');  // Usando un string para las opciones de estado
+    const [showProfile, setShowProfile] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -19,7 +19,7 @@ const InventoryCreate = () => {
             name: nombreProducto,
             quantity: quantity,
             price: price,
-            state: state,  // Asegúrate de manejar correctamente el estado (activo/inactivo)
+            state: state,  // Usamos el valor seleccionado en el dropdown
         };
 
         try {
@@ -34,7 +34,6 @@ const InventoryCreate = () => {
         <PlantillaUno>
             <div className="row">
                 <div className="col-md-3 menu">
-                    {/* Menú lateral */}
                     <div className="imgrol text-center mt-2 mb-3">
                         <img className="rounded img-fluid" src={UserPicture1} alt="Usuario1" />
                     </div>
@@ -51,19 +50,41 @@ const InventoryCreate = () => {
                             Ver perfil
                         </button>
                     </div>
-                    {/* Menú adicional */}
+                    <hr />
+                    <h3 className="border border-light rounded p-2">Inventario</h3>
+                    <ul className="navbar-nav">
+                        <li className="nav-item">
+                            <a className="nav-link" href="/Inventory/Home">
+                                <i className="bi bi-bag-check"></i> Ver inventario
+                            </a>
+                        </li>
+                        <li className="nav-item">
+                            <a className="nav-link" href="/inventarios/Create">
+                                <i className="bi bi-bag-plus"></i> Añadir inventario
+                            </a>
+                        </li>
+                    </ul>
+                    <hr />
+                    <h3 className="mt-3 border border-light rounded p-2">Cuenta</h3>
+                    <ul className="navbar-nav">
+                        <li className="nav-item">
+                            <a className="nav-link" href="/data-change">
+                                <i className="bi bi-globe"></i> Cambiar datos
+                            </a>
+                        </li>
+                    </ul>
                     <hr />
                 </div>
 
                 {/* Contenido principal */}
-                <div className="col-md-9 cuerpocontenido">
-                    <h1 className="text-center seccion-titulo">Añadir Productos</h1>
+                <div className="col-md-9" style={{ marginTop: '100px' }}>
+                    <h1 className="text-center seccion-titulo">Añadir inventario</h1>
                     <div className="container-fluid">
                         <div className="row">
                             <div className="col-md-12">
                                 <div className="card card-default">
                                     <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span className="card-title">Crear Producto</span>
+                                        <span className="card-title">Añadir Producto</span>
                                     </div>
                                     <div className="card-body bg-white">
                                         <form onSubmit={handleSubmit} role="form">
@@ -103,16 +124,19 @@ const InventoryCreate = () => {
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="state">Estado</label>
-                                                <input
-                                                    type="checkbox"
+                                                <select
                                                     id="state"
-                                                    checked={state}
-                                                    onChange={(e) => setState(e.target.checked)}
-                                                />
-                                                <span> ¿Está disponible?</span>
+                                                    className="form-control"
+                                                    value={state}
+                                                    onChange={(e) => setState(e.target.value)}
+                                                >
+                                                    <option value="Disponible">Disponible</option>
+                                                    <option value="Agotado">Agotado</option>
+                                                    <option value="En espera">En espera</option>
+                                                </select>
                                             </div>
                                             <div className="mt-3" style={{ textAlign: 'right' }}>
-                                                <button type="submit" className="btn btn-primary">Crear Producto</button>
+                                                <button type="submit" className="btn btn-primary">Añadir Producto</button>
                                             </div>
                                         </form>
                                     </div>
