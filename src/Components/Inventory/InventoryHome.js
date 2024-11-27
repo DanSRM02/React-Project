@@ -1,23 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './../../Styles/user.css';
 import PlantillaUno from '../PlantillaUno';
 import UserPicture1 from './../../Styles/img/UsersBack/user1.svg';
 
 const InventoryHome = () => {
     const [showProfile, setShowProfile] = useState(false);
-    const [Productos, setProductos] = useState([]);
-
-    useEffect(() => {
-        const fetchInventarios = async () => {
-            try {
-                const response = await fetch('');
-                const inventarios = await response.json();
-                setProductos(inventarios);
-            } catch (error) {
-                console.error('Error al obtener los inventarios:', error);
-            }
-        };
-    }, [];
+    const [inventarios] = useState([
+        { id: 1, nombreProducto: 'Producto A', quantity: 10, price: 100.0 },
+        { id: 2, nombreProducto: 'Producto B', quantity: 5, price: 50.0 },
+    ]);
 
     return (
         <PlantillaUno>
