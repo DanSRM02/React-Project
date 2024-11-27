@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import PlantillaUno from '../PlantillaUno';
+import React, { useState } from "react";
+import PlantillaUno from "../PlantillaUno";
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    email: '',
-    identification: '',
+    email: "",
+    identification: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -13,10 +13,11 @@ const Login = () => {
     let formErrors = {};
 
     if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      formErrors.email = 'Correo electrónico no es válido.';
+      formErrors.email = "Correo electrónico no es válido.";
     }
     if (formData.identification.length < 6) {
-      formErrors.identification = 'La identificación debe tener al menos 6 caracteres.';
+      formErrors.identification =
+        "La identificación debe tener al menos 6 caracteres.";
     }
 
     setErrors(formErrors);
@@ -48,7 +49,9 @@ const Login = () => {
               <div className="card-body">
                 <div className="formulario">
                   <h1 className="text-center seccion-titulo">Iniciar sesión</h1>
-                  <p className="text-center seccion-texto">Ingresa tus credenciales</p>
+                  <p className="text-center seccion-texto">
+                    Ingresa tus credenciales
+                  </p>
                   <form onSubmit={handleSubmit}>
                     <label htmlFor="email" className="col-form-label">
                       Correo:
@@ -61,8 +64,12 @@ const Login = () => {
                       onChange={handleChange}
                       value={formData.email}
                     />
-                    {errors.email && <div className="invalid-feedback d-block">{errors.email}</div>}
-                    
+                    {errors.email && (
+                      <div className="invalid-feedback d-block">
+                        {errors.email}
+                      </div>
+                    )}
+
                     <label htmlFor="identification" className="col-form-label">
                       Identificación:
                     </label>
@@ -76,7 +83,9 @@ const Login = () => {
                       value={formData.identification}
                     />
                     {errors.identification && (
-                      <div className="invalid-feedback d-block">{errors.identification}</div>
+                      <div className="invalid-feedback d-block">
+                        {errors.identification}
+                      </div>
                     )}
 
                     <div className="mt-3 text-center">
