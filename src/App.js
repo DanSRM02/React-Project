@@ -14,6 +14,9 @@ import CancelOrder from './Components/User/CancelOrder';
 import InventoryHome from './Components/Inventory/InventoryHome';
 import InventoryCreate from './Components/Inventory/InventoryCreate';
 import InventoryEdit from './Components/Inventory/InventoryEdit';
+import DeliveryHome from './Components/GeneralPages/Delivery/DeliveryHome';
+import ReviewView from './Components/GeneralPages/Review/ReviewView';
+import AddReview from './Components/GeneralPages/Review/AddReview';
 
 
 
@@ -34,6 +37,10 @@ function App() {
         <Route path='/Inventory/Home' element={<InventoryHome/>}/>
         <Route path='/Inventory/Create' element={<InventoryCreate/>}/>
         <Route path='/Inventory/Edit' element={<InventoryEdit/>}/>
+        <Route path='/Delivery' element={<DeliveryHome/>}/>
+        <Route path='/Review' element={<ReviewView/>}/>
+        <Route path='/Review/Add' element={<AddReview/>}/>
+        
       </Routes>
     </Router>
   );

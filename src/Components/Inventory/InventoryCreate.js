@@ -11,15 +11,17 @@ const InventoryCreate = () => {
   const [price, setPrice] = useState("");
   const [state, setState] = useState(""); // Usando un booleano para el estado
   const [showProfile, setShowProfile] = useState(false);
-  const [unitId, setUnitId] = useState(3);
+  const [unit_Id, setUnit_Id] = useState(3);
 
   // Crear un objeto con los datos del formulario
   const productData = {
-    name: nombreProducto,
-    quantity: quantity,
-    price: price,
-    state: state, // Usamos el valor booleano
-    unit_id: unitId, // Agregamos unit_id
+    data: {
+      name: nombreProducto,
+      quantity: parseInt(quantity), // Convierte a número
+      price: parseFloat(price), // Asegúrate de que sea un número decimal
+      state: state, // Booleano
+      unit_id: parseInt(unit_Id), // Convierte a número
+    },
   };
 
   // Enviar los datos del formulario
@@ -112,7 +114,7 @@ const InventoryCreate = () => {
                     <span className="card-title">Añadir Producto</span>
                   </div>
                   <div className="card-body bg-white">
-                    <form onSubmit={handleSubmit} role="form">
+                    <form onSubmit={handleSubmit}>
                       <div className="form-group">
                         <label htmlFor="nombreProducto">
                           Nombre del Producto
@@ -168,17 +170,17 @@ const InventoryCreate = () => {
                         <select
                           id="unit"
                           className="form-control"
-                          value={unitId}
-                          onChange={(e) => setUnitId(e.target.value)}
+                          value={unit_Id}
+                          onChange={(e) => setUnit_Id(e.target.value)}
                           required
                         >
                           <option value="" disabled>
                             Seleccione una unidad
                           </option>
                           <option value="1">Kilo</option>
-                          <option value="Libra">Libra</option>
+                          <option value="2">Libra</option>
                           <option value="3">Cilindro</option>
-                          <option value="Unidad">Unidad</option>
+                          <option value="4">Unidad</option>
                         </select>
                       </div>
                       <div className="mt-3" style={{ textAlign: "right" }}>
