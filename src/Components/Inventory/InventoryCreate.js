@@ -9,9 +9,9 @@ const InventoryCreate = () => {
   const [nombreProducto, setNombreProducto] = useState("");
   const [quantity, setQuantity] = useState("");
   const [price, setPrice] = useState("");
-  const [state, setState] = useState(true); // Usando un booleano para el estado
+  const [state, setState] = useState(""); // Usando un booleano para el estado
   const [showProfile, setShowProfile] = useState(false);
-  const [unitId, setUnitId] = useState(1);
+  const [unitId, setUnitId] = useState(3);
 
   // Crear un objeto con los datos del formulario
   const productData = {
@@ -25,6 +25,7 @@ const InventoryCreate = () => {
   // Enviar los datos del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Datos enviados al backend:", productData); // Debugging
     try {
       const response = await axiosInstance.post(
         "/api/v1/oxi/product/add",
@@ -32,7 +33,14 @@ const InventoryCreate = () => {
       );
       console.log("Producto creado:", response.data);
     } catch (error) {
-      console.error("Error al crear el producto:", error);
+      if (error.response) {
+        console.error("Error del servidor:", error.response.data);
+        console.error("Estado:", error.response.status);
+      } else if (error.request) {
+        console.error("Sin respuesta del servidor:", error.request);
+      } else {
+        console.error("Error al hacer la solicitud:", error.message);
+      }
     }
   };
 
@@ -86,8 +94,8 @@ const InventoryCreate = () => {
           <hr />
         </div>
 
-        {/* Contenido principal */}
-        <div className="col-md-9" style={{ marginTop: "100px" }}>
+              {/* Contenido principal */}
+              <div className="col-md-9" style={{ marginTop: "100px" }}>
           <h1 className="text-center seccion-titulo">Añadir inventario</h1>
           <div className="container-fluid">
             <div className="row">
@@ -146,13 +154,31 @@ const InventoryCreate = () => {
                         <select
                           id="state"
                           className="form-control"
-                          value={state}
+                          value={state ? "Disponible" : "Agotado"}
                           onChange={(e) =>
                             setState(e.target.value === "Disponible")
                           }
                         >
                           <option value="Disponible">Disponible</option>
                           <option value="Agotado">Agotado</option>
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="unit">Unidad de Medición</label>
+                        <select
+                          id="unit"
+                          className="form-control"
+                          value={unitId}
+                          onChange={(e) => setUnitId(e.target.value)}
+                          required
+                        >
+                          <option value="" disabled>
+                            Seleccione una unidad
+                          </option>
+                          <option value="1">Kilo</option>
+                          <option value="Libra">Libra</option>
+                          <option value="3">Cilindro</option>
+                          <option value="Unidad">Unidad</option>
                         </select>
                       </div>
                       <div className="mt-3" style={{ textAlign: "right" }}>
@@ -167,7 +193,6 @@ const InventoryCreate = () => {
             </div>
           </div>
         </div>
-
         {/* Modal */}
         {showProfile && (
           <div className="modal show d-block" tabIndex="-1" role="dialog">

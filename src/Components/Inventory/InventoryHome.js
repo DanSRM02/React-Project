@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './../../Styles/user.css';
 import PlantillaUno from '../PlantillaUno';
 import UserPicture1 from './../../Styles/img/UsersBack/user1.svg';
 
 const InventoryHome = () => {
     const [showProfile, setShowProfile] = useState(false);
-    const [inventarios] = useState([
-        { id: 1, nombreProducto: 'Producto A', quantity: 10, price: 100.0 },
-        { id: 2, nombreProducto: 'Producto B', quantity: 5, price: 50.0 },
-    ]);
+    const [products, setProducts] = useState([]); // Cambié inventarios por products
+
+    // Simulación de obtener datos de la tabla "products"
+    useEffect(() => {
+        // Suponiendo que tienes una API para obtener los productos
+        // Puedes hacer una llamada a tu backend aquí, por ejemplo con fetch o axios
+        const fetchedProducts = [
+            { id: 1, name: 'Producto A', quantity: 10, price: 100.0, unit: 'kg', status: 'Disponible' },
+            { id: 2, name: 'Producto B', quantity: 5, price: 50.0, unit: 'unidad', status: 'Agotado' },
+        ];
+        setProducts(fetchedProducts);
+    }, []);
 
     return (
         <PlantillaUno>
@@ -56,11 +64,10 @@ const InventoryHome = () => {
                     <hr />
                 </div>
 
- 
                 <div className="col-md-9" style={{ marginTop: '100px' }}>
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <h2 className="text-primary">Gestión de Inventarios</h2>
-                        <a href="/inventarios/nuevo" className="btn btn-success">
+                        <a href="/inventory/Create" className="btn btn-success">
                             <i className="bi bi-plus-circle"></i> Agregar Nuevo Inventario
                         </a>
                     </div>
@@ -72,15 +79,19 @@ const InventoryHome = () => {
                                     <th>Producto</th>
                                     <th>Cantidad</th>
                                     <th>Precio</th>
+                                    <th>Unidad de Medida</th> {/* Nueva columna */}
+                                    <th>Estado</th> {/* Nueva columna para estado */}
                                 </tr>
                             </thead>
                             <tbody>
-                                {inventarios.map((inventario) => (
-                                    <tr key={inventario.id}>
-                                        <td>{inventario.id}</td>
-                                        <td>{inventario.nombreProducto}</td>
-                                        <td>{inventario.quantity}</td>
-                                        <td>${inventario.price.toFixed(2)}</td>
+                                {products.map((products) => (
+                                    <tr key={products.id}>
+                                        <td>{products.id}</td> {/* Usando product.id */}
+                                        <td>{products.name}</td> {/* Usando product.name */}
+                                        <td>{products.quantity}</td> {/* Usando product.quantity */}
+                                        <td>${products.price.toFixed(2)}</td> {/* Usando product.price */}
+                                        <td>{products.unit}</td> {/* Usando product.unit */}
+                                        <td>{products.status}</td> {/* Usando product.status */}
                                     </tr>
                                 ))}
                             </tbody>
