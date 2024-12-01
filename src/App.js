@@ -36,7 +36,7 @@ function App() {
         <Route path='/User/CancelOrder' element={<CancelOrder/>}/>
         <Route path='/Inventory/Home' element={<InventoryHome/>}/>
         <Route path='/Inventory/Create' element={<InventoryCreate/>}/>
-        <Route path='/Inventory/Edit' element={<InventoryEdit/>}/>
+        <Route path='/Inventory/Edit/:id' element={<InventoryEdit />} />
         <Route path='/Delivery' element={<DeliveryHome/>}/>
         <Route path='/Review' element={<ReviewView/>}/>
         <Route path='/Review/Add' element={<AddReview/>}/>

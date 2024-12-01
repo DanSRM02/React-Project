@@ -1,16 +1,59 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import PlantillaUno from "../PlantillaUno";
 import UserPicture1 from "./../../Styles/img/UsersBack/user1.svg";
+import axiosInstance from "../../api/axios";
 
-const InventoryEdit = ({ initialData, onSubmit }) => {
+const InventoryEdit = () => {
+  const { id } = useParams();
   const [inventario, setInventario] = useState({
-    id: initialData?.id || null,
-    nombreProducto: initialData?.nombreProducto || "",
-    productID: initialData?.productID || "",
-    quantity: initialData?.quantity || 0,
-    price: initialData?.price || 0.0,
+    id: null,
+    nombreProducto: "",
+    quantity: 0,
+    price: 0.0,
+    unidadMedida: "", // Este campo podría ser reemplazado por unit_Id
   });
+  const [units, setUnits] = useState([]); // Estado para las unidades
+  const [unit_Id, setUnit_Id] = useState(""); // Estado para la unidad seleccionada
   const [showProfile, setShowProfile] = useState(false);
+  const navigate = useNavigate();
+
+  // Cargar unidades disponibles
+  useEffect(() => {
+    const fetchUnits = async () => {
+      try {
+        const response = await axiosInstance.get("/api/v1/oxi/units");
+        if (response.status === 200 && response.data.data) {
+          setUnits(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error al obtener las unidades:", error);
+      }
+    };
+
+    const fetchProductData = async () => {
+      try {
+        const response = await axiosInstance.get(`/api/v1/oxi/product/find/${id}`);
+        if (response.status === 200 && response.data.data) {
+          setInventario({
+            id: response.data.data.id,
+            nombreProducto: response.data.data.name,
+            quantity: response.data.data.quantity,
+            price: response.data.data.price,
+            unidadMedida: response.data.data.unidadMedida || "", // Obtener la unidad de medida
+          });
+          setUnit_Id(response.data.data.unit_Id || ""); // Establecer el id de la unidad seleccionada
+        }
+      } catch (error) {
+        console.error("Error al obtener el producto:", error);
+      }
+    };
+
+    if (id) {
+      fetchProductData();
+    }
+    fetchUnits();
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,9 +63,18 @@ const InventoryEdit = ({ initialData, onSubmit }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(inventario);
+    try {
+      const updatedInventario = { ...inventario, unidadMedida: unit_Id }; // Agregar la unidad seleccionada
+      const response = await axiosInstance.put(`/api/v1/oxi/product/update/${id}`, updatedInventario);
+      if (response.status === 200) {
+        alert("Producto actualizado exitosamente");
+        navigate("/inventory/Home");
+      }
+    } catch (error) {
+      console.error("Error al actualizar el producto:", error);
+    }
   };
 
   return (
@@ -30,11 +82,7 @@ const InventoryEdit = ({ initialData, onSubmit }) => {
       <div className="row">
         <div className="col-md-3 menu">
           <div className="imgrol text-center mt-2 mb-3">
-            <img
-              className="rounded img-fluid"
-              src={UserPicture1}
-              alt="Usuario1"
-            />
+            <img className="rounded img-fluid" src={UserPicture1} alt="Usuario1" />
           </div>
           <div className="infoRol text-center p-3 mt-3">
             <h5>Nombre de Usuario</h5>
@@ -58,7 +106,7 @@ const InventoryEdit = ({ initialData, onSubmit }) => {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/inventarios/Create">
+              <a className="nav-link" href="/Inventory/Create">
                 <i className="bi bi-bag-plus"></i> Añadir inventario
               </a>
             </li>
@@ -141,13 +189,31 @@ const InventoryEdit = ({ initialData, onSubmit }) => {
                       required
                     />
                   </div>
+                  <div className="mb-3">
+                    <label htmlFor="unit" className="form-label" style={{ color: "#333" }}>
+                      Unidad de Medición
+                    </label>
+                    <select
+                      id="unit"
+                      className="form-control"
+                      value={unit_Id}
+                      onChange={(e) => setUnit_Id(e.target.value)}
+                      required
+                    >
+                      {units.map((unit) => (
+                        <option key={unit.id} value={unit.id}>
+                          {unit.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                   <button type="submit" className="btn btn-primary">
                     Guardar
                   </button>
                   <button
                     type="button"
                     className="btn btn-secondary"
-                    onClick={() => (window.location.href = "/inventarios")}
+                    onClick={() => navigate("/inventory/Home")}
                   >
                     Cancelar
                   </button>
@@ -158,7 +224,6 @@ const InventoryEdit = ({ initialData, onSubmit }) => {
         </div>
       </div>
 
-      {/* Modal de perfil */}
       {showProfile && (
         <div className="modal show d-block" tabIndex="-1" role="dialog">
           <div className="modal-dialog" role="document">
