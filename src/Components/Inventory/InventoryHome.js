@@ -28,6 +28,9 @@ const InventoryHome = () => {
 
   const handleDelete = (id) => {
     if (window.confirm("¿Estás seguro de eliminar este producto?")) {
+      // Eliminar el producto visualmente antes de hacer la solicitud al backend
+      const updatedProducts = products.filter((product) => product.id !== id);
+      setProducts(updatedProducts); // Actualizamos el estado para eliminar el producto de la lista visualmente
       axiosInstance
         .delete(`/api/v1/oxi/product/delete/${id}`)
         .then((response) => {

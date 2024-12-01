@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import "./../../Styles/user.css";
 import PlantillaUno from '../PlantillaUno';
 import UserPicture1 from "../../Styles/img/UsersBack/user1.svg";
+import { productModel } from "../../Models/productModel"; // Importar el modelo
 
-function CreateUser({ productStocks = [] }) {
-  const [orderItems, setOrderItems] = useState([{ productstock_id: '', quantity: 1 }]);
+function CreateUser({ products = [] }) {
+  const [orderItems, setOrderItems] = useState([{ product_id: '', quantity: 1 }]);
   const [showProfile, setShowProfile] = useState(false);
 
   const addOrderItem = () => {
-    setOrderItems([...orderItems, { productstock_id: '', quantity: 1 }]);
+    setOrderItems([...orderItems, { product_id: '', quantity: 1 }]);
   };
 
   const removeOrderItem = (index) => {
@@ -93,21 +94,23 @@ function CreateUser({ productStocks = [] }) {
                     {orderItems.map((item, index) => (
                       <div className="order-item row mb-3" key={index}>
                         <div className="col-md-6">
-                          <label htmlFor={`productstock_id_${index}`}>Producto</label>
+                          <label htmlFor={`product_id_${index}`}>Producto</label>
                           <select
-                            name="productstock_id"
-                            className="form-select"
-                            value={item.productstock_id}
-                            onChange={(e) => handleInputChange(index, e)}
-                            required
-                          >
-                            <option value="">Seleccionar Producto</option>
-                            {productStocks.map((productStock) => (
-                              <option key={productStock.id} value={productStock.id}>
-                                {productStock.product.name} - {productStock.unit.name}
-                              </option>
-                            ))}
-                          </select>
+  id="product"
+  className="form-select"
+  value={item.product_id} // Asegúrate de que el valor corresponda con el id del producto
+  onChange={(e) => handleInputChange(index, e)} // Usamos el handleInputChange para actualizar el estado
+  required
+>
+  <option value="" disabled>
+    Seleccionar Producto
+  </option>
+  {productModel.map((product) => (
+    <option key={product.id} value={product.id}>
+      {product.name} {/* Esto depende de la estructura de tus objetos en productModel */}
+    </option>
+  ))}
+</select>
                         </div>
                         <div className="col-md-4">
                           <label htmlFor={`quantity_${index}`}>Cantidad</label>
