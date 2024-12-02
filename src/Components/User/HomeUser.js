@@ -1,10 +1,72 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './../../Styles/user.css';
 import PlantillaUno from '../PlantillaUno';
 import UserPicture1 from './../../Styles/img/UsersBack/user1.svg';
+import axiosInstance from '../../api/axios';
+import { useNavigate } from 'react-router-dom';
 
-const HomeUser = ({ hasPurchases, userPurchases }) => {
+const HomeUser = ({ userId }) => {
+  const navigate = useNavigate();
   const [showProfile, setShowProfile] = useState(false);
+  const [userPurchases, setUserPurchases] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedOrder, setSelectedOrder] = useState(null); // Store the selected order for editing
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      setLoading(true);
+      try {
+        const response = await axiosInstance.get(`/api/v1/oxi/order/all`);
+        if (response.data?.data) {
+          setUserPurchases(response.data.data);
+        } else {
+          console.error("No data found in response");
+        }
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+  const handleEdit = (order) => {
+    setSelectedOrder({ ...order });
+  };
+
+  const handleOrderUpdate = async () => {
+    if (!selectedOrder) return;
+
+    try {
+      const updatedOrderData = {
+        state: Boolean(selectedOrder.state), // Ensure the state is a boolean
+        user_id: 1, // Adjust as needed
+        product_ids: selectedOrder.productList.map(product => ({ id: product.id })),
+      };
+
+      const response = await axiosInstance.put(
+        `/api/v1/oxi/order/update/${selectedOrder.id}`,
+        { data: updatedOrderData }
+      );
+
+      if (response.status === 200) {
+        setUserPurchases(prevOrders =>
+          prevOrders.map(order =>
+            order.id === selectedOrder.id ? { ...order, ...updatedOrderData } : order
+          )
+        );
+        setSelectedOrder(null); // Close modal after updating
+        navigate(0); // Refresh the page
+      } else {
+        console.error('Error: Could not update order.');
+      }
+    } catch (error) {
+      console.error('Error updating order:', error.response?.data || error.message);
+      alert("Error al actualizar la orden. Intente nuevamente.");
+    }
+  };
 
   return (
     <PlantillaUno>
@@ -29,122 +91,107 @@ const HomeUser = ({ hasPurchases, userPurchases }) => {
           <hr />
           <h3 className="border border-light rounded p-2">Productos</h3>
           <ul className="navbar-nav">
-            <li className="nav-item">
-              <a className="nav-link" href="/products">
-                <i className="bi bi-bag-check"></i> Ver Pedido
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/User/CancelOrder">
-                <i className="bi bi-bag-x"></i> Cancelar Pedido
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/User/Create">
-                <i className="bi bi-bag-plus"></i> Solicitar Pedido
-              </a>
-            </li>
-          </ul>
-          <hr />
-          <h3 className="mt-3 border border-light rounded p-2">Cuenta</h3>
-          <ul className="navbar-nav">
-            <li className="nav-item">
-              <a className="nav-link" href="/data-change">
-                <i className="bi bi-globe"></i> Cambiar datos
-              </a>
-            </li>
+            <li className="nav-item"><a className="nav-link" href="/products"><i className="bi bi-bag-check"></i> Ver Pedido</a></li>
+            <li className="nav-item"><a className="nav-link" href="/User/CancelOrder"><i className="bi bi-bag-x"></i> Cancelar Pedido</a></li>
+            <li className="nav-item"><a className="nav-link" href="/User/Create"><i className="bi bi-bag-plus"></i> Solicitar Pedido</a></li>
           </ul>
           <hr />
         </div>
 
-        <div className="col-md-9" style={{ marginTop: '100px' }}>
-          {hasPurchases ? (
-            <>
-              <h1 className="text-center seccion-titulo">Estado de tu pedido</h1>
-              <p className="text-center seccion-texto">Aquí puedes ver el estado de tu pedido</p>
-              <div className="row mt-5">
-                {userPurchases.map((purchase, index) => (
-                  <div className="col-md-3" key={index}>
-                    <div className="card bg-body-tertiary border-0 tarjeta2">
-                      <div className="card-body">
-                        <div className="card-title fs-1 text-center">
-                          <i className={`bi ${index === 0 ? 'bi-arrow-clockwise' : 'bi-arrow-repeat'}`}></i>
-                        </div>
-                        <div className="card-text fs-6 text-center">
-                          Código de pedido: {purchase.id}
-                        </div>
-                        <p className="seccion-texto text-center">Estado de tu pedido</p>
-                        <div className="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
-                          <div className="progress-bar bg-secondary" style={{ width: `${index * 20 + 20}%` }}>
-                            {index * 20 + 20}%
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="row mt-5">
-                <h1 className="text-center seccion-titulo">Tu pedido actual</h1>
-                <div className="col-md-10 offset-md-1">
-                  <table className="table table-striped">
-                    <thead className="thead-dark">
-                      <tr>
-                        <th>#</th>
-                        <th>Producto</th>
-                        <th>Metraje</th>
-                        <th>Cantidad</th>
-                        <th>Valor Unitario</th>
-                        <th>Total</th>
-                      </tr>
-                    </thead>
-                    <tbody className="table-group-divider">
-                      {userPurchases.map((purchase, index) => (
-                        <tr key={index}>
-                          <td>{purchase.id}</td>
-                          <td>{purchase.productName}</td>
-                          <td>{purchase.metraje}</td>
-                          <td>{purchase.quantity}</td>
-                          <td>{purchase.price}</td>
-                          <td>{purchase.quantity * purchase.price}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </>
+        <div className="col-md-9" style={{ marginTop: "100px" }}>
+          <h2 className="text-center text-primary mb-4">Gestión de Pedidos</h2>
+          {loading ? (
+            <div className="text-center">Cargando...</div>
           ) : (
-            <h1 className="text-center seccion-titulo">No hay Registro de pedido</h1>
+            <div className="table-responsive">
+              <table className="table table-striped table-bordered align-middle">
+                <thead className="table-light">
+                  <tr>
+                    <th>ID</th>
+                    <th>Productos</th>
+                    <th>Cantidad</th>
+                    <th>Precio Total</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {userPurchases.length === 0 ? (
+                    <tr><td colSpan="6" className="text-center">No se han encontrado pedidos.</td></tr>
+                  ) : (
+                    userPurchases.map(order => (
+                      <tr key={order.id}>
+                        <td>{order.id}</td>
+                        <td>
+                          {order.productList?.length ? (
+                            order.productList.map((product, index) => (
+                              <div key={index}>
+                                <p><strong>Producto:</strong> {product.name}</p>
+                                <p><strong>Cantidad:</strong> {product.quantity}</p>
+                              </div>
+                            ))
+                          ) : <p>No hay productos</p>}
+                        </td>
+                        <td>{order.productList?.reduce((total, product) => total + product.quantity, 0)}</td>
+                        <td>${order.productList?.reduce((total, product) => total + (product.price * product.quantity), 0).toFixed(2)}</td>
+                        <td>{order.state ? "En proceso" : "Cancelado"}</td>
+                        <td>
+                          <button
+                            onClick={() => handleEdit(order)}
+                            className="btn btn-warning btn-sm"
+                          >
+                            Editar
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
+      </div>
 
-        {showProfile && (
-          <div className="modal show d-block" tabIndex="-1" role="dialog">
-            <div className="modal-dialog" role="document">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Perfil de Usuario</h5>
-                  <button type="button" className="close" onClick={() => setShowProfile(false)} aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
+      {selectedOrder && (
+        <div className="modal show d-block" tabIndex="-1" role="dialog">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Editar Orden</h5>
+                <button type="button" className="close" onClick={() => setSelectedOrder(null)} aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <div className="form-group">
+                  <label>ID de la Orden</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={selectedOrder.id}
+                    readOnly
+                  />
                 </div>
-                <div className="modal-body text-center">
-                  <img src={UserPicture1} alt="Usuario1" className="rounded-circle img-fluid mb-3" style={{ width: '100px', height: '100px' }} />
-                  <p><strong>Nombre de Usuario:</strong> Nombre de Usuario</p>
-                  <p><strong>Rol:</strong> Rol</p>
+                <div className="form-group">
+                  <label>Estado</label>
+                  <select
+                    className="form-control"
+                    value={selectedOrder.state}
+                    onChange={(e) => setSelectedOrder({ ...selectedOrder, state: e.target.value === 'true' })}
+                  >
+                    <option value="true">En proceso</option>
+                    <option value="false">Cancelado</option>
+                  </select>
                 </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" onClick={() => setShowProfile(false)}>
-                    Cerrar
-                  </button>
+                <div className="form-group mt-3">
+                  <button className="btn btn-primary" onClick={handleOrderUpdate}>Guardar cambios</button>
                 </div>
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </PlantillaUno>
   );
 };

@@ -78,7 +78,6 @@
 
 /* Asegura que el texto se vea en .card-body */
 .card-body:hover {
-    background-color: #008A16;
     transition: 0.3s all ease-out;
     border-radius: 10px;
     cursor: pointer;
