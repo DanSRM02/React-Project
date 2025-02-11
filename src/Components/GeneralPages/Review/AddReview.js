@@ -100,8 +100,8 @@ const AddReview = () => {
           <h3 className="border border-light rounded p-2">Productos</h3>
           <ul className="navbar-nav">
             <li className="nav-item">
-              <a className="nav-link" href="/products">
-                <i className="bi bi-bag-check"></i> Ver Pedidos
+              <a className="nav-link" href="/Review/">
+                <i className="bi bi-bag-check"></i> Ver Reseñas
               </a>
             </li>
           </ul>

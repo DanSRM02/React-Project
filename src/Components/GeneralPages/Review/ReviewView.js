@@ -53,11 +53,6 @@ function ReviewView() {
           <h3 className="border border-light rounded p-2">Productos</h3>
           <ul className="navbar-nav">
             <li className="nav-item">
-              <a className="nav-link" href="/products">
-                <i className="bi bi-bag-check"></i> Ver Pedidos
-              </a>
-            </li>
-            <li className="nav-item">
               <a className="nav-link" href="/User/Create">
                 <i className="bi bi-bag-plus"></i> Solicitar Pedido
               </a>

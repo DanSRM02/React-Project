@@ -22,11 +22,6 @@ function Header() {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="Products.html">
-                  <i className="bi bi-shop"></i> / Productos
-                </a>
-              </li>
-              <li className="nav-item">
                 <a className="nav-link" href="#footer">
                   <i className="bi bi-envelope"></i> / Contacto
                 </a>
