@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PlantillaUno from '../PlantillaUno';
 
 const Register = () => {
-  const [formData, setFormData] = useState({
+  const initialFormState = {
     name: '',
     email: '',
     username: '',
@@ -11,8 +11,9 @@ const Register = () => {
     identificationType: '',
     identification: '',
     terms: false,
-  });
+  };
 
+  const [formData, setFormData] = useState(initialFormState);
   const [errors, setErrors] = useState({});
 
   const validate = () => {
@@ -50,16 +51,15 @@ const Register = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      // Aquí podrías enviar el formulario o realizar alguna acción adicional.
-      console.log('Formulario válido');
+      console.log('Formulario válido', formData);
     }
   };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData((prevData) => ({
+    setFormData(prevData => ({
       ...prevData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === 'checkbox' ? checked : value
     }));
   };
 
@@ -68,135 +68,123 @@ const Register = () => {
       <div className="row">
         <div className="container-fluid backformulario ps-0 pe-0">
           <div className="row m-0">
-            <div className="col-md-3 "></div>
+            <div className="col-md-3"></div>
             <div className="col-md-6 pe-0 ps-0">
               <div className="card shadow-lg p-3 m-5 body-tertiary rounded">
-                <div className="card-body ">
+                <div className="card-body">
                   <h1 className="text-center seccion-titulo">Regístrate</h1>
                   <p className="text-center seccion-descripcion">
                     Completa el formulario para poder registrarte
                   </p>
-                  <form className="row g-3 needs-validation" onSubmit={handleSubmit}>
-                    <div className="col-md-4">
-                      <label className="form-label">Nombre del cliente / empresa</label>
-                      <input
-                        type="text"
-                        name="name"
-                        className="form-control"
-                        id="name"
-                        onChange={handleChange}
-                        value={formData.name}
-                      />
-                      {errors.name && <div className="invalid-feedback d-block">{errors.name}</div>}
-                    </div>
-                    <div className="col-md-4">
-                      <label htmlFor="email" className="form-label">Correo Electrónico</label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        className="form-control"
-                        onChange={handleChange}
-                        value={formData.email}
-                      />
-                      {errors.email && <div className="invalid-feedback d-block">{errors.email}</div>}
-                    </div>
-                    <div className="col-md-4">
-                      <label htmlFor="username" className="form-label">Nombre de usuario</label>
-                      <div className="input-group has-validation">
-                        <span className="input-group-text" id="inputGroupPrepend">@</span>
-                        <input
-                          type="text"
-                          className="form-control"
-                          name="username"
-                          id="username"
-                          onChange={handleChange}
-                          value={formData.username}
-                        />
-                        {errors.username && <div className="invalid-feedback d-block">{errors.username}</div>}
+                  <form className="row g-3 needs-validation" onSubmit={handleSubmit} noValidate>
+                    {/* Campos del formulario con validación mejorada */}
+                    {['name', 'email', 'username', 'address', 'phone', 'identification'].map((field) => (
+                      <div className="col-12 col-md-6 mb-3" key={field}>
+                        <label htmlFor={field} className="form-label">
+                          {{
+                            name: 'Nombre del cliente/empresa',
+                            email: 'Correo Electrónico',
+                            username: 'Nombre de usuario',
+                            address: 'Domicilio',
+                            phone: 'Número de Teléfono',
+                            identification: 'Número de identificación'
+                          }[field]}
+                        </label>
+                        {field === 'username' ? (
+                          <div className="input-group has-validation">
+                            <span className="input-group-text">@</span>
+                            <input
+                              type="text"
+                              className={`form-control ${errors.username ? 'is-invalid' : ''}`}
+                              name="username"
+                              id="username"
+                              onChange={handleChange}
+                              value={formData.username}
+                              aria-describedby="usernameError"
+                            />
+                          </div>
+                        ) : (
+                          <input
+                            type={field === 'email' ? 'email' : 'text'}
+                            className={`form-control ${errors[field] ? 'is-invalid' : ''}`}
+                            name={field}
+                            id={field}
+                            onChange={handleChange}
+                            value={formData[field]}
+                            {...(field === 'phone' || field === 'identification' ? {
+                              pattern: "[0-9]*",
+                              maxLength: 10
+                            } : {})}
+                            aria-invalid={!!errors[field]}
+                            aria-describedby={`${field}Error`}
+                          />
+                        )}
+                        {errors[field] && (
+                          <div id={`${field}Error`} className="invalid-feedback d-block">
+                            {errors[field]}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                    <div className="col-md-3">
-                      <label htmlFor="address" className="form-label">Domicilio</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        name="address"
-                        id="address"
-                        onChange={handleChange}
-                        value={formData.address}
-                      />
-                      {errors.address && <div className="invalid-feedback d-block">{errors.address}</div>}
-                    </div>
-                    <div className="col-md-3">
-                      <label htmlFor="phone" className="form-label">Número de Teléfono</label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        name="phone"
-                        id="phone"
-                        onChange={handleChange}
-                        value={formData.phone}
-                      />
-                      {errors.phone && <div className="invalid-feedback d-block">{errors.phone}</div>}
-                    </div>
-                    <div className="col-md-3">
+                    ))}
+
+                    {/* Selector de tipo de identificación */}
+                    <div className="col-12 col-md-6 mb-3">
                       <label htmlFor="identificationType" className="form-label">Tipo de identificación</label>
                       <select
-                        className="form-select"
+                        className={`form-select ${errors.identificationType ? 'is-invalid' : ''}`}
                         id="identificationType"
                         name="identificationType"
                         onChange={handleChange}
                         value={formData.identificationType}
+                        aria-describedby="identificationTypeError"
                       >
-                        <option value="" disabled>Escoje...</option>
+                        <option value="">Escoje...</option>
                         <option value="NIT">NIT</option>
                         <option value="CC">C.C</option>
                       </select>
-                      {errors.identificationType && <div className="invalid-feedback d-block">{errors.identificationType}</div>}
+                      {errors.identificationType && (
+                        <div id="identificationTypeError" className="invalid-feedback d-block">
+                          {errors.identificationType}
+                        </div>
+                      )}
                     </div>
-                    <div className="col-md-3">
-                      <label htmlFor="identification" className="form-label">Número de identificación</label>
-                      <input
-                        name="identification"
-                        type="number"
-                        id="identification"
-                        className="form-control"
-                        onChange={handleChange}
-                        value={formData.identification}
-                      />
-                      {errors.identification && <div className="invalid-feedback d-block">{errors.identification}</div>}
-                    </div>
-                    <div className="col-12">
-                      <div className="form-check">
+
+                    {/* Checkbox de términos y condiciones */}
+                    <div className="col-12 mb-3">
+                      <div className={`form-check ${errors.terms ? 'is-invalid' : ''}`}>
                         <input
-                          className="form-check-input"
+                          className={`form-check-input ${errors.terms ? 'is-invalid' : ''}`}
                           type="checkbox"
                           name="terms"
-                          id="invalidCheck"
+                          id="terms"
                           onChange={handleChange}
                           checked={formData.terms}
+                          aria-describedby="termsError"
                         />
-                        <label className="form-check-label" htmlFor="invalidCheck">
-                          Acepto los términos y condiciones.
+                        <label className="form-check-label" htmlFor="terms">
+                          Acepto los términos y condiciones
                         </label>
-                        {errors.terms && <div className="invalid-feedback d-block">{errors.terms}</div>}
+                        {errors.terms && (
+                          <div id="termsError" className="invalid-feedback d-block">
+                            {errors.terms}
+                          </div>
+                        )}
                       </div>
                     </div>
-                    <div className="col-md-5 col-1"></div>
-                    <div className="col-md-2 col-10 align-self-center">
-                      <button type="submit" className="btn btn-secondary">
+
+                    {/* Botón de submit */}
+                    <div className="col-12 d-flex justify-content-center mt-4">
+                      <button type="submit" className="btn btn-secondary w-50">
                         Registrarse
                       </button>
                     </div>
-                    <div className="col-md-5 col-1"></div>
                   </form>
                 </div>
               </div>
             </div>
+            <div className="col-md-3"></div>
           </div>
         </div>
-        <div className="col-md-3"></div>
       </div>
     </PlantillaUno>
   );
