@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './../../Styles/user.css';
-import PlantillaUno from '../PlantillaUno';
+import PlantillaUno from '../../../../../Version_Old/src/Components/PlantillaUno';
 import UserPicture1 from './../../Styles/img/UsersBack/user1.svg';
-import axiosInstance from '../../api/axios';
+import axiosInstance from '../../../../../Version_Old/src/api/axios';
 import { useNavigate } from 'react-router-dom';
 
 const HomeUser = ({ userId }) => {
