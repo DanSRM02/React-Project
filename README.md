@@ -1,70 +1,32 @@
-# Getting Started with Create React App
+# Proyecto OXI / Oxindustriales
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[![Visitar sitio web](https://img.shields.io/badge/Visitar-Sitio%20Web-blue)](https://mylaravelapp.azurewebsites.net)
 
-## Available Scripts
+## Objetivo General 🎯
+Diseñar y desarrollar un sistema de software integral y robusto que optimice la eficiencia en la gestión empresarial, mejore la precisión en el seguimiento de inventarios, y optimice los procesos comerciales para mejorar la experiencia del cliente. Este sistema debe ser altamente escalable y adaptable para satisfacer las demandas cambiantes del mercado, proporcionando una experiencia de usuario intuitiva y satisfactoria tanto para los empleados internos como para los clientes externos en la venta y distribución de una amplia gama de productos, sin limitarse a oxígeno y otros gases.
 
-In the project directory, you can run:
+## Objetivos Específicos 🎯
+- **Gestión de Inventario**: Desarrollar un sistema que permita llevar un registro detallado del inventario de oxígeno y otros gases disponibles en la empresa, incluyendo la cantidad disponible, fechas de vencimiento, proveedores y ubicación física en el almacén.
+- **Optimización Logística**: Optimizar la logística de entrega mediante la programación eficiente de rutas, asignación de conductores y seguimiento en tiempo real de las entregas de oxígeno y otros gases a los clientes.
+- **Interfaz de Usuario**: Diseñar una interfaz de usuario intuitiva y fácil de usar que optimice la experiencia del usuario tanto para los empleados internos como para los clientes externos, con el objetivo de mejorar la satisfacción y fidelización del cliente.
 
-### `npm start`
+## Planteamiento del Problema 😵‍💫
+La comunicación a través de medios electrónicos puede presentar ciertas dificultades que podrían derivar en una experiencia tediosa o incómoda para los clientes. Esta situación podría agravarse en momentos de alta demanda, donde la posible saturación de pedidos podría obstaculizar el flujo de operaciones comerciales y, en consecuencia, poner en riesgo la fidelización de clientes potenciales.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+La falta de prontitud en la respuesta del vendedor a través de estos medios también es una preocupación relevante, ya que la negligencia en la revisión y seguimiento de los mensajes electrónicos podría ocasionar retrasos en la entrega o incluso la falta de cumplimiento de los pedidos.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Justificación 📃
+Después de vivir una pandemia en la cual muchas personas perdieron la vida, el oxígeno cumplió y cumple un rol muy importante en la salubridad de pacientes que padecen secuelas causadas por la COVID-19. Por lo cual, el oxígeno tiene una labor importante en la vida de aquellas personas que fueron afectadas por este virus y a gran parte de la población. Frente a esto, la intención de nuestro proyecto es facilitar las ventas de la empresa “Oxindustriales”, la cual se encuentra ubicada en Bogotá y lleva operando desde 2000. Debido a las problemáticas vistas en el levantamiento de información, se evidencia falencias en los procesos de venta, ya que los pedidos llegan mediante correo electrónico y vía WhatsApp. Este proceso se vuelve tedioso y puede demorar el envío, bajando el rendimiento y, por ende, reduciendo su ganancia. Teniendo en cuenta lo mencionado, es necesario la implementación de un software que facilite este proceso.
 
-### `npm test`
+## Alcance 🚀
+El alcance de este proyecto abarca la implementación de una solución/software integral diseñada para mejorar el proceso de registro de ventas o pedidos para la empresa "Oxindustriales" en Bogotá, con el objetivo principal de facilitar y optimizar las operaciones comerciales para el año 2025. La solución/software proporcionará funcionalidades para la gestión eficiente de ventas y pedidos, incluyendo un sistema de registro centralizado, seguimiento de inventario en tiempo real, generación de informes analíticos, y herramientas de seguimiento de clientes.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Integrantes ⛷️
+- **Daniel Ramirez**
+- **Allan Rojas**
+- **Elkin Sanchez**
+- **Juan Virgüez**
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+¡Gracias por visitar nuestro proyecto! 😊
