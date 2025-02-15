@@ -13,24 +13,25 @@ const Layout = ({ children, title }) => {
             <header className="bg-white shadow-md py-4">
                 <div className="container mx-auto flex justify-between items-center px-6">
                     <div className="flex items-center space-x-4">
-                        <img
-                            src={logo}
-                            alt="Oxindustriales"
-                            className="h-16 w-auto max-h-20 object-contain"
-                        />
+                        <Link to={"/home"}>
+                            <img
+                                src={logo}
+                                alt="Oxindustriales"
+                                className="h-16 w-auto max-h-20 object-contain"
+                            />
+                        </Link>
                     </div>
                     <nav>
-                        <ul className="flex space-x-6">
-                            <li><Link to="/" className="text-gray-700 hover:text-green-600">Nosotros</Link></li>
-                            <li><Link to="#contacto" className="text-gray-700 hover:text-green-600">Contacto</Link></li>
-                            <li><Link to="#" className="text-gray-700 hover:text-green-600">Iniciar sesión</Link></li>
+                        <ul className="flex space-x-6">                            
+                            <li><Link to="/register" className="text-gray-700 hover:text-green-600">Registrase</Link></li>
+                            <li><Link to="/login" className="text-gray-700 hover:text-green-600">Iniciar sesión</Link></li>
                         </ul>
                     </nav>
                 </div>
             </header>
 
             {/* Contenido principal */}
-            <main className="main-content container mx-auto py-8 px-6 min-h-screen">
+            <main className="main-content center flex-container mx-auto py-8 px-6 min-h-screen">
                 {children}
             </main>
 
