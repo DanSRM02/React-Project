@@ -1,16 +1,19 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import About from './pages/about/About';
+import Home from './pages/home/Home.jsx';
+import Products from './pages/products/Products.jsx';
+import Login from './pages/login/Login.jsx';
+import './assets/styles/global.css'
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<About />} />
-        <Route path='/Login' element={<About />} />
-        {/* <Route path='/Register' element={<Register />} />
+        <Route path="/" element={<Home />} />
+        <Route path='/Login' element={<Login />} />
+        {/* <Route path='/Register' element={<Register />} /> */}
         <Route path='/Products' element={<Products />} />
-        <Route path='/User/Create' element={<CreateUser />} />
+        {/* <Route path='/User/Create' element={<CreateUser />} />
         <Route path='/data-change' element={<DataChange />} />
         <Route path='/Home/User' element={<HomeUser />} />
         <Route path='/User/CancelOrder' element={<CancelOrder />} />
