@@ -1,6 +1,6 @@
 # Proyecto OXI / Oxindustriales
 
-[![Visitar sitio web](https://img.shields.io/badge/Visitar-Sitio%20Web-blue)](https://mylaravelapp.azurewebsites.net)
+[![Visitar sitio web](https://img.shields.io/badge/Visitar-Sitio%20Web-blue)]()
 
 ## Objetivo General 🎯
 Diseñar y desarrollar un sistema de software integral y robusto que optimice la eficiencia en la gestión empresarial, mejore la precisión en el seguimiento de inventarios, y optimice los procesos comerciales para mejorar la experiencia del cliente. Este sistema debe ser altamente escalable y adaptable para satisfacer las demandas cambiantes del mercado, proporcionando una experiencia de usuario intuitiva y satisfactoria tanto para los empleados internos como para los clientes externos en la venta y distribución de una amplia gama de productos, sin limitarse a oxígeno y otros gases.
@@ -23,9 +23,9 @@ El alcance de este proyecto abarca la implementación de una solución/software 
 
 ## Integrantes ⛷️
 - **Daniel Ramirez**
-- **Allan Rojas**
+- ~~Allan Rojas~~
 - **Elkin Sanchez**
-- **Juan Virgüez**
+- ~~Juan Virgüez~~
 
 ---
 
