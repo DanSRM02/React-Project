@@ -3,12 +3,13 @@
 [![Visitar sitio web](https://img.shields.io/badge/Visitar-Sitio%20Web-blue)]()
 
 ## Objetivo General 🎯
-Diseñar y desarrollar un sistema de software integral y robusto que optimice la eficiencia en la gestión empresarial, mejore la precisión en el seguimiento de inventarios, y optimice los procesos comerciales para mejorar la experiencia del cliente. Este sistema debe ser altamente escalable y adaptable para satisfacer las demandas cambiantes del mercado, proporcionando una experiencia de usuario intuitiva y satisfactoria tanto para los empleados internos como para los clientes externos en la venta y distribución de una amplia gama de productos, sin limitarse a oxígeno y otros gases.
+Diseñar y desarrollar un sistema de software integral y escalable que optimice los procesos comerciales de la empresa, mejorando la precisión en el seguimiento de inventarios y la gestión de pedidos. Este sistema debe proporcionar una experiencia de usuario intuitiva y eficiente tanto para empleados como para clientes, fortaleciendo la comunicación, minimizando errores en las entregas y mejorando la satisfacción del cliente en la venta y distribución de productos industriales.
 
 ## Objetivos Específicos 🎯
-- **Gestión de Inventario**: Desarrollar un sistema que permita llevar un registro detallado del inventario de oxígeno y otros gases disponibles en la empresa, incluyendo la cantidad disponible, fechas de vencimiento, proveedores y ubicación física en el almacén.
-- **Optimización Logística**: Optimizar la logística de entrega mediante la programación eficiente de rutas, asignación de conductores y seguimiento en tiempo real de las entregas de oxígeno y otros gases a los clientes.
-- **Interfaz de Usuario**: Diseñar una interfaz de usuario intuitiva y fácil de usar que optimice la experiencia del usuario tanto para los empleados internos como para los clientes externos, con el objetivo de mejorar la satisfacción y fidelización del cliente.
+- **Gestionar transacciones**: Permitiendo creación, edición y cancelación, además de generar reportes de ventas para optimizar decisiones. 
+- **Optimización Logística**: Asignación y seguimiento de domicilios según disponibilidad y ubicación de domiciliarios.
+- **Control de Inventario**: Controlar entradas, salidas y niveles de stock, con alertas automáticas para evitar desabastecimientos. 
+- **Reseñas de Productos**: Registrar y consultar reseñas de productos, asegurando una visualización clara y accesible.
 
 ## Planteamiento del Problema 😵‍💫
 La comunicación a través de medios electrónicos puede presentar ciertas dificultades que podrían derivar en una experiencia tediosa o incómoda para los clientes. Esta situación podría agravarse en momentos de alta demanda, donde la posible saturación de pedidos podría obstaculizar el flujo de operaciones comerciales y, en consecuencia, poner en riesgo la fidelización de clientes potenciales.
