@@ -1,9 +1,9 @@
-import dioxido from '../../assets/img/dioxidocarbono.webp';
-import oxigeno from '../../assets/img/oxigeno.webp'
+import dioxido from '../../assets/img/dioxido_carbono.png';
+import oxigeno from '../../assets/img/oxigeno.png'
 import hidrogeno from '../../assets/img/hidrogeno.png'
-import nitrogeno from '../../assets/img/nitrogeno.webp'
-import argon from '../../assets/img/argon.webp'
-import acetileno from '../../assets/img/acetileno.webp'
+import nitrogeno from '../../assets/img/nitrogeno.png'
+import argon from '../../assets/img/argon.png'
+import acetileno from '../../assets/img/acetileno.png'
 
 const ProductsAvailable = [
     {

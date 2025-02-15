@@ -6,11 +6,19 @@ const ProductCard = ({ name, image, description }) => {
     return (
         <div className="bg-white shadow-lg rounded-xl overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-green-500">
             <div className="relative w-full h-48">
-                <img src={image} alt={name} className="w-full h-full object-cover" />
+                <img
+                    src={image}
+                    alt={name}
+                    className="w-full h-full object-contain"
+                />
             </div>
             <div className="p-4">
-                <h5 className="text-xl font-semibold text-gray-800 mb-2">{name}</h5>
-                <p className="text-gray-600 text-sm mb-4">{description}</p>
+                <h5 className="text-xl font-semibold text-gray-800 mb-2">
+                    {name}
+                </h5>
+                <p className="text-gray-600 text-sm mb-4">
+                    {description}
+                </p>
                 <button className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition duration-200">
                     Ver más
                 </button>
