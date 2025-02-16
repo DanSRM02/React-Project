@@ -1,5 +1,14 @@
-import React from "react"
-import CardClient from "../../components/UI/CardClient"
+import React from "react";
+import Card from "../../components/UI/Card";
+import {
+    FaClipboardList,
+    FaPlusCircle,
+    FaStar,
+    FaLifeRing,
+    FaMapMarkedAlt,
+    FaFileInvoiceDollar,
+    FaMoneyBillWave
+} from "../../components/UI/Icons";
 
 const ClientHomePage = ({ role }) => {
     return (
@@ -12,63 +21,68 @@ const ClientHomePage = ({ role }) => {
 
             {/* Sección de accesos rápidos */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* Mis Órdenes */}
-                <CardClient
+                <Card
                     title="Mis Órdenes"
                     description="Consulta el estado de tus pedidos y su historial."
                     linkTo="/client/orders"
                     linkLabel="Ver Órdenes"
+                    icon={FaClipboardList}
                 />
 
-                <CardClient
+                <Card
                     title="Crear Orden"
                     description="Selecciona tus productos y genera un nuevo pedido."
-                    linkTo="/client/create-order"
+                    linkTo="/client/order/create"
                     linkLabel="Crear"
+                    icon={FaPlusCircle}
                 />
 
-                <CardClient
-                    title="Mis Reseñas  "
+                <Card
+                    title="Mis Reseñas"
                     description="Visualiza o edita tus comentarios sobre los productos."
                     linkTo="/client/reviews"
                     linkLabel="Ver Reseñas"
+                    icon={FaStar}
                 />
 
-                <CardClient
+                <Card
                     title="Soporte"
                     description="¿Necesitas ayuda? Contáctanos para resolver tus dudas."
                     linkTo="/support"
                     linkLabel="Ir a Soporte"
+                    icon={FaLifeRing}
                 />
 
-                {/* Opciones adicionales para clientes empresariales */}
                 {role === "empresarial" && (
                     <>
-                        <CardClient
+                        <Card
                             title="Direcciones"
                             description="Administra múltiples direcciones de entrega."
                             linkTo="/client/addresses"
                             linkLabel="Ver Direcciones"
+                            icon={FaMapMarkedAlt}
                         />
 
-                        <CardClient
+                        <Card
                             title="Cotizaciones"
                             description="Solicita presupuestos para compras a gran escala."
                             linkTo="/client/quotations"
                             linkLabel="Ver Cotizaciones"
+                            icon={FaFileInvoiceDollar}
                         />
 
-                        <CardClient
+                        <Card
                             title="Facturación"
                             description="Gestiona tus facturas y datos fiscales."
                             linkTo="/client/billing"
                             linkLabel="Ver Facturación"
+                            icon={FaMoneyBillWave}
                         />
                     </>
                 )}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default ClientHomePage
+export default ClientHomePage;

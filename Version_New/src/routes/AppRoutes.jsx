@@ -5,11 +5,15 @@ import PublicLayout from '../Components/layout/PublicLayout';
 import Home from '../pages/index/HomePage.jsx';
 import Login from '../pages/index/LoginPage.jsx';
 import Products from '../pages/index/ProductsPage.jsx';
-import ClientHomePage    from '../pages/client/ClientHomePage.jsx';
+import ClientHomePage from '../pages/client/HomePage.jsx';
+import CreateOrderPage from '../pages/client/order/CreateOrderPage.jsx';
+import VendorHomePage from '../pages/vendor/HomePage.jsx';
+import OrdersPage from '../pages/vendor/order/OrdersPage.jsx';
 
 const AppRoutes = () => {
     // Suponiendo que conoces el rol del usuario autenticado
-    const userRole = 'empresarial'; // o 'vendor', 'manager', etc.    
+    const userRole = 'client'; // o 'vendor', 'manager', etc. 
+    const nameSite = 'OXI';
 
     return (
         <Router>
@@ -18,7 +22,7 @@ const AppRoutes = () => {
                 <Route
                     path="/"
                     element={
-                        <PublicLayout>
+                        <PublicLayout title={`${nameSite} / Sítio Principal`}>
                             <Home />
                         </PublicLayout>
                     }
@@ -26,7 +30,7 @@ const AppRoutes = () => {
                 <Route
                     path='/login'
                     element={
-                        <PublicLayout>
+                        <PublicLayout title={`${nameSite} / Log in`}>
                             <Login />
                         </PublicLayout>
                     }
@@ -40,27 +44,44 @@ const AppRoutes = () => {
                         </PublicLayout>
                     }
                 />
+
                 {/* Rutas privadas para clientes */}
                 <Route
                     path='/client/home'
                     element={
-                        <PrivateLayout role={userRole} title="Panel Cliente">
-                            <ClientHomePage role={userRole} />
+                        <PrivateLayout role={userRole} title={`${nameSite} / Panel Cliente`}>
+                            <ClientHomePage role={"client"} />
                         </PrivateLayout>
                     }
                 />
 
-                {/* <Route path='/client/addOrder' element={<CreateOrderPage />} /> */}
-
-                {/* Rutas privadas para vendedores */}
-                {/* <Route
-                    path="/vendor/inventory"
+                <Route
+                    path='/client/order/create'
                     element={
-                        <PrivateLayout role="vendor" title="Panel Vendedor">
-                            <InventoryPage />
+                        <PrivateLayout role={userRole} title={`${nameSite} / Crear Orden`}>
+                            <CreateOrderPage />
                         </PrivateLayout>
                     }
-                /> */}
+                />
+
+                {/* Rutas privadas para vendedores */}
+                <Route
+                    path='/vendor/home'
+                    element={
+                        <PrivateLayout role="vendor" title={`${nameSite} / Panel Vendedor`}>
+                            <VendorHomePage role={"vendor"} />
+                        </PrivateLayout>
+                    }
+                />
+
+                <Route
+                    path="/vendor/orders"
+                    element={
+                        <PrivateLayout role="vendor" title={`${nameSite} / Órdenes`}>
+                            <OrdersPage />
+                        </PrivateLayout>
+                    }
+                />
 
 
 

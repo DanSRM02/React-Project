@@ -1,10 +1,9 @@
-// layouts/PublicLayout.jsx
 import React from 'react';
 import { Helmet } from "react-helmet";
 import { Link } from 'react-router-dom';
 import logo from '../../assets/img/logo.svg';
 
-const PublicLayout = ({ children, title}) => {
+const PublicLayout = ({ children, title }) => {
     return (
         <>
             <Helmet>

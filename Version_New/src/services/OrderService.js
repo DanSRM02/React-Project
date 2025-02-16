@@ -26,6 +26,18 @@ export const updateOrder = async (orderId, orderData) => {
     }
 };
 
+export const getOrdersByState = async (state) => {
+    try {
+        console.log("getOrdersByState - Solicitando órdenes por estado:", state);        
+        const response = await axios.get(`${API_BASE}/order/all/${state}`);    
+        console.log("getOrdersByState - Respuesta recibida:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("getOrdersByState - Error al obtener órdenes por estado:", error);
+        throw error;
+    }
+};
+
 export const getAllOrders = async () => {
     try {
         console.log("getAllOrders - Solicitando todas las órdenes");
