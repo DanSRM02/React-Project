@@ -1,8 +1,11 @@
-import React from "react";
-import Layout from "../../Components/layout/Layout";
+import { useState } from "react";
+import PublicLayout from "../../Components/layout/PublicLayout.jsx";
 import ProductsAvailable from "../../utils/mocks/products.js";
+import ConfirmationModal from "../../Components/UI/ConfirmationModal.jsx";
 
-const ProductCard = ({ name, image, description }) => {
+const ProductCard = ({ name, image, description, link }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     return (
         <div className="bg-white shadow-lg rounded-xl overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-green-500">
             <div className="relative w-full h-48">
@@ -13,15 +16,20 @@ const ProductCard = ({ name, image, description }) => {
                 />
             </div>
             <div className="p-4">
-                <h5 className="text-xl font-semibold text-gray-800 mb-2">
-                    {name}
-                </h5>
-                <p className="text-gray-600 text-sm mb-4">
-                    {description}
-                </p>
-                <button className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition duration-200">
+                <h5 className="text-xl font-semibold text-gray-800 mb-2">{name}</h5>
+                <p className="text-gray-600 text-sm mb-4">{description}</p>
+                <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition duration-200"
+                >
                     Ver más
                 </button>
+
+                <ConfirmationModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    redirectLink={link}
+                />
             </div>
         </div>
     );
@@ -41,6 +49,7 @@ const ProductsSection = () => {
                             name={product.name}
                             image={product.image}
                             description={product.description}
+                            link={product.link}
                         />
                     ))}
                 </div>
@@ -51,9 +60,9 @@ const ProductsSection = () => {
 
 const Products = () => {
     return (
-        <Layout title={"Oxindustriales - Gases Disponibles"}>
+        <PublicLayout title="Oxindustriales - Gases Disponibles">
             <ProductsSection />
-        </Layout>
+        </PublicLayout>
     );
 };
 

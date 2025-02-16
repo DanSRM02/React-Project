@@ -11,7 +11,7 @@ const ProductsAvailable = [
         image: `${oxigeno}`,
         description:
             "El oxígeno es un elemento crucial para la industria. Se usa en combustión, soldadura y producción de acero.",
-        link: "/productos/oxigeno"
+        link: "/productos/oxigeno"        
     },
     {
         name: "Dióxido de Carbono",
