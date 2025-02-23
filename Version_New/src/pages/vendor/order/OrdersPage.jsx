@@ -1,12 +1,20 @@
 import React, { useState } from "react";
-import { useOrders } from "../../../hooks/useOrders";
+import { useOrdersByState } from "../../../hooks/useOrdersByState";
+import { useOrderDetails } from "../../../hooks/useOrderDetails";
 import { STATES, STATE_LABELS } from "../../../utils/states";
 import OrderDetailsModal from "../../../components/UI/OrderDetailsModal";
 
 const OrdersPage = () => {
     const [selectedState, setSelectedState] = useState("PENDING");
-    const { ordersByState, loading, error } = useOrders(selectedState);
+    const { ordersByState, loading, error } = useOrdersByState(selectedState);
+
+    // Estado para la orden seleccionada (objeto completo) y su ID
     const [selectedOrder, setSelectedOrder] = useState(null);
+    const [selectedOrderId, setSelectedOrderId] = useState(null);
+
+    // Hook para cargar detalles de la orden (se activa cuando selectedOrderId cambia)
+    const { orderDetails, loading: detailsLoading, error: detailsError } = useOrderDetails(selectedOrderId);
+
     const [showDetailsModal, setShowDetailsModal] = useState(false);
 
     const handlePrioritize = (orderId) => {
@@ -25,12 +33,14 @@ const OrdersPage = () => {
     };
 
     const handleViewDetails = (orderId) => {
-        // Si ya tienes todas las órdenes con sus detalles en ordersByState:
-        const order = ordersByState.find((o) => o.id === orderId);
-        if (order) {
-            setSelectedOrder(order);
-            setShowDetailsModal(true);
-        }
+        // Busca la orden en la lista
+        const foundOrder = ordersByState.find((o) => o.id === orderId);
+        // Guarda la orden completa en el estado
+        setSelectedOrder(foundOrder);
+        // Guarda el ID para que el hook useOrderDetails cargue los detalles
+        setSelectedOrderId(orderId);
+        // Muestra el modal
+        setShowDetailsModal(true);
     };
 
     return (
@@ -44,8 +54,8 @@ const OrdersPage = () => {
                         key={state.key}
                         onClick={() => setSelectedState(state.key)}
                         className={`px-4 py-2 rounded-full border ${selectedState === state.key
-                            ? "bg-green-600 text-white"
-                            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                                ? "bg-green-600 text-white"
+                                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
                             }`}
                     >
                         {state.label}
@@ -54,13 +64,9 @@ const OrdersPage = () => {
             </div>
 
             {loading && <p className="text-center">Cargando órdenes...</p>}
-            {error && (
-                <p className="text-center text-red-600">Error al cargar órdenes.</p>
-            )}
+            {error && <p className="text-center text-red-600">Error al cargar órdenes.</p>}
             {!loading && !error && ordersByState.length === 0 && (
-                <p className="text-center text-gray-600">
-                    No hay órdenes en este estado.
-                </p>
+                <p className="text-center text-gray-600">No hay órdenes en este estado.</p>
             )}
 
             {!loading && !error && ordersByState.length > 0 && (
@@ -68,7 +74,6 @@ const OrdersPage = () => {
                     <table className="min-w-full bg-white shadow rounded-lg">
                         <thead className="bg-gray-100">
                             <tr>
-                                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">ID</th>
                                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Fecha</th>
                                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Cliente</th>
                                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Estado</th>
@@ -79,9 +84,8 @@ const OrdersPage = () => {
                         <tbody>
                             {ordersByState.map((order) => (
                                 <tr key={order.id} className="border-b hover:bg-gray-50">
-                                    <td className="px-4 py-2 text-sm">{order.id}</td>
                                     <td className="px-4 py-2 text-sm">{order.createdAt}</td>
-                                    <td className="px-4 py-2 text-sm">{order.user?.username || "N/A"}</td>
+                                    <td className="px-4 py-2 text-sm">{order.individual_name || "N/A"}</td>
                                     <td className="px-4 py-2 text-sm">
                                         {STATE_LABELS[order.state] || order.state.toLowerCase()}
                                     </td>
@@ -124,13 +128,17 @@ const OrdersPage = () => {
                             ))}
                         </tbody>
                     </table>
-                    {showDetailsModal && selectedOrder && (
-                        <OrderDetailsModal
-                            order={selectedOrder}
-                            onClose={() => setShowDetailsModal(false)}
-                        />
-                    )}
                 </div>
+            )}
+
+            {/* Modal de detalles: se muestra cuando ambos estados están disponibles */}
+            {showDetailsModal && orderDetails && selectedOrder && (
+                
+                <OrderDetailsModal
+                    order={selectedOrder}
+                    productList={orderDetails}  // La lista que trae el hook useOrderDetails                    
+                    onClose={() => setShowDetailsModal(false)}
+                />
             )}
         </div>
     );

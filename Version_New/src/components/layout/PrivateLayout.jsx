@@ -85,7 +85,7 @@ const PrivateLayout = ({ children, role = 'client', title }) => {
                 <main className="flex-1 p-6 bg-gray-50 md:ml-0">
                     {/* Barra de búsqueda, notificaciones y avatar en pantallas pequeñas */}
                     <div className="flex items-center justify-end mb-4 md:hidden space-x-4">
-                        <Input text="Buscar..." />
+                        <Input placeholder="Buscar..." className="hidden md:block" />
                         <CircleButton />
                         <Link to="/profile">
                             <img

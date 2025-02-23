@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
-import { useProducts } from "../../../hooks/useProducts"; // Ajusta la ruta según tu estructura     // Ajusta la ruta según tu estructura
+import { useAllProducts } from "../../../hooks/useAllProducts"; // Ajusta la ruta según tu estructura     // Ajusta la ruta según tu estructura
 import ConfirmationModal from "../../../Components/UI/ConfirmationModal";
 import { addOrder } from "../../../services/OrderService";
 
 const CreateOrderPage = () => {
-    const { products, loading, error } = useProducts();
+    const { products, loading, error } = useAllProducts();
     // IDs de las productos seleccionadas
     const [selectedVariants, setSelectedVariants] = useState([]);
     // Cantidades deseadas por variante (key: variantId, value: cantidad)

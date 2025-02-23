@@ -38,6 +38,18 @@ export const getOrdersByState = async (state) => {
     }
 };
 
+export const getOrderDetails = async (id) => {
+    try {
+      console.log("getOrderDetails - Solicitando detalles de la orden con id:", id);
+      const response = await axios.get(`${API_BASE}/order/details/${id}`);
+      console.log("getOrderDetails - Respuesta recibida:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("getOrderDetails - Error al obtener detalles de la orden:", error);
+      throw error;
+    }
+  };
+
 export const getAllOrders = async () => {
     try {
         console.log("getAllOrders - Solicitando todas las órdenes");

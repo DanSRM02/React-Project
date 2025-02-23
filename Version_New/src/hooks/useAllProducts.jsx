@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
 import { getAllProducts } from "../services/ProductService";
 
-export const useProducts = () => {
+export const useAllProducts = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchProducts = async () => {
+        const fetchAllProducts = async () => {
             try {
                 setLoading(true);
                 const result = await getAllProducts();
-                // result.data contiene el arreglo de productos según la respuesta que muestras
+                // result.data contiene el arreglo de productos 
                 const productsArray = result.data || [];
                 console.debug("useProducts - Productos obtenidos:", productsArray);
                 setProducts(productsArray);
@@ -23,7 +23,7 @@ export const useProducts = () => {
             }
         };
 
-        fetchProducts();
+        fetchAllProducts();
     }, []);
 
     return { products, loading, error };

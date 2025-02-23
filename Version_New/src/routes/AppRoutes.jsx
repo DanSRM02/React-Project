@@ -9,6 +9,7 @@ import ClientHomePage from '../pages/client/HomePage.jsx';
 import CreateOrderPage from '../pages/client/order/CreateOrderPage.jsx';
 import VendorHomePage from '../pages/vendor/HomePage.jsx';
 import OrdersPage from '../pages/vendor/order/OrdersPage.jsx';
+import Register from '../pages/index/RegisterPage.jsx';
 
 const AppRoutes = () => {
     // Suponiendo que conoces el rol del usuario autenticado
@@ -35,7 +36,14 @@ const AppRoutes = () => {
                         </PublicLayout>
                     }
                 />
-                {/* <Route path='/Register' element={<Register />} /> */}
+                <Route
+                    path='/register'
+                    element={
+                        <PublicLayout title={`${nameSite} / Log in`}>
+                            <Register />
+                        </PublicLayout>
+                    }
+                />
                 <Route
                     path='/products'
                     element={

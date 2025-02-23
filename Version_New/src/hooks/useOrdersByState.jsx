@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { getOrdersByState } from "../services/OrderService";
 
-export const useOrders = (selectedState) => {
+export const useOrdersByState = (selectedState) => {
     const [ordersByState, setOrdersByState] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchOrders = async () => {
+        const fetchOrdersByState = async () => {
             try {
                 setLoading(true);
                 const result = await getOrdersByState(selectedState);
@@ -22,7 +22,7 @@ export const useOrders = (selectedState) => {
             }
         };
 
-        fetchOrders();
+        fetchOrdersByState();
     }, [selectedState]);
 
     return { ordersByState, loading, error };
