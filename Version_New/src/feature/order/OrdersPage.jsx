@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useOrdersByState } from "../../../hooks/useOrdersByState";
-import { useOrderDetails } from "../../../hooks/useOrderDetails";
-import { STATES, STATE_LABELS } from "../../../utils/states";
-import OrderDetailsModal from "../../../components/UI/OrderDetailsModal";
+import { STATES, STATE_LABELS } from "../../utils/states";
+import { useOrdersByState } from "./hooks/useOrdersByState";
+import OrderDetailsModal from "../../components/UI/OrderDetailsModal";
+import { useOrderDetails } from "./hooks/useOrderDetails";
 
 const OrdersPage = () => {
     const [selectedState, setSelectedState] = useState("PENDING");

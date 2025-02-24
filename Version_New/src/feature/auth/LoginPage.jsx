@@ -3,13 +3,22 @@ import Input from "../../Components/UI/Input";
 import Label from "../../Components/UI/Label";
 
 const Login = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [login ,setLogin] = useState({
+        email: "",
+        password: ""
+    });
+
+    const handleChange = (e) => {
+        setLogin({
+            ...login,
+            [e.target.name]: e.target.value,
+        });
+    };
 
     const handleLogin = (e) => {
         e.preventDefault();
         
-        console.log("Email:", email, "Password:", password);
+        console.log("Datos Login:", login);
     };
 
     return (
@@ -26,8 +35,8 @@ const Login = () => {
                             id="email"
                             name="email"
                             placeholder="tucorreo@ejemplo.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            value={login.email}
+                            onChange={handleChange}
                             showIcon={false}
                             required
                         />
@@ -39,8 +48,8 @@ const Login = () => {
                             id="password"
                             name="password"
                             placeholder="********"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            value={login.password}
+                            onChange={handleChange}
                             required
                             showIcon={false}
                         />

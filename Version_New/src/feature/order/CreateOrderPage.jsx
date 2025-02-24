@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
-import { useAllProducts } from "../../../hooks/useAllProducts"; // Ajusta la ruta según tu estructura     // Ajusta la ruta según tu estructura
-import ConfirmationModal from "../../../Components/UI/ConfirmationModal";
-import { addOrder } from "../../../services/OrderService";
+import { useAllProducts } from "../../hooks/useAllProducts";
+import ConfirmationModal from "../../components/UI/ConfirmationModal";
+import { addOrder } from "../../services/orderService";
 
 const CreateOrderPage = () => {
     const { products, loading, error } = useAllProducts();

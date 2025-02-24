@@ -2,18 +2,18 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PrivateLayout from '../Components/layout/PrivateLayout.jsx';
 import PublicLayout from '../Components/layout/PublicLayout';
-import Home from '../pages/index/HomePage.jsx';
-import Login from '../pages/index/LoginPage.jsx';
-import Products from '../pages/index/ProductsPage.jsx';
-import ClientHomePage from '../pages/client/HomePage.jsx';
-import CreateOrderPage from '../pages/client/order/CreateOrderPage.jsx';
-import VendorHomePage from '../pages/vendor/HomePage.jsx';
-import OrdersPage from '../pages/vendor/order/OrdersPage.jsx';
-import Register from '../pages/index/RegisterPage.jsx';
+import Home from '../feature/index/HomePage.jsx';
+import Login from '../feature/auth/LoginPage.jsx';
+import Products from '../feature/index/ProductsPage.jsx';
+import ClientHomePage from '../feature/client/HomePage.jsx';
+import CreateOrderPage from '../feature/order/CreateOrderPage.jsx';
+import VendorHomePage from '../feature/vendor/HomePage.jsx';
+import OrdersPage from '../feature/order/OrdersPage.jsx';
+import Register from '../feature/auth/RegisterPage.jsx';
 
 const AppRoutes = () => {
     // Suponiendo que conoces el rol del usuario autenticado
-    const userRole = 'client'; // o 'vendor', 'manager', etc. 
+    const userRole = 'client'; // o 'vendor', 'manager', etc.   
     const nameSite = 'OXI';
 
     return (
