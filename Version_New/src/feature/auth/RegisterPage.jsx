@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import Input from "../../Components/UI/Input";
-import Label from "../../Components/UI/Label";
-import ConfirmationModal from "../../Components/UI/ConfirmationModal";
+import Input from "../../components/UI/Input";
+import Label from "../../components/UI/Label";
+import ConfirmationModal from "../../components/UI/ConfirmationModal";
 import { useRegisterIndividual } from "./hooks/useRegisterIndividual";
 import { useDocumentTypes } from "../../hooks/useDocumentTypes";
 import { useIndividualTypes } from "../../hooks/useIndividualTypes";

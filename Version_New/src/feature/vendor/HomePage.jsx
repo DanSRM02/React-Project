@@ -1,6 +1,6 @@
 import React from "react";
 import Card from "../../components/UI/Card";
-import { FaClipboardList, FaTasks, FaBox, FaUserShield } from "../../Components/UI/Icons"; 
+import { FaClipboardList, FaTasks, FaBox, FaUserShield } from "../../components/UI/Icons"; 
 
 const VendorHomePage = () => {
     return (

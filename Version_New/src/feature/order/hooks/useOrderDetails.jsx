@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getOrderDetails } from "../../../services/orderService";
+import { getOrderDetails } from "../../../services/OrderService";
 
 export const useOrderDetails = (orderId) => {
     const [orderDetails, setOrderDetails] = useState(null);

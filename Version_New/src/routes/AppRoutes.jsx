@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import PrivateLayout from '../Components/layout/PrivateLayout.jsx';
-import PublicLayout from '../Components/layout/PublicLayout';
+import PrivateLayout from '../components/layout/PrivateLayout.jsx';
+import PublicLayout from '../components/layout/PublicLayout';
 import Home from '../feature/index/HomePage.jsx';
 import Login from '../feature/auth/LoginPage.jsx';
 import Products from '../feature/index/ProductsPage.jsx';

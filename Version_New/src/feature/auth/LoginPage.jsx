@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Input from "../../Components/UI/Input";
-import Label from "../../Components/UI/Label";
+import Input from "../../components/UI/Input";
+import Label from "../../components/UI/Label";
 
 const Login = () => {
     const [login ,setLogin] = useState({
