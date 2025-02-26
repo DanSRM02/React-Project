@@ -1,24 +1,14 @@
-import React, { useState } from "react";
 import Input from "../../components/UI/Input";
 import Label from "../../components/UI/Label";
+import { useAuthenticate } from "./hooks/useAuthenticate";
 
 const Login = () => {
-    const [login ,setLogin] = useState({
-        email: "",
-        password: ""
-    });
+    const { credentials, handleChange, authenticateUser, loading, error } = useAuthenticate();
 
-    const handleChange = (e) => {
-        setLogin({
-            ...login,
-            [e.target.name]: e.target.value,
-        });
-    };
-
-    const handleLogin = (e) => {
+    // Handler para el envío del formulario
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        console.log("Datos Login:", login);
+        await authenticateUser();
     };
 
     return (
@@ -27,15 +17,15 @@ const Login = () => {
                 <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6">
                     Iniciar Sesión
                 </h2>
-                <form onSubmit={handleLogin} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <Label htmlFor="email">Correo Electrónico</Label>
+                        <Label htmlFor="username">Correo Electrónico</Label>
                         <Input
-                            type="email"
-                            id="email"
-                            name="email"
+                            type="text"
+                            id="username"
+                            name="username"
                             placeholder="tucorreo@ejemplo.com"
-                            value={login.email}
+                            value={credentials.username || ""}
                             onChange={handleChange}
                             showIcon={false}
                             required
@@ -48,7 +38,7 @@ const Login = () => {
                             id="password"
                             name="password"
                             placeholder="********"
-                            value={login.password}
+                            value={credentials.password || ""}
                             onChange={handleChange}
                             required
                             showIcon={false}
@@ -66,9 +56,15 @@ const Login = () => {
                     <button
                         type="submit"
                         className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg transition"
+                        disabled={loading}
                     >
-                        Iniciar Sesión
+                        {loading ? "Cargando..." : "Iniciar Sesión"}
                     </button>
+                    {error && (
+                        <p className="text-red-500 text-center mt-2">
+                            {error.message || "Ocurrió un error al iniciar sesión"}
+                        </p>
+                    )}
                 </form>
             </div>
         </div>

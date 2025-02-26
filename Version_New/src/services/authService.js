@@ -6,3 +6,9 @@ export const registerUser = async (registrationData) => {
     console.debug("Respuesta recibida de /auth/register:", response.data);
     return response.data;
 };
+
+export const loginUser = async (authetication) =>{
+    console.log("Enviando solicitud a /auth/login con datos:", authetication);
+    const response = await apiClient.post("/auth/login", {data: authetication});
+    return response.data;
+}

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { useAllProducts } from "../../hooks/useAllProducts";
 import ConfirmationModal from "../../components/UI/ConfirmationModal";
-import { addOrder } from "../../services/OrderService";
+import { addOrder } from "../../services/orderService";
 
 const CreateOrderPage = () => {
     const { products, loading, error } = useAllProducts();
