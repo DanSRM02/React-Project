@@ -1,16 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from "react-helmet";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/img/logo.svg';
 import Input from '../UI/Input';
 import CircleButton from '../UI/CircleButton';
 import RoutesSidebar from '../../utils/routesSidebar';
 import { FaTimes, FaBars } from '../UI/Icons';
+import { useAuth } from '../../contexts/AuthContext';
 
-const PrivateLayout = ({ children, role = 'client', title }) => {
-    // Obtenemos el menú correspondiente al rol o un arreglo vacío si no coincide
-    const links = RoutesSidebar[role] || [];
+const PrivateLayout = ({ children, role, title }) => {
+    const navigate = useNavigate();
+    const { logout, user, loading } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
+
+    // Si no se pasa role como prop, usamos el rol del usuario del contexto.
+    const effectiveRole = role || (user ? user.role : "");
+    // Obtenemos los links dinámicamente según el rol (asegúrate que RoutesSidebar tenga claves en minúscula: client, vendor, etc.)
+    const links = RoutesSidebar[effectiveRole] || [];
+
+    useEffect(() => {
+        // Si no está autenticado y no se está cargando, redirige al login
+        if (!loading && !user) {
+            navigate("/login");
+        }
+        // Si se requiere un rol específico y el usuario no lo tiene, redirige a una ruta de no autorizado o a la home de su rol
+        if (user && role && !user.role.includes(role.toLowerCase())) {
+            navigate(`/${user.role}/home`);
+        }
+    }, [user, loading, role, navigate]);
+
+    // Manejar cierre de sesión
+    const handleLogout = () => {
+        logout(); // Llamar la función de logout
+        navigate("/login"); // Redirigir al login
+    };
 
     return (
         <>
@@ -36,13 +59,13 @@ const PrivateLayout = ({ children, role = 'client', title }) => {
                         <div className="hidden md:flex items-center space-x-4">
                             <Input text="Buscar..." />
                             <CircleButton />
-                            <Link to="/profile">
+                            <button onClick={handleLogout}>
                                 <img
                                     src={logo}
                                     alt="Usuario"
                                     className="h-10 w-10 rounded-full border-2 border-green-600"
                                 />
-                            </Link>
+                            </button>
                         </div>
 
                         {/* Botón hamburguesa para pantallas pequeñas */}
@@ -68,16 +91,20 @@ const PrivateLayout = ({ children, role = 'client', title }) => {
                         <h1 className="text-2xl font-bold text-green-600">{title}</h1>
                     </div>
                     <ul className="space-y-2">
-                        {links.map((link) => (
-                            <li key={link.to}>
-                                <Link
-                                    to={link.to}
-                                    className="block px-4 py-2 text-gray-700 hover:bg-green-600 hover:text-white rounded transition"
-                                >
-                                    {link.label}
-                                </Link>
-                            </li>
-                        ))}
+                        {links.length > 0 ? (
+                            links.map((link) => (
+                                <li key={link.to}>
+                                    <Link
+                                        to={link.to}
+                                        className="block px-4 py-2 text-gray-700 hover:bg-green-600 hover:text-white rounded transition"
+                                    >
+                                        {link.label}
+                                    </Link>
+                                </li>
+                            ))
+                        ) : (
+                            <li className="text-gray-500">No hay menú disponible</li>
+                        )}
                     </ul>
                 </aside>
 
@@ -108,7 +135,6 @@ const PrivateLayout = ({ children, role = 'client', title }) => {
             </footer>
         </>
     );
-
 };
 
 export default PrivateLayout;

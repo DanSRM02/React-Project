@@ -1,12 +1,12 @@
 // services/productService.js
-import axios from 'axios';
-
-const API_BASE = import.meta.env.VITE_API_BASE;
+import apiClient from "./apiClient";
 
 export const addProduct = async (productData) => {
     try {
         console.log("addProduct - Enviando datos:", productData);
-        const response = await axios.post(`${API_BASE}/product/add`, { data: productData });
+        const response = await apiClient.post("/product/add", productData, {
+            headers: { "Content-Type": "application/json" },
+        });
         console.log("addProduct - Respuesta:", response.data);
         return response.data;
     } catch (error) {
@@ -18,7 +18,9 @@ export const addProduct = async (productData) => {
 export const updateProduct = async (productId, productData) => {
     try {
         console.log("updateProduct - Actualizando producto:", productId, productData);
-        const response = await axios.put(`${API_BASE}/product/update/${productId}`, { data: productData });
+        const response = await apiClient.put(`/product/update/${productId}`, productData, {
+            headers: { "Content-Type": "application/json" },
+        });
         console.log("updateProduct - Respuesta:", response.data);
         return response.data;
     } catch (error) {
@@ -30,11 +32,19 @@ export const updateProduct = async (productId, productData) => {
 export const getAllProducts = async () => {
     try {
         console.log("getAllProducts - Solicitando todos los productos");
-        const response = await axios.get(`${API_BASE}/product/all`);
-        console.log("getAllProducts - Respuesta:", response.data);
+        const token = localStorage.getItem("token");
+        const response = await apiClient.get("/product/all");
+        console.log("getAllProducts - Respuesta:", response.data), {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        };
+
+
         return response.data;
     } catch (error) {
-        console.log("getAllProducts - Error:", error);
+        console.error("getAllProducts - Error:", error);
         throw error;
     }
 };
@@ -42,7 +52,7 @@ export const getAllProducts = async () => {
 export const findProduct = async (productId) => {
     try {
         console.log("findProduct - Solicitando producto:", productId);
-        const response = await axios.get(`${API_BASE}/product/find/${productId}`);
+        const response = await apiClient.get(`/product/find/${productId}`);
         console.log("findProduct - Respuesta:", response.data);
         return response.data;
     } catch (error) {
@@ -54,7 +64,7 @@ export const findProduct = async (productId) => {
 export const deleteProduct = async (productId) => {
     try {
         console.log("deleteProduct - Eliminando producto:", productId);
-        const response = await axios.delete(`${API_BASE}/product/delete/${productId}`);
+        const response = await apiClient.delete(`/product/delete/${productId}`);
         console.log("deleteProduct - Respuesta:", response.data);
         return response.data;
     } catch (error) {

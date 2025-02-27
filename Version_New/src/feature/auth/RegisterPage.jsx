@@ -165,7 +165,7 @@ const RegisterContainer = () => {
 
                 {error && (
                     <p className="text-red-500 text-center mt-2">
-                        {error.message || "Ocurrió un error al registrarse"}
+                        {error.response.data.message || "Ocurrió un error al registrarse"}
                     </p>
                 )}
 

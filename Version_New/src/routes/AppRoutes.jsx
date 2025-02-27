@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import PrivateLayout from '../components/layout/PrivateLayout.jsx';
 import PublicLayout from '../components/layout/PublicLayout';
 import Home from '../feature/index/HomePage.jsx';
@@ -10,10 +11,11 @@ import CreateOrderPage from '../feature/order/CreateOrderPage.jsx';
 import VendorHomePage from '../feature/vendor/HomePage.jsx';
 import OrdersPage from '../feature/order/OrdersPage.jsx';
 import Register from '../feature/auth/RegisterPage.jsx';
+import ProtectedRoute from './ProtectedRoute.jsx';
 
 const AppRoutes = () => {
     // Suponiendo que conoces el rol del usuario autenticado
-    const userRole = 'client'; // o 'vendor', 'manager', etc.   
+    
     const nameSite = 'OXI';
 
     return (
@@ -55,43 +57,49 @@ const AppRoutes = () => {
 
                 {/* Rutas privadas para clientes */}
                 <Route
-                    path='/client/home'
+                    path="/client/home"
                     element={
-                        <PrivateLayout role={userRole} title={`${nameSite} / Panel Cliente`}>
-                            <ClientHomePage role={"client"} />
-                        </PrivateLayout>
+                        <ProtectedRoute allowedRoles={["cliente"]}>
+                            <PrivateLayout title={`${nameSite} / Panel Cliente`}>
+                                <ClientHomePage />
+                            </PrivateLayout>
+                        </ProtectedRoute>
                     }
                 />
-
                 <Route
-                    path='/client/order/create'
+                    path="/client/order/create"
                     element={
-                        <PrivateLayout role={userRole} title={`${nameSite} / Crear Orden`}>
-                            <CreateOrderPage />
-                        </PrivateLayout>
+                        <ProtectedRoute allowedRoles={["cliente"]}>
+                            <PrivateLayout title={`${nameSite} / Crear Orden`}>
+                                <CreateOrderPage />
+                            </PrivateLayout>
+                        </ProtectedRoute>
                     }
                 />
-
                 {/* Rutas privadas para vendedores */}
                 <Route
-                    path='/vendor/home'
+                    path="/vendor/home"
                     element={
-                        <PrivateLayout role="vendor" title={`${nameSite} / Panel Vendedor`}>
-                            <VendorHomePage role={"vendor"} />
-                        </PrivateLayout>
+                        <ProtectedRoute allowedRoles={["vendedor"]}>
+                            <PrivateLayout title={`${nameSite} / Panel Vendedor`}>
+                                <VendorHomePage />
+                            </PrivateLayout>
+                        </ProtectedRoute>
                     }
                 />
-
                 <Route
                     path="/vendor/orders"
                     element={
-                        <PrivateLayout role="vendor" title={`${nameSite} / Órdenes`}>
-                            <OrdersPage />
-                        </PrivateLayout>
+                        <ProtectedRoute allowedRoles={["vendedor"]}>
+                            <PrivateLayout title={`${nameSite} / Órdenes`}>
+                                <OrdersPage />
+                            </PrivateLayout>
+                        </ProtectedRoute>
                     }
                 />
 
-
+                {/* Ruta por defecto si no coincide ninguna */}
+                <Route path="*" element={<Navigate to={"/"} replace />} />
 
                 {/* <Route path='/User/Create' element={<CreateUser />} />
                 <Route path='/data-change' element={<DataChange />} />*/}

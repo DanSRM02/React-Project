@@ -1,14 +1,57 @@
 import Input from "../../components/UI/Input";
 import Label from "../../components/UI/Label";
-import { useAuthenticate } from "./hooks/useAuthenticate";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 const Login = () => {
-    const { credentials, handleChange, authenticateUser, loading, error } = useAuthenticate();
+    const { login, loading, error, user} = useAuth();
+    const [credentials, setCredentials] = useState({
+        username: "",
+        password: ""
+    });
 
-    // Handler para el envío del formulario
+    const navigate = useNavigate();
+
+    // Manejar cambios en los inputs
+    const handleChange = (e) => {
+        setCredentials({
+            ...credentials,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    // Redirigir según el rol después de un login exitoso
+    useEffect(() => {
+        if (user && user.token) {
+            const role = user.role; 
+            switch (role) {
+                case "cliente":
+                    navigate("/client/home");
+                    break;
+                case "vendedor":
+                    navigate("/vendor/home");
+                    break;
+                case "gerente":
+                    navigate("/manager/home");
+                    break;
+                case "desarrollador":
+                    navigate("/developer/home");
+                    break;
+                case "domiciliario":
+                    navigate("/delivery/home");
+                    break;
+                default:
+                    navigate("/login");
+                    break;
+            }
+        }
+    }, [user, navigate]);
+
+    // Enviar formulario
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await authenticateUser();
+        await login(credentials); // Usa la función login del contexto
     };
 
     return (
@@ -25,7 +68,7 @@ const Login = () => {
                             id="username"
                             name="username"
                             placeholder="tucorreo@ejemplo.com"
-                            value={credentials.username || ""}
+                            value={credentials.username}
                             onChange={handleChange}
                             showIcon={false}
                             required
@@ -38,10 +81,10 @@ const Login = () => {
                             id="password"
                             name="password"
                             placeholder="********"
-                            value={credentials.password || ""}
+                            value={credentials.password}
                             onChange={handleChange}
-                            required
                             showIcon={false}
+                            required
                         />
                     </div>
                     <div className="flex justify-end mb-6">
@@ -60,11 +103,8 @@ const Login = () => {
                     >
                         {loading ? "Cargando..." : "Iniciar Sesión"}
                     </button>
-                    {error && (
-                        <p className="text-red-500 text-center mt-2">
-                            {error.message || "Ocurrió un error al iniciar sesión"}
-                        </p>
-                    )}
+                    {error && <p>{error.message || "Ocurrió un error"}</p>}
+
                 </form>
             </div>
         </div>

@@ -6,13 +6,11 @@ export const useAuthenticate = () => {
     const [credentials, setCredentials] = useState({
         username: "",
         password: "",
-      });
+    });
     // Estado para saber si se está procesando la petición.
     const [loading, setLoading] = useState(false);
     // Estado para capturar errores.
-    const [error, setError] = useState(null);
-    // Estado para data user
-    const [user, setUser] = useState([]);
+    const [error, setError] = useState(null);    
 
     const handleChange = (e) => {
         setCredentials({
@@ -36,10 +34,15 @@ export const useAuthenticate = () => {
                 console.error("Error: no se recibió respuesta al iniciar sesión");
             }
 
-            // Puedes procesar la respuesta (por ejemplo, guardar un token) aquí.
-            setUser(response.data)
-            
-            
+            // Verificamos que la respuesta tenga el token
+            if (response && response.data && response.data.jwt) {
+                // Guardamos el token en localStorage
+                localStorage.setItem("jwt", response.data.jwt);
+                console.log("Token guardado:", localStorage.getItem("jwt"));
+            } else {
+                console.error("No se encontró el token en la respuesta.");
+            }
+
         } catch (err) {
             console.error("Error al enviar la petición de inicio de sesión:", err);
             setError(err);
