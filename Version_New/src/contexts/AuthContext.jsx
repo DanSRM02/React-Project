@@ -1,3 +1,4 @@
+// src/contexts/AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { loginUser } from "../services/authService";
@@ -12,9 +13,7 @@ export const AuthProvider = ({ children }) => {
     // Función para mapear el rol del token
     const mapRoleFromToken = (roleToken) => {
         if (!roleToken) return "";
-        // Si viene un arreglo, tomamos el primero (o ajusta según la lógica deseada)
         let roleStr = Array.isArray(roleToken) ? roleToken[0] : roleToken;
-        // Si tiene el prefijo "ROLE_", lo removemos y convertimos a minúsculas
         if (typeof roleStr === "string" && roleStr.startsWith("ROLE_")) {
             return roleStr.substring(5).toLowerCase();
         }
@@ -27,7 +26,6 @@ export const AuthProvider = ({ children }) => {
         if (token) {
             try {
                 const decoded = jwtDecode(token);
-                // Se utiliza decoded.roles o decoded.role según cómo venga en el token
                 const roleToken = decoded.roles || decoded.role;
                 setUser({ token, role: mapRoleFromToken(roleToken) });
             } catch (err) {
@@ -37,15 +35,41 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
+    // Efecto para auto logout cuando el token expire
+    useEffect(() => {
+        if (user && user.token) {
+            try {
+                const decoded = jwtDecode(user.token);
+                if (decoded.exp) {
+                    const expTime = decoded.exp * 24000000; 
+                    const timeout = expTime - Date.now();
+                    if (timeout > 0) {
+                        const timer = setTimeout(() => {
+                            logout();
+                            alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+                        }, timeout);
+                        return () => clearTimeout(timer);
+                    } else {
+                        // Si el token ya expiró, hacemos logout de inmediato
+                        logout();
+                    }
+                }
+            } catch (err) {
+                console.error("Error procesando la expiración del token:", err);
+            }
+        }
+    }, [user]);
+
     // Función de login
     const login = async (credentials) => {
         setLoading(true);
-        setError(null);
+        setError(null);        
+        
         try {
             const response = await loginUser(credentials);
             if (response && response.jwt) {
                 localStorage.setItem("token", response.jwt);
-                console.log("JWT almacenado:", localStorage.getItem("token"));
+                console.log("JWT almacenado:", response.jwt);
 
                 const decoded = jwtDecode(response.jwt);
                 console.log("Decoded role:", decoded.role);
@@ -69,7 +93,7 @@ export const AuthProvider = ({ children }) => {
 
     // Función para cerrar sesión
     const logout = () => {
-        localStorage.removeItem("jwt");
+        localStorage.removeItem("token");
         setUser(null);
     };
 
