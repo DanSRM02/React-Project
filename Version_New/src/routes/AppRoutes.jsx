@@ -9,13 +9,16 @@ import Products from '../feature/index/ProductsPage.jsx';
 import ClientHomePage from '../feature/client/HomePage.jsx';
 import CreateOrderPage from '../feature/order/CreateOrderPage.jsx';
 import VendorHomePage from '../feature/vendor/HomePage.jsx';
-import OrdersPage from '../feature/order/OrdersPage.jsx';
-import Register from '../feature/auth/RegisterPage.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
+import Register from '../feature/auth/RegisterPage.jsx';
+import ManagerHomePage from '../feature/manager/HomePage.jsx';
+import CreateUserPage from '../feature/manager/CreateUser.jsx';
+import ProductsPage from '../feature/products/ProductPage.jsx';
+import OrdersClientPage from '../feature/order/OrdersClientPage.jsx';
+import OrdersVendorPage from '../feature/order/OrdersVendorPage.jsx';
 
 const AppRoutes = () => {
     // Suponiendo que conoces el rol del usuario autenticado
-    
     const nameSite = 'OXI';
 
     return (
@@ -41,7 +44,7 @@ const AppRoutes = () => {
                 <Route
                     path='/register'
                     element={
-                        <PublicLayout title={`${nameSite} / Log in`}>
+                        <PublicLayout title={`${nameSite} / Registrarse`}>
                             <Register />
                         </PublicLayout>
                     }
@@ -70,8 +73,19 @@ const AppRoutes = () => {
                     path="/client/order/create"
                     element={
                         <ProtectedRoute allowedRoles={["cliente"]}>
-                            <PrivateLayout title={`${nameSite} / Crear Orden`}>
+                            <PrivateLayout title={`${nameSite} / Crear Órden`}>
                                 <CreateOrderPage />
+                            </PrivateLayout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/client/orders"
+                    element={
+                        <ProtectedRoute allowedRoles={["cliente"]}>
+                            <PrivateLayout title={`${nameSite} / Mis Órdenes`}>
+                                <OrdersClientPage />
                             </PrivateLayout>
                         </ProtectedRoute>
                     }
@@ -92,26 +106,46 @@ const AppRoutes = () => {
                     element={
                         <ProtectedRoute allowedRoles={["vendedor"]}>
                             <PrivateLayout title={`${nameSite} / Órdenes`}>
-                                <OrdersPage />
+                                <OrdersVendorPage />
+                            </PrivateLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/vendor/products"
+                    element={
+                        <ProtectedRoute allowedRoles={["vendedor"]}>
+                            <PrivateLayout title={`${nameSite} / Productos`}>
+                                <ProductsPage />
                             </PrivateLayout>
                         </ProtectedRoute>
                     }
                 />
 
+                {/* Rutas privadas para gerentes */}
+                <Route
+                    path="/manager/home"
+                    element={
+                        <ProtectedRoute allowedRoles={["gerente"]}>
+                            <PrivateLayout title={`${nameSite} / Panel Gerente`}>
+                                <ManagerHomePage />
+                            </PrivateLayout>
+                        </ProtectedRoute>
+                    } />
+
+                <Route
+                    path="/manager/users"
+                    element={
+                        <ProtectedRoute allowedRoles={["gerente"]}>
+                            <PrivateLayout title={`${nameSite} / Gestión de Usuarios`}>
+                                <CreateUserPage />
+                            </PrivateLayout>
+                        </ProtectedRoute>
+                    }
+                />
                 {/* Ruta por defecto si no coincide ninguna */}
-                <Route path="*" element={<Navigate to={"/"} replace />} />
+                <Route path="*" element={<Navigate to={"/unauthtorized"} replace />} />
 
-                {/* <Route path='/User/Create' element={<CreateUser />} />
-                <Route path='/data-change' element={<DataChange />} />*/}
-
-                {/* <Route path='/User/CancelOrder' element={<CancelOrder />} />
-                <Route path='/Inventory/Home' element={<InventoryHome />} />
-                <Route path='/Inventory/Create' element={<InventoryCreate />} />
-                <Route path='/Inventory/Edit/:id' element={<InventoryEdit />} />
-                <Route path='/Delivery' element={<DeliveryHome />} />
-                <Route path='/Review' element={<ReviewView />} />
-                <Route path='/Review/Add' element={<AddReview />} /> */}
-                {/* <Route element={<Error404 />}></Route> */}
             </Routes>
         </Router>
     );

@@ -1,10 +1,7 @@
-// useRegisterIndividual.js
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { registerUser } from "../../../services/authService";
 
 export const useRegisterIndividual = () => {
-    const navigate = useNavigate();
     const [individual, setIndividual] = useState({
         name: "",
         email: "",
@@ -19,12 +16,21 @@ export const useRegisterIndividual = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+
         if (name === "document_type_id") {
+            // Convert to number for comparison
+            const docTypeId = Number(value);
+            // Set individual type based on document type
             const autoIndividualType =
-                value === "1" || value === "3" ? "1" : value === "2" ? "2" : "";
+                docTypeId === 1 || docTypeId === 3 ? 1 : // CC or CE -> Persona
+                    docTypeId === 2 ? 2 : // NIT -> Empresa
+                        ""; // Default empty if not matched
+
+            console.log(`Setting document_type_id: ${docTypeId}, individual_type_id: ${autoIndividualType}`);
+
             setIndividual((prev) => ({
                 ...prev,
-                document_type_id: value,
+                document_type_id: docTypeId,
                 individual_type_id: autoIndividualType
             }));
         } else {
@@ -32,22 +38,35 @@ export const useRegisterIndividual = () => {
         }
     };
 
-    // Función que realiza el registro sin depender del evento del formulario
-    const registerIndividual = async () => {
+    // Función que realiza el registro con los datos correctamente formateados
+    const registerIndividual = async (formValues = null) => {
         setLoading(true);
         setError(null);
 
-        console.debug("Enviando datos del individual:", individual);
+        // Use provided form values if available, otherwise use state
+        let dataToSend = formValues || individual;
+
+        // Ensure types are correct for the backend
+        dataToSend = {
+            ...dataToSend,
+            document_type_id: Number(dataToSend.document_type_id),
+            individual_type_id: Number(dataToSend.individual_type_id),
+            // Convert document to number if it's numeric
+            document: /^\d+$/.test(dataToSend.document) ? Number(dataToSend.document) : dataToSend.document
+        };
+
+        console.debug("Enviando datos formateados:", dataToSend);
 
         try {
-            const response = await registerUser(individual);
+            const response = await registerUser(dataToSend);
             if (!response) {
-                console.log("¡Error!");
+                console.log("¡Error en la respuesta!");
             }
-            navigate("/login");
+            return response;
         } catch (err) {
             console.error("Error al enviar la petición:", err);
             setError(err);
+            return null;
         } finally {
             setLoading(false);
         }

@@ -39,7 +39,7 @@ const Login = () => {
     }, [user, navigate]);
 
     // Función de envío del formulario
-    const handleSubmit = async (values, { setSubmitting }) => {
+    const handleSubmit = async (values, { setSubmitting }) => {        
         await login(values); // La función login del contexto usa las credenciales
         setSubmitting(false);
     };
@@ -59,13 +59,14 @@ const Login = () => {
                     onSubmit={handleSubmit}
                 >
                     {({ isSubmitting }) => (
-                        
-                        
+
+
                         <Form className="space-y-4">
                             <div>
                                 <Label htmlFor="username">Correo Electrónico</Label>
                                 <Field name="username">
                                     {({ field }) => (
+                                         
                                         <Input
                                             {...field}
                                             type="text"
@@ -112,9 +113,9 @@ const Login = () => {
                             <button
                                 type="submit"
                                 className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg transition"
-                                disabled={isSubmitting || loading}
+                                disabled={isSubmitting}
                             >
-                                {isSubmitting || loading ? "Cargando..." : "Iniciar Sesión"}
+                                {isSubmitting ? "Cargando..." : "Iniciar Sesión"}
                             </button>
                             {error && (
                                 <p className="text-red-500 text-sm">

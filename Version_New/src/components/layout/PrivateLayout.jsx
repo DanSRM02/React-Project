@@ -4,9 +4,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/img/logo.svg';
 import Input from '../UI/Input';
 import CircleButton from '../UI/CircleButton';
-import RoutesSidebar from '../../utils/routesSidebar';
 import { FaTimes, FaBars } from '../UI/Icons';
 import { useAuth } from '../../contexts/AuthContext';
+import RoutesSidebar from '../../utils/RoutesSidebar';
 
 const PrivateLayout = ({ children, role, title }) => {
     const navigate = useNavigate();
@@ -83,29 +83,28 @@ const PrivateLayout = ({ children, role, title }) => {
             <div className="min-h-screen flex relative">
                 {/* Menú lateral dinámico */}
                 <aside
-                    className={`fixed md:static top-0 left-0 h-screen w-64 bg-gray-100 p-6 border-r border-gray-300 transform transition-transform duration-300 z-40
-              ${isOpen ? "translate-x-0" : "-translate-x-full"}
-              md:translate-x-0`}
+                    className={`fixed md:static top-16 md:top-0 left-0 h-screen w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 z-40
+            ${isOpen ? "translate-x-0" : "-translate-x-full"}
+            md:translate-x-0`}
                 >
-                    <div className="mb-8">
-                        <h1 className="text-2xl font-bold text-green-600">{title}</h1>
+                    <div className="h-16 hidden md:flex items-center justify-center border-b border-gray-200">
+                        <h1 className="text-lg font-bold text-green-700">{title}</h1>
                     </div>
-                    <ul className="space-y-2">
+                    <nav className="flex flex-col p-4 space-y-2">
                         {links.length > 0 ? (
                             links.map((link) => (
-                                <li key={link.to}>
-                                    <Link
-                                        to={link.to}
-                                        className="block px-4 py-2 text-gray-700 hover:bg-green-600 hover:text-white rounded transition"
-                                    >
-                                        {link.label}
-                                    </Link>
-                                </li>
+                                <Link
+                                    key={link.to}
+                                    to={link.to}
+                                    className="block px-4 py-2 text-gray-700 hover:bg-green-600 hover:text-white rounded transition"
+                                >
+                                    {link.label}
+                                </Link>
                             ))
                         ) : (
-                            <li className="text-gray-500">No hay menú disponible</li>
+                            <span className="text-gray-500">No hay menú disponible</span>
                         )}
-                    </ul>
+                    </nav>
                 </aside>
 
                 {/* Contenido principal */}

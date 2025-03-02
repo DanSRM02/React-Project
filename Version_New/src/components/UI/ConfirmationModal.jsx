@@ -5,7 +5,8 @@ const ConfirmationModal = ({
     onCancel,
     onConfirm,
     title = "Confirmar Acción",
-    message = "¿Estás seguro de proceder?"
+    message = "¿Estás seguro de proceder?",
+    showCancelButton = true
 }) => {
     if (!isOpen) return null;
 
@@ -15,17 +16,21 @@ const ConfirmationModal = ({
                 <h3 className="text-2xl font-bold text-gray-800 mb-4">{title}</h3>
                 <p className="text-gray-600 mb-6">{message}</p>
                 <div className="flex justify-end gap-4">
+                    {showCancelButton && (
+                        <button
+                            onClick={onCancel}
+                            className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition"
+                        >
+                            Cancelar
+                        </button>
+                    )}
                     <button
-                        onClick={onCancel}
-                        className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition"
-                    >
-                        Cancelar
-                    </button>
-                    <button
-                        onClick={onConfirm}
+                        onClick={() => {
+                            onConfirm();
+                        }}
                         className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
                     >
-                        Confirmar
+                        {showCancelButton ? "Confirmar" : "Aceptar"}
                     </button>
                 </div>
             </div>

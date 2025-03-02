@@ -1,74 +1,67 @@
-// services/productService.js
 import apiClient from "./apiClient";
 
-export const addProduct = async (productData) => {
+export const addProductVariant = async (productVariantData) => {
     try {
-        console.log("addProduct - Enviando datos:", productData);
-        const response = await apiClient.post("/product/add", productData, {
-            headers: { "Content-Type": "application/json" },
-        });
-        console.log("addProduct - Respuesta:", response.data);
+        console.log("addProductVariant - Enviando datos:", productVariantData);
+        const response = await apiClient.post(
+            "product-variant/add",
+            productVariantData
+        );
+        console.log("addProductVariant - Respuesta:", response.data);
         return response.data;
     } catch (error) {
-        console.error("addProduct - Error:", error);
+        console.error("addProductVariant - Error:", error);
         throw error;
     }
 };
 
-export const updateProduct = async (productId, productData) => {
+export const updateProductVariant = async (id, productVariantData) => {
     try {
-        console.log("updateProduct - Actualizando producto:", productId, productData);
-        const response = await apiClient.put(`/product/update/${productId}`, productData, {
-            headers: { "Content-Type": "application/json" },
-        });
-        console.log("updateProduct - Respuesta:", response.data);
+        console.log("updateProductVariant - Actualizando variante:", id, productVariantData);
+        const response = await apiClient.put(
+            `product-variant/update/${id}`,
+            productVariantData
+        );
+        console.log("updateProductVariant - Respuesta:", response.data);
         return response.data;
     } catch (error) {
-        console.error("updateProduct - Error:", error);
+        console.error("updateProductVariant - Error:", error);
         throw error;
     }
 };
 
-export const getAllProducts = async () => {
+export const getAllProductVariants = async () => {
     try {
-        console.log("getAllProducts - Solicitando todos los productos");
-        const token = localStorage.getItem("token");
-        const response = await apiClient.get("/product/all");
-        console.log("getAllProducts - Respuesta:", response.data), {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-        };
-
-
+        console.log("getAllProductVariants - Solicitando todas las variantes");
+        const response = await apiClient.get("product/all");
+        console.log("getAllProductVariants - Respuesta:", response.data);
         return response.data;
     } catch (error) {
-        console.error("getAllProducts - Error:", error);
+        console.error("getAllProductVariants - Error:", error);
         throw error;
     }
 };
 
-export const findProduct = async (productId) => {
+export const findProductVariant = async (id) => {
     try {
-        console.log("findProduct - Solicitando producto:", productId);
-        const response = await apiClient.get(`/product/find/${productId}`);
-        console.log("findProduct - Respuesta:", response.data);
+        console.log("findProductVariant - Solicitando variante con ID:", id);
+        const response = await apiClient.get(`product-variant/find/${id}`);
+        console.log("findProductVariant - Respuesta:", response.data);
         return response.data;
     } catch (error) {
-        console.error("findProduct - Error:", error);
+        console.error("findProductVariant - Error:", error);
         throw error;
     }
 };
 
-export const deleteProduct = async (productId) => {
+export const deleteProductVariant = async (id) => {
     try {
-        console.log("deleteProduct - Eliminando producto:", productId);
-        const response = await apiClient.delete(`/product/delete/${productId}`);
-        console.log("deleteProduct - Respuesta:", response.data);
+        console.log("deleteProductVariant - Eliminando variante con ID:", id);
+        const response = await apiClient.delete(`product-variant/delete/${id}`);
+        console.log("deleteProductVariant - Respuesta:", response.data);
         return response.data;
     } catch (error) {
-        console.error("deleteProduct - Error:", error);
+        console.error("deleteProductVariant - Error:", error);
         throw error;
     }
 };

@@ -14,7 +14,7 @@ const ClientHomePage = ({ role }) => {
     return (
         <div className="p-4">
             {/* Encabezado de bienvenida */}
-            <h1 className="text-3xl font-bold mb-2">¡Bienvenido, {"m"}!</h1>
+            <h1 className="text-3xl font-bold mb-2">¡Bienvenido!</h1>
             <p className="text-gray-600 mb-6">
                 Aquí encontrarás toda la información relacionada con tus órdenes, reseñas y más.
             </p>

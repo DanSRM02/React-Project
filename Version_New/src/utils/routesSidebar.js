@@ -8,7 +8,7 @@ const RoutesSidebar = {
     ],
     vendedor: [
         { to: '/vendor/home', label: 'Dashboard' },
-        { to: '/vendor/inventory', label: 'Inventario' },
+        { to: '/vendor/products', label: 'Productos' },
         { to: '/vendor/sales', label: 'Ventas' },
         { to: '/vendor/orders', label: 'Órdenes' },
         { to: '/logout', label: 'Cerrar Sesión' },

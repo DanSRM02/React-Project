@@ -1,4 +1,3 @@
-// src/contexts/AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { loginUser } from "../services/authService";
@@ -7,10 +6,10 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null); // Guardará { token, role }
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false); // Para operaciones de login
+    const [authLoading, setAuthLoading] = useState(true); // Para rehidratar el token
     const [error, setError] = useState(null);
 
-    // Función para mapear el rol del token
     const mapRoleFromToken = (roleToken) => {
         if (!roleToken) return "";
         let roleStr = Array.isArray(roleToken) ? roleToken[0] : roleToken;
@@ -20,7 +19,6 @@ export const AuthProvider = ({ children }) => {
         return roleStr.toLowerCase();
     };
 
-    // Al montar, buscamos un token en localStorage y lo decodificamos para obtener el rol
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (token) {
@@ -33,15 +31,15 @@ export const AuthProvider = ({ children }) => {
                 localStorage.removeItem("token");
             }
         }
+        setAuthLoading(false);
     }, []);
 
-    // Efecto para auto logout cuando el token expire
     useEffect(() => {
         if (user && user.token) {
             try {
                 const decoded = jwtDecode(user.token);
                 if (decoded.exp) {
-                    const expTime = decoded.exp * 24000000; 
+                    const expTime = decoded.exp * 1000;
                     const timeout = expTime - Date.now();
                     if (timeout > 0) {
                         const timer = setTimeout(() => {
@@ -49,9 +47,6 @@ export const AuthProvider = ({ children }) => {
                             alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
                         }, timeout);
                         return () => clearTimeout(timer);
-                    } else {
-                        // Si el token ya expiró, hacemos logout de inmediato
-                        logout();
                     }
                 }
             } catch (err) {
@@ -60,23 +55,15 @@ export const AuthProvider = ({ children }) => {
         }
     }, [user]);
 
-    // Función de login
     const login = async (credentials) => {
         setLoading(true);
-        setError(null);        
-        
+        setError(null);
         try {
             const response = await loginUser(credentials);
             if (response && response.jwt) {
                 localStorage.setItem("token", response.jwt);
-                console.log("JWT almacenado:", response.jwt);
-
                 const decoded = jwtDecode(response.jwt);
-                console.log("Decoded role:", decoded.role);
-
                 const roleToken = mapRoleFromToken(decoded.role);
-                console.log("Mapped role:", roleToken);
-
                 setUser({ token: response.jwt, role: roleToken });
             } else {
                 setError(new Error("No se encontró el token en la respuesta"));
@@ -91,18 +78,16 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // Función para cerrar sesión
     const logout = () => {
         localStorage.removeItem("token");
         setUser(null);
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading, error }}>
+        <AuthContext.Provider value={{ user, login, logout, loading, authLoading, error }}>
             {children}
         </AuthContext.Provider>
     );
 };
 
-// Hook para consumir el contexto
 export const useAuth = () => useContext(AuthContext);

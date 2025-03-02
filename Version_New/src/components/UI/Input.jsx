@@ -5,6 +5,7 @@ const Input = ({
     placeholder,
     value,
     onChange,
+    onBlur, // Destructuramos onBlur para asegurarnos de que se pase correctamente
     showIcon = true,
     className = "",
     ...props
@@ -16,6 +17,7 @@ const Input = ({
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
+                onBlur={onBlur} // Lo pasamos al input
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
                 {...props}
             />
