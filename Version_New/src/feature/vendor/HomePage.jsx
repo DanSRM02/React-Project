@@ -1,39 +1,46 @@
 import React from "react";
 import Card from "../../components/UI/Card";
-import { FaClipboardList, FaTasks, FaBox, FaUserShield } from "../../components/UI/Icons"; 
+import {
+    FaClipboardList,
+    FaTasks,
+    FaBox,
+    FaUserShield
+} from "react-icons/fa";
+import { StatCard } from "../../components/UI/StatCard";
 
 const VendorHomePage = () => {
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-10">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-8 text-center">
+        <div className="max-w-7xl mx-auto px-4 py-8 sm:py-10">
+            {/* Encabezado */}
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8">
                 Panel del Vendedor
             </h1>
 
-            {/* Sección de métricas */}
+            {/* Sección de métricas (puedes adaptar los valores con datos reales) */}
             <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center justify-center">
-                    <FaClipboardList className="text-3xl text-green-600 mb-2" />
-                    <h3 className="text-lg font-semibold">Órdenes Pendientes</h3>
-                    <p className="text-2xl font-bold text-green-600">12</p>
-                </div>
-                <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center justify-center">
-                    <FaTasks className="text-3xl text-green-600 mb-2" />
-                    <h3 className="text-lg font-semibold">Órdenes Priorizadas</h3>
-                    <p className="text-2xl font-bold text-green-600">3</p>
-                </div>
-                <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center justify-center">
-                    <FaBox className="text-3xl text-green-600 mb-2" />
-                    <h3 className="text-lg font-semibold">Productos Activos</h3>
-                    <p className="text-2xl font-bold text-green-600">25</p>
-                </div>
-                <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center justify-center">
-                    <FaUserShield className="text-3xl text-green-600 mb-2" />
-                    <h3 className="text-lg font-semibold">Ventas del Día</h3>
-                    <p className="text-2xl font-bold text-green-600">$1,500,000</p>
-                </div>
+                <StatCard
+                    title="Órdenes Pendientes"
+                    value="12"
+                    icon={<FaClipboardList className="w-6 h-6" />}
+                />
+                <StatCard
+                    title="Órdenes Priorizadas"
+                    value="3"
+                    icon={<FaTasks className="w-6 h-6" />}
+                />
+                <StatCard
+                    title="Productos Activos"
+                    value="25"
+                    icon={<FaBox className="w-6 h-6" />}
+                />
+                <StatCard
+                    title="Ventas del Día"
+                    value="$1,500,000"
+                    icon={<FaUserShield className="w-6 h-6" />}
+                />
             </section>
 
-            {/* Sección de accesos rápidos */}
+            {/* Sección de accesos rápidos con gradientes */}
             <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Card
                     title="Gestión de Órdenes"
@@ -41,6 +48,7 @@ const VendorHomePage = () => {
                     linkLabel="Ir a Órdenes"
                     linkTo="/vendor/orders"
                     icon={FaClipboardList}
+                    gradient="from-green-50 to-green-100"
                 />
                 <Card
                     title="Gestión de Productos"
@@ -48,6 +56,7 @@ const VendorHomePage = () => {
                     linkLabel="Ir a Productos"
                     linkTo="/vendor/products"
                     icon={FaBox}
+                    gradient="from-blue-50 to-blue-100"
                 />
                 <Card
                     title="Reporte de Ventas"
@@ -55,6 +64,7 @@ const VendorHomePage = () => {
                     linkLabel="Ver Reportes"
                     linkTo="/vendor/reports"
                     icon={FaUserShield}
+                    gradient="from-purple-50 to-purple-100"
                 />
                 <Card
                     title="Pendientes de Entrega"
@@ -62,6 +72,7 @@ const VendorHomePage = () => {
                     linkLabel="Ver Entregas"
                     linkTo="/vendor/deliveries"
                     icon={FaTasks}
+                    gradient="from-yellow-50 to-yellow-100"
                 />
             </section>
         </div>

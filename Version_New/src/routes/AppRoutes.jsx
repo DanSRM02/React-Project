@@ -16,6 +16,9 @@ import CreateUserPage from '../feature/manager/CreateUser.jsx';
 import ProductsPage from '../feature/products/ProductPage.jsx';
 import OrdersClientPage from '../feature/order/OrdersClientPage.jsx';
 import OrdersVendorPage from '../feature/order/OrdersVendorPage.jsx';
+import DomiciliaryHomePage from '../feature/delivery/HomePage.jsx';
+import OrdersDeliveryPage from '../feature/order/OrdersDeliveryPage.jsx';   
+import ReviewsPage from '../feature/review/ReviewsClientPage.jsx';
 
 const AppRoutes = () => {
     // Suponiendo que conoces el rol del usuario autenticado
@@ -90,6 +93,16 @@ const AppRoutes = () => {
                         </ProtectedRoute>
                     }
                 />
+                <Route
+                    path="/client/reviews"
+                    element={
+                        <ProtectedRoute allowedRoles={["cliente"]}>
+                            <PrivateLayout title={`${nameSite} / Mis Reseñas`}>
+                                <ReviewsPage />
+                            </PrivateLayout>
+                        </ProtectedRoute>
+                    }
+                />                            
                 {/* Rutas privadas para vendedores */}
                 <Route
                     path="/vendor/home"
@@ -139,6 +152,29 @@ const AppRoutes = () => {
                         <ProtectedRoute allowedRoles={["gerente"]}>
                             <PrivateLayout title={`${nameSite} / Gestión de Usuarios`}>
                                 <CreateUserPage />
+                            </PrivateLayout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                {/* Rutas privadas para gerentes */}
+                <Route
+                    path="/delivery/home"
+                    element={
+                        <ProtectedRoute allowedRoles={["domiciliario"]}>
+                            <PrivateLayout title={`${nameSite} / Panel Domiciliario`}>
+                                <DomiciliaryHomePage />
+                            </PrivateLayout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/delivery/orders"
+                    element={
+                        <ProtectedRoute allowedRoles={["domiciliario"]}>
+                            <PrivateLayout title={`${nameSite} / Órdenes por Despachar`}>
+                                <OrdersDeliveryPage />
                             </PrivateLayout>
                         </ProtectedRoute>
                     }

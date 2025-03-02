@@ -25,7 +25,11 @@ export const AuthProvider = ({ children }) => {
             try {
                 const decoded = jwtDecode(token);
                 const roleToken = decoded.roles || decoded.role;
-                setUser({ token, role: mapRoleFromToken(roleToken) });
+                setUser({
+                    token,
+                    role: mapRoleFromToken(roleToken),
+                    id: decoded.user_id 
+                });
             } catch (err) {
                 console.error("Error al decodificar el token", err);
                 localStorage.removeItem("token");
@@ -63,8 +67,11 @@ export const AuthProvider = ({ children }) => {
             if (response && response.jwt) {
                 localStorage.setItem("token", response.jwt);
                 const decoded = jwtDecode(response.jwt);
-                const roleToken = mapRoleFromToken(decoded.role);
-                setUser({ token: response.jwt, role: roleToken });
+                setUser({
+                    token: response.jwt,
+                    role: mapRoleFromToken(decoded.role),
+                    id: decoded.user_id 
+                });
             } else {
                 setError(new Error("No se encontró el token en la respuesta"));
             }

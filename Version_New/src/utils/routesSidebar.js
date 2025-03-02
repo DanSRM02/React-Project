@@ -15,8 +15,8 @@ const RoutesSidebar = {
     ],
     domiciliario: [
         { to: '/delivery/home', label: 'Dashboard' },
-        { to: '/delivery/deliveries', label: 'Mis Entregas' },
-        { to: '/delivery/routes', label: 'Rutas' },        
+        { to: '/delivery/orders', label: 'Órdenes' },
+        { to: '/delivery/history/orders', label: 'Mis Entregas' },        
         { to: '/logout', label: 'Cerrar Sesión' },
     ],
     gerente: [

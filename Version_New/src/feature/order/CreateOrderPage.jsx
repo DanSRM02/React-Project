@@ -2,15 +2,17 @@ import React from "react";
 import { useFormik } from 'formik';
 import { FaTimes } from "react-icons/fa";
 import ConfirmationModal from "../../components/UI/ConfirmationModal";
-import { addOrder } from "../../services/orderService";
+import { useOrders } from "../../hooks/useOrders";
 import { useProductVariants } from "../../hooks/useProductVariants";
 import { orderSchema } from "../../utils/validation/validationSchema";
-
+import Loader from "../../components/UI/Loader";
 
 const CreateOrderPage = () => {
-    const { variants, loading, error } = useProductVariants();
-    const [orderStatus, setOrderStatus] = React.useState(null);
+    const { variants, variantsLoading, error: variantsError } = useProductVariants();
+    const { createOrder, orderLoading, error: orderError } = useOrders();
+
     const [isConfirmModalOpen, setIsConfirmModalOpen] = React.useState(false);
+    const [orderStatus, setOrderStatus] = React.useState(null);
 
     const formik = useFormik({
         initialValues: {
@@ -19,230 +21,262 @@ const CreateOrderPage = () => {
         },
         validationSchema: orderSchema,
         onSubmit: async (values) => {
-            const orderData = {
-                user_id: 1,
-                product_ids: values.selectedVariants.map((id) => ({
-                    id,
-                    quantity: values.orderQuantities[id]
-                }))
-            };
-
             try {
-                await addOrder(orderData);
-                setOrderStatus("Orden creada exitosamente");
-                setIsConfirmModalOpen(false);
+                const orderData = {
+                    product_ids: values.selectedVariants.map((id) => ({
+                        id,
+                        quantity: values.orderQuantities[id]
+                    }))
+                };
+
+                await createOrder(orderData);
+                setOrderStatus("success");
+                formik.resetForm();
             } catch (err) {
-                console.error("Error al crear orden:", err);
-                setOrderStatus("Error al crear la orden");
+                setOrderStatus("error");
+            } finally {
                 setIsConfirmModalOpen(false);
             }
         }
     });
 
+    const total = React.useMemo(() => {
+        return formik.values.selectedVariants.reduce((acc, variantId) => {
+            const variant = variants
+                .flatMap(p => p.variants)
+                .find(v => v.id === variantId);
+            return acc + (variant?.price || 0) * (formik.values.orderQuantities[variantId] || 0);
+        }, 0);
+    }, [formik.values.selectedVariants, formik.values.orderQuantities, variants]);
+
     const handleSelectVariant = (variantId, maxStock) => {
         const isSelected = formik.values.selectedVariants.includes(variantId);
+        const newSelected = isSelected
+            ? formik.values.selectedVariants.filter(id => id !== variantId)
+            : [...formik.values.selectedVariants, variantId];
 
+        const newQuantities = { ...formik.values.orderQuantities };
         if (isSelected) {
-            const newSelected = formik.values.selectedVariants.filter(id => id !== variantId);
-            const newQuantities = { ...formik.values.orderQuantities };
             delete newQuantities[variantId];
-
-            formik.setValues({
-                selectedVariants: newSelected,
-                orderQuantities: newQuantities
-            });
         } else {
-            formik.setValues({
-                selectedVariants: [...formik.values.selectedVariants, variantId],
-                orderQuantities: {
-                    ...formik.values.orderQuantities,
-                    [variantId]: 1
-                }
-            });
+            newQuantities[variantId] = 1;
         }
+
+        formik.setValues({
+            selectedVariants: newSelected,
+            orderQuantities: newQuantities
+        });
     };
 
     const handleQuantityChange = (variantId, value, maxStock) => {
-        let qty = parseInt(value) || 1;
-        qty = Math.max(1, Math.min(qty, maxStock));
+        const qty = Math.max(1, Math.min(parseInt(value) || 1, maxStock));
         formik.setFieldValue(`orderQuantities.${variantId}`, qty);
     };
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-10">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-green-900">
                 Generar Orden
             </h2>
 
-            {loading && <p className="text-center">Cargando productos...</p>}
-            {error && <p className="text-center text-red-600">Error al cargar productos.</p>}
-
-            {!loading && !error && variants.length === 0 && (
-                <p className="text-center text-gray-600">No hay productos disponibles.</p>
+            {/* Estado de la orden */}
+            {orderStatus === "success" && (
+                <div className="bg-emerald-50 border-l-4 border-emerald-500 text-emerald-800 p-4 mb-6 rounded">
+                    <p className="font-medium">¡Orden creada exitosamente!</p>
+                </div>
             )}
 
-            {!loading && !error && variants.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {/* Columna con la lista de productos */}
-                    <div className="md:col-span-2 space-y-6">
-                        {variants.map((prod) => (
-                            <div key={prod.id} className="bg-white p-4 sm:p-6 rounded-lg shadow">
-                                <h3 className="text-xl sm:text-2xl font-semibold mb-4">{prod.name}</h3>
-                                {prod.variants && prod.variants.length > 0 ? (
+            {orderStatus === "error" && (
+                <div className="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 mb-6 rounded">
+                    <p className="font-medium">Error: {orderError?.message || "No se pudo crear la orden"}</p>
+                </div>
+            )}
+
+            {/* Estados de carga */}
+            {variantsLoading ? (
+                <div className="text-center py-8">
+                    <Loader className="h-8 w-8 mx-auto animate-spin text-green-600" />
+                    <p className="mt-2 text-gray-600">Cargando productos...</p>
+                </div>
+            ) : variantsError ? (
+                <div className="bg-red-50 p-4 rounded-lg max-w-md mx-auto text-center">
+                    <p className="text-red-600 font-medium">Error al cargar productos:</p>
+                    <p className="text-red-500 text-sm mt-1">{variantsError.message}</p>
+                </div>
+            ) : variants.length === 0 ? (
+                <div className="bg-amber-50 p-4 rounded-lg max-w-md mx-auto text-center">
+                    <p className="text-amber-700">No hay productos disponibles</p>
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+                    {/* Columna de productos */}
+                    <div className="space-y-6">
+                        {variants.map((product) => (
+                            <div
+                                key={product.id}
+                                className="bg-white p-4 sm:p-5 rounded-xl shadow-sm border border-gray-100 hover:border-green-100 transition-colors"
+                            >
+                                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                                    {product.name}
+                                </h3>
+
+                                {product.variants?.length > 0 ? (
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        {prod.variants.map((variant) => (
+                                        {product.variants.map((variant) => (
                                             <div
                                                 key={variant.id}
-                                                className="border p-3 sm:p-4 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between"
+                                                className="border p-4 rounded-lg hover:border-green-100 transition-colors"
                                             >
-                                                <div>
-                                                    <p className="font-medium text-sm sm:text-base">
-                                                        Unidad:{" "}
-                                                        <span className="font-semibold">
-                                                            {variant.unit.acronym}
-                                                        </span>{" "}
-                                                        ({variant.unit.unit_type})
-                                                    </p>
-                                                    <p className="text-gray-600 text-sm sm:text-base">
-                                                        Precio:{" "}
-                                                        <span className="font-medium">${variant.price}</span>
-                                                    </p>
-                                                    <p className="text-gray-600 text-sm sm:text-base">
-                                                        Stock:{" "}
-                                                        <span className="font-medium">{variant.quantity}</span>
-                                                    </p>
-                                                </div>
-                                                <div className="flex items-center mt-3 sm:mt-0">
-                                                    <input
-                                                        type="checkbox"
-                                                        className="h-5 w-5 mr-2"
-                                                        checked={formik.values.selectedVariants.includes(variant.id)}
-                                                        onChange={() => handleSelectVariant(variant.id, variant.quantity)}
-                                                    />
-                                                    {formik.values.selectedVariants.includes(variant.id) && (
-                                                        <>
-                                                            <input
-                                                                type="number"
-                                                                min="1"
-                                                                max={variant.quantity}
-                                                                value={formik.values.orderQuantities[variant.id] || 1}
-                                                                onChange={(e) =>
-                                                                    handleQuantityChange(
-                                                                        variant.id,
-                                                                        e.target.value,
-                                                                        variant.quantity
-                                                                    )
-                                                                }
-                                                                className="w-16 sm:w-20 border border-gray-300 rounded-lg px-2 py-1 mr-2 text-sm"
-                                                            />
+                                                <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                                                    {/* Información de la variante */}
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center gap-2 mb-2">
+                                                            <span className="font-medium text-gray-800">
+                                                                {variant.unit.acronym}
+                                                            </span>
+                                                            <span className="text-sm text-gray-500">
+                                                                ({variant.unit.unit_type})
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex flex-wrap gap-3 text-sm">
+                                                            <div className="bg-sky-100 px-2 py-1 rounded text-sky-800">
+                                                                Stock: {variant.quantity}
+                                                            </div>
+                                                            <div className="bg-emerald-100 px-2 py-1 rounded text-emerald-800">
+                                                                ${variant.price}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Controles */}
+                                                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                                                        {formik.values.selectedVariants.includes(variant.id) ? (
+                                                            <div className="flex items-center gap-2">
+                                                                <input
+                                                                    type="number"
+                                                                    min="1"
+                                                                    max={variant.quantity}
+                                                                    value={formik.values.orderQuantities[variant.id] || 1}
+                                                                    onChange={(e) =>
+                                                                        handleQuantityChange(
+                                                                            variant.id,
+                                                                            e.target.value,
+                                                                            variant.quantity
+                                                                        )
+                                                                    }
+                                                                    className="w-20 border border-green-200 rounded-lg px-2 py-1 text-center text-sm focus:ring-2 focus:ring-green-500"
+                                                                />
+                                                                <button
+                                                                    onClick={() => handleSelectVariant(variant.id)}
+                                                                    className="text-red-500 hover:text-red-700 transition-colors"
+                                                                >
+                                                                    <FaTimes className="w-4 h-4" />
+                                                                </button>
+                                                            </div>
+                                                        ) : (
                                                             <button
                                                                 onClick={() => handleSelectVariant(variant.id)}
-                                                                className="text-red-500 hover:text-red-700"
+                                                                className="px-3 py-1.5 bg-green-100 text-green-800 rounded-md hover:bg-green-200 transition-colors text-sm"
                                                             >
-                                                                <FaTimes />
+                                                                Seleccionar
                                                             </button>
-                                                        </>
-                                                    )}
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                 ) : (
-                                    <p className="text-gray-600">
-                                        No hay <strong>Stock disponible.</strong>
-                                    </p>
+                                    <div className="bg-amber-50 p-3 rounded-lg">
+                                        <p className="text-amber-700 text-sm">
+                                            No hay stock disponible para este producto
+                                        </p>
+                                    </div>
                                 )}
                             </div>
                         ))}
                     </div>
 
                     {/* Columna de resumen */}
-                    <div className="md:col-span-1">
-                        <div className="bg-white p-4 sm:p-6 rounded-lg shadow sticky top-4 max-h-[calc(100vh-2rem)] overflow-auto">
-                            <h3 className="text-xl sm:text-2xl font-semibold mb-4">
-                                Resumen de Orden
+                    <div className="lg:sticky lg:top-4 h-fit">
+                        <div className="bg-white p-4 sm:p-5 rounded-xl shadow-sm border border-gray-100">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                                Resumen de la Orden
                             </h3>
+
                             {formik.values.selectedVariants.length > 0 ? (
                                 <>
-                                    <ul className="divide-y divide-gray-200">
+                                    <ul className="divide-y divide-gray-200 mb-6">
                                         {formik.values.selectedVariants.map((variantId) => {
-                                            let variantData = null;
-                                            let productName = "";
-                                            variants.forEach((prod) => {
-                                                const found = prod.variants.find(
-                                                    (v) => v.id === variantId
-                                                );
-                                                if (found) {
-                                                    variantData = found;
-                                                    productName = prod.name;
-                                                }
-                                            });
+                                            const variant = variants
+                                                .flatMap(p => p.variants)
+                                                .find(v => v.id === variantId);
+                                            const product = variants.find(p =>
+                                                p.variants.some(v => v.id === variantId)
+                                            );
+
                                             return (
                                                 <li
                                                     key={variantId}
-                                                    className="py-2 flex justify-between items-center text-sm sm:text-base"
+                                                    className="py-3 flex items-center justify-between gap-2 hover:bg-gray-50 transition-colors"
                                                 >
-                                                    <span className="w-2/3">
-                                                        {productName} - {variantData?.unit?.acronym} x{" "}
-                                                        {formik.values.orderQuantities[variantId]}
-                                                    </span>
-                                                    <span className="w-1/3 text-right">
-                                                        $
-                                                        {variantData
-                                                            ? variantData.price * formik.values.orderQuantities[variantId]
-                                                            : 0}
-                                                    </span>
-                                                    <button
-                                                        onClick={() => handleSelectVariant(variantId)}
-                                                        className="ml-2 text-red-500 hover:text-red-700"
-                                                    >
-                                                        <FaTimes />
-                                                    </button>
+                                                    <div className="flex-1">
+                                                        <p className="text-sm font-medium text-gray-800">
+                                                            {product?.name}
+                                                            <span className="ml-2 text-gray-500">
+                                                                ({variant?.unit.acronym})
+                                                            </span>
+                                                        </p>
+                                                        <p className="text-xs text-gray-500">
+                                                            Cantidad: {formik.values.orderQuantities[variantId]}
+                                                        </p>
+                                                    </div>
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="text-sm font-medium">
+                                                            ${(variant?.price || 0) * (formik.values.orderQuantities[variantId] || 0)}
+                                                        </span>
+                                                        <button
+                                                            onClick={() => handleSelectVariant(variantId)}
+                                                            className="text-red-500 hover:text-red-700 transition-colors"
+                                                        >
+                                                            <FaTimes className="w-4 h-4" />
+                                                        </button>
+                                                    </div>
                                                 </li>
                                             );
                                         })}
                                     </ul>
-                                    <div className="mt-4 flex justify-between font-bold">
-                                        <span>Total:</span>
-                                        <span>
-                                            $
-                                            {formik.values.selectedVariants.reduce((acc, variantId) => {
-                                                let variant = null;
-                                                variants.forEach((prod) => {
-                                                    const found = prod.variants.find(
-                                                        (v) => v.id === variantId
-                                                    );
-                                                    if (found) variant = found;
-                                                });
-                                                const qty = formik.values.orderQuantities[variantId] || 0;
-                                                return acc + (variant ? variant.price * qty : 0);
-                                            }, 0)}
-                                        </span>
-                                    </div>
-                                    <div className="mt-4 text-center">
+
+                                    <div className="border-t pt-4">
+                                        <div className="flex justify-between items-center">
+                                            <span className="font-semibold">Total:</span>
+                                            <span className="text-lg font-bold text-green-800">
+                                                ${total.toLocaleString()}
+                                            </span>
+                                        </div>
+
                                         <button
                                             onClick={() => setIsConfirmModalOpen(true)}
-                                            disabled={!formik.isValid}
-                                            className={`bg-green-600 hover:bg-green-700 text-white px-6 py-2 sm:px-8 sm:py-3 rounded-lg transition w-full text-sm sm:text-base ${!formik.isValid ? 'opacity-50 cursor-not-allowed' : ''
-                                                }`}
+                                            disabled={!formik.isValid || formik.values.selectedVariants.length === 0}
+                                            className={`mt-4 w-full py-2.5 px-4 rounded-lg transition-colors
+                                                ${!formik.isValid
+                                                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                                                    : 'bg-green-600 hover:bg-green-700 text-white'}
+                                            `}
                                         >
-                                            Crear Orden
+                                            Confirmar Orden
                                         </button>
                                     </div>
                                 </>
                             ) : (
-                                <p className="text-gray-600 text-sm sm:text-base">
-                                    No has seleccionado ninguna variante.
-                                </p>
+                                <div className="bg-gray-50 p-4 rounded-lg">
+                                    <p className="text-gray-600 text-center text-sm">
+                                        Selecciona productos para generar una orden
+                                    </p>
+                                </div>
                             )}
                         </div>
                     </div>
-                </div>
-            )}
-
-            {formik.errors.selectedVariants && (
-                <div className="text-red-500 text-center mt-4">
-                    {formik.errors.selectedVariants}
                 </div>
             )}
 
@@ -252,6 +286,7 @@ const CreateOrderPage = () => {
                 message="¿Estás seguro de querer crear esta orden?"
                 onCancel={() => setIsConfirmModalOpen(false)}
                 onConfirm={formik.handleSubmit}
+                isLoading={orderLoading}
             />
         </div>
     );
