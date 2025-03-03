@@ -50,7 +50,7 @@ const ReviewsPage = () => {
                             {reviews.length} {reviews.length === 1 ? "reseña publicada" : "reseñas publicadas"}
                         </p>
                         <Link
-                            to="/nueva-reseña"
+                            to="/client/review/new"
                             className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2.5 rounded-full transition-all shadow-sm hover:shadow-md flex items-center gap-2"
                         >
                             <FaEdit className="w-4 h-4" />

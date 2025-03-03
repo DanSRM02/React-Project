@@ -17,8 +17,14 @@ import ProductsPage from '../feature/products/ProductPage.jsx';
 import OrdersClientPage from '../feature/order/OrdersClientPage.jsx';
 import OrdersVendorPage from '../feature/order/OrdersVendorPage.jsx';
 import DomiciliaryHomePage from '../feature/delivery/HomePage.jsx';
-import OrdersDeliveryPage from '../feature/order/OrdersDeliveryPage.jsx';   
+import OrdersDeliveryPage from '../feature/order/OrdersDeliveryPage.jsx';
 import ReviewsPage from '../feature/review/ReviewsClientPage.jsx';
+import UnauthorizedPage from '../feature/index/UnauthorizedPage.jsx';
+import CreateReviewPage from '../feature/review/CreateReviewPage.jsx';
+import AccountPage from '../feature/client/AccountPage.jsx';
+import VendorDeliveryPage from '../feature/delivery/VendorDeliveryPage.jsx';
+import AccountSettings from '../feature/client/AccountPage.jsx';
+import OrdersPendingPage from '../feature/order/OrdersPendingPage.jsx';
 
 const AppRoutes = () => {
     // Suponiendo que conoces el rol del usuario autenticado
@@ -102,7 +108,27 @@ const AppRoutes = () => {
                             </PrivateLayout>
                         </ProtectedRoute>
                     }
-                />                            
+                />
+                <Route
+                    path="/client/review/new"
+                    element={
+                        <ProtectedRoute allowedRoles={["cliente"]}>
+                            <PrivateLayout title={`${nameSite} / Crear Reseña`}>
+                                <CreateReviewPage />
+                            </PrivateLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/client/account"
+                    element={
+                        <ProtectedRoute allowedRoles={["cliente"]}>
+                            <PrivateLayout title={`${nameSite} / Mi Cuenta`}>
+                                <AccountPage />
+                            </PrivateLayout>
+                        </ProtectedRoute>
+                    }
+                />
                 {/* Rutas privadas para vendedores */}
                 <Route
                     path="/vendor/home"
@@ -134,6 +160,16 @@ const AppRoutes = () => {
                         </ProtectedRoute>
                     }
                 />
+                <Route
+                    path="/vendor/deliveries"
+                    element={
+                        <ProtectedRoute allowedRoles={["vendedor"]}>
+                            <PrivateLayout title={`${nameSite} / Pedidos por Entregar`}>
+                                <VendorDeliveryPage />
+                            </PrivateLayout>
+                        </ProtectedRoute>
+                    }
+                />
 
                 {/* Rutas privadas para gerentes */}
                 <Route
@@ -156,6 +192,16 @@ const AppRoutes = () => {
                         </ProtectedRoute>
                     }
                 />
+                <Route
+                    path="/manager/account"
+                    element={
+                        <ProtectedRoute allowedRoles={["gerente"]}>
+                            <PrivateLayout title={`${nameSite} / Mi cuenta`}>
+                                <AccountSettings />
+                            </PrivateLayout>
+                        </ProtectedRoute>
+                    }
+                />
 
                 {/* Rutas privadas para gerentes */}
                 <Route
@@ -168,7 +214,26 @@ const AppRoutes = () => {
                         </ProtectedRoute>
                     }
                 />
-
+                <Route
+                    path="/delivery/account"
+                    element={
+                        <ProtectedRoute allowedRoles={["domiciliario"]}>
+                            <PrivateLayout title={`${nameSite} / Mi cuenta`}>
+                                <AccountSettings />
+                            </PrivateLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/delivery/history/orders"
+                    element={
+                        <ProtectedRoute allowedRoles={["domiciliario"]}>
+                            <PrivateLayout title={`${nameSite} / Historial Órdenes `}>
+                                <OrdersPendingPage />
+                            </PrivateLayout>
+                        </ProtectedRoute>
+                    }
+                />
                 <Route
                     path="/delivery/orders"
                     element={
@@ -180,7 +245,8 @@ const AppRoutes = () => {
                     }
                 />
                 {/* Ruta por defecto si no coincide ninguna */}
-                <Route path="*" element={<Navigate to={"/unauthtorized"} replace />} />
+                <Route path="/unauthorized" element={<UnauthorizedPage />} />
+                <Route path="*" element={<Navigate to="/unauthorized" replace />} />
 
             </Routes>
         </Router>

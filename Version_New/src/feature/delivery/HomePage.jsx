@@ -56,7 +56,7 @@ const DomiciliaryHomePage = () => {
                         title="Historial de Entregas"
                         description="Consulta tu historial de entregas realizadas"
                         linkLabel="Ver Historial"
-                        linkTo="/delivery/history"
+                        linkTo="/delivery/history/orders"
                         icon={FaClipboardList}
                         gradient="from-blue-50 to-blue-100"
                     />
@@ -64,7 +64,7 @@ const DomiciliaryHomePage = () => {
                         title="Mi Perfil"
                         description="Actualiza tu información personal y de contacto"
                         linkLabel="Gestionar Perfil"
-                        linkTo="/delivery/profile"
+                        linkTo="/delivery/account"
                         icon={FaUser}
                         gradient="from-purple-50 to-purple-100"
                     />

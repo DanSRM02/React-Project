@@ -9,7 +9,7 @@ const RoutesSidebar = {
     vendedor: [
         { to: '/vendor/home', label: 'Dashboard' },
         { to: '/vendor/products', label: 'Productos' },
-        { to: '/vendor/sales', label: 'Ventas' },
+        { to: '/vendor/deliveries', label: 'Pedientes de Entrega' },
         { to: '/vendor/orders', label: 'Órdenes' },
         { to: '/logout', label: 'Cerrar Sesión' },
     ],
@@ -21,9 +21,9 @@ const RoutesSidebar = {
     ],
     gerente: [
         { to: '/manager/home', label: 'Dashboard' },
-        { to: '/manager/reports', label: 'Reportes' },
+        // { to: '/manager/reports', label: 'Reportes' },
         { to: '/manager/users', label: 'Usuarios' },
-        { to: '/manager/settings', label: 'Configuración' },
+        { to: '/manager/account ', label: 'Configuración' },
         { to: '/logout', label: 'Cerrar Sesión' },
     ],
     desarrollador: [

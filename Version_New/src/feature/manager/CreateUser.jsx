@@ -1,142 +1,193 @@
 import React, { useState } from "react";
 import { HiOutlineUserAdd, HiOutlinePencil, HiOutlineBan } from "react-icons/hi";
+import { useRegisterIndividual } from "../auth/hooks/useRegisterIndividual";
+import { useUsers } from "../../hooks/useUsers";
 
 const CreateUserPage = () => {
-    // Estado para almacenar los usuarios (Ejemplo de datos)
-    const [users, setUsers] = useState([
-        { id: 1, name: "Carlos Pérez", email: "carlos@example.com", role: "Gerente", active: true },
-        { id: 2, name: "María López", email: "maria@example.com", role: "Vendedor", active: true },
-        { id: 3, name: "Juan Gómez", email: "juan@example.com", role: "Cliente", active: false },
-    ]);
+    const {
+        individual,
+        handleChange,
+        registerIndividual,
+        loading,
+        error
+    } = useRegisterIndividual();
 
-    // Estado para manejar el formulario
-    const [form, setForm] = useState({ name: "", email: "", role: "" });
+    const {
+        users,
+        isLoading,
+        error: usersError,
+        createUser,
+        updateUser,
+        deleteUser
+    } = useUsers();
 
-    // Manejar cambios en el formulario
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+    console.log("users data",users);
+    
+
+    const [selectedRole, setSelectedRole] = useState("");
+
+    // Mapeo de roles a IDs según tu estructura del backend
+    const roleMapping = {
+        "Gerente": 4,
+        "Domiciliario": 3,
+        "Vendedor": 1,
+        "Cliente": 2
     };
 
-    // Agregar un nuevo usuario (simulación)
-    const handleAddUser = (e) => {
+    const handleAddUser = async (e) => {
         e.preventDefault();
-        if (!form.name || !form.email || !form.role) return;
+        if (!individual.name || !individual.email || !selectedRole) return;
 
-        const newUser = {
-            id: users.length + 1,
-            ...form,
-            active: true,
+        const formData = {
+            ...individual,
+            rol_type: roleMapping[selectedRole]
         };
 
-        setUsers([...users, newUser]);
-        setForm({ name: "", email: "", role: "" }); // Limpiar formulario
-    };
-
-    // Cambiar estado activo/inactivo
-    const toggleUserStatus = (id) => {
-        setUsers(users.map(user =>
-            user.id === id ? { ...user, active: !user.active } : user
-        ));
+        try {
+            const response = await createUser(formData);
+            if (response) setSelectedRole(""); // Resetear formulario
+        } catch (err) {
+            console.error("Error al registrar usuario:", err);
+        }
     };
 
     return (
         <div className="space-y-6">
-            {/* Título */}
             <h1 className="text-2xl font-bold text-gray-700">Gestión de Usuarios</h1>
 
-            {/* Formulario para agregar usuario */}
+            {/* Formulario actualizado */}
             <div className="bg-white shadow-sm rounded-lg p-6">
                 <h2 className="text-lg font-bold text-gray-700 mb-4">Crear Usuario</h2>
                 <form onSubmit={handleAddUser} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Campos del formulario */}
                     <input
                         type="text"
                         name="name"
-                        placeholder="Nombre"
-                        value={form.name}
+                        placeholder="Nombre completo"
+                        value={individual.name}
                         onChange={handleChange}
                         className="border border-gray-300 p-2 rounded"
+                        required
                     />
+
                     <input
                         type="email"
                         name="email"
-                        placeholder="Correo Electrónico"
-                        value={form.email}
+                        placeholder="Correo electrónico"
+                        value={individual.email}
                         onChange={handleChange}
                         className="border border-gray-300 p-2 rounded"
+                        required
                     />
-                    <select
-                        name="role"
-                        value={form.role}
+
+                    <input
+                        type="text"
+                        name="document"
+                        placeholder="Número de documento"
+                        value={individual.document}
                         onChange={handleChange}
                         className="border border-gray-300 p-2 rounded"
+                        required
+                    />
+
+                    <select
+                        name="document_type_id"
+                        value={individual.document_type_id}
+                        onChange={handleChange}
+                        className="border border-gray-300 p-2 rounded"
+                        required
+                    >
+                        <option value="">Tipo de documento</option>
+                        <option value="1">Cédula</option>
+                        <option value="2">NIT</option>
+                        <option value="3">Cédula extranjería</option>
+                    </select>
+
+                    <input
+                        type="text"
+                        name="address"
+                        placeholder="Dirección"
+                        value={individual.address}
+                        onChange={handleChange}
+                        className="border border-gray-300 p-2 rounded"
+                        required
+                    />
+
+                    <input
+                        type="tel"
+                        name="phone"
+                        placeholder="Teléfono"
+                        value={individual.phone}
+                        onChange={handleChange}
+                        className="border border-gray-300 p-2 rounded"
+                        required
+                    />
+
+                    <select
+                        value={selectedRole}
+                        onChange={(e) => setSelectedRole(e.target.value)}
+                        className="border border-gray-300 p-2 rounded"
+                        required
                     >
                         <option value="">Seleccionar Rol</option>
                         <option value="Gerente">Gerente</option>
+                        <option value="Domiciliario">Domiciliario</option>
                         <option value="Vendedor">Vendedor</option>
                         <option value="Cliente">Cliente</option>
                     </select>
-                    <button
-                        type="submit"
-                        className="col-span-1 md:col-span-3 bg-green-600 text-white p-2 rounded hover:bg-green-700 flex items-center justify-center gap-2"
-                    >
-                        <HiOutlineUserAdd className="w-5 h-5" />
-                        Agregar Usuario
-                    </button>
+
+                    <div className="md:col-span-3">
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700 flex items-center justify-center gap-2 disabled:bg-gray-400"
+                        >
+                            <HiOutlineUserAdd className="w-5 h-5" />
+                            {loading ? "Registrando..." : "Agregar Usuario"}
+                        </button>
+
+                        {error && (
+                            <p className="text-red-500 mt-2 text-sm">
+                                Error al registrar: {error.message}
+                            </p>
+                        )}
+                    </div>
                 </form>
             </div>
 
-            {/* Tabla de usuarios */}
+            {/* Lista de usuarios */}
             <div className="bg-white shadow-sm rounded-lg p-6">
                 <h2 className="text-lg font-bold text-gray-700 mb-4">Lista de Usuarios</h2>
                 <div className="overflow-x-auto">
-                    <table className="min-w-full text-left border-collapse">
+                    <table className="min-w-full text-left border border-gray-300">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th className="py-2 px-4 border-b border-gray-200 text-gray-600">Nombre</th>
-                                <th className="py-2 px-4 border-b border-gray-200 text-gray-600">Correo</th>
-                                <th className="py-2 px-4 border-b border-gray-200 text-gray-600">Rol</th>
-                                <th className="py-2 px-4 border-b border-gray-200 text-gray-600 text-center">Estado</th>
-                                <th className="py-2 px-4 border-b border-gray-200 text-gray-600 text-center">Acciones</th>
+                                <th className="py-2 px-4 border border-gray-300 text-gray-600">Nombre</th>
+                                <th className="py-2 px-4 border border-gray-300 text-gray-600">Correo</th>
+                                <th className="py-2 px-4 border border-gray-300 text-gray-600">Rol</th>
+                                <th className="py-2 px-4 border border-gray-300 text-gray-600 text-center">Acciones</th>
                             </tr>
                         </thead>
                         <tbody className="text-gray-600">
-                            {users.map((user) => (
-                                <tr key={user.id} className="hover:bg-gray-50">
-                                    <td className="py-2 px-4 border-b border-gray-200">{user.name}</td>
-                                    <td className="py-2 px-4 border-b border-gray-200">{user.email}</td>
-                                    <td className="py-2 px-4 border-b border-gray-200">{user.role}</td>
-                                    <td className="py-2 px-4 border-b border-gray-200 text-center">
-                                        <span
-                                            className={`px-3 py-1 rounded-full text-xs font-bold ${user.active ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"
-                                                }`}
-                                        >
-                                            {user.active ? "Activo" : "Inactivo"}
-                                        </span>
-                                    </td>
-                                    <td className="py-2 px-4 border-b border-gray-200 text-center">
-                                        <div className="flex justify-center space-x-2">
-                                            <button
-                                                className="text-blue-600 hover:text-blue-700 p-1"
-                                                title="Editar"
-                                            >
+                            {users?.data?.length > 0 ? (
+                                users.data.map((user) => (
+                                    <tr key={user.id} className="bg-gray-100 hover:bg-gray-200">
+                                        <td className="py-2 px-4 border border-gray-300 text-black">{user.individual?.name || "Sin Nombre"}</td>
+                                        <td className="py-2 px-4 border border-gray-300 text-black">{user.individual?.email || "Sin Correo"}</td>
+                                        <td className="py-2 px-4 border border-gray-300 text-black">{user.rol_type?.name || "Sin Rol"}</td>
+                                        <td className="py-2 px-4 border border-gray-300 text-center flex justify-center space-x-2">
+                                            <button className="text-blue-600 hover:text-blue-700 p-1" title="Editar">
                                                 <HiOutlinePencil className="w-5 h-5" />
                                             </button>
-                                            <button
-                                                className={`p-1 ${user.active ? "text-red-600 hover:text-red-700" : "text-gray-400"} `}
-                                                onClick={() => toggleUserStatus(user.id)}
-                                                title={user.active ? "Deshabilitar" : "Habilitar"}
-                                            >
+                                            <button className="text-red-600 hover:text-red-700 p-1" onClick={() => deleteUser(user.id)} title="Eliminar">
                                                 <HiOutlineBan className="w-5 h-5" />
                                             </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                            {users.length === 0 && (
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
                                 <tr>
-                                    <td colSpan="5" className="text-center py-4 text-gray-500">
-                                        No hay usuarios registrados.
-                                    </td>
+                                    <td colSpan="4" className="text-center py-4 text-gray-500">No hay usuarios registrados.</td>
                                 </tr>
                             )}
                         </tbody>
