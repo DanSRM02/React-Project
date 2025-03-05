@@ -5,7 +5,7 @@ import {
     updateProductVariant,
     deleteProductVariant,
     toggleProductStateVariant,
-    findProductVariant,
+    findProductVariant    
 } from "../services/productService";
 
 export const useProductVariants = () => {
@@ -50,8 +50,7 @@ export const useProductVariants = () => {
         } finally {
             setLoading(false);
         }
-    };
-
+    }; 
     // Función para actualizar una variante (se envía dentro de "data")
     const updateVariant = async (id, variantData) => {
         setLoading(true);
@@ -122,7 +121,7 @@ export const useProductVariants = () => {
         variants,
         loading,
         error,
-        toggleProductState,
+        toggleProductState,        
         fetchVariants,
         addVariant,
         updateVariant,

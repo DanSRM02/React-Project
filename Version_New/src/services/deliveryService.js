@@ -3,7 +3,7 @@ import apiClient from './apiClient';
 export const addDelivery = async (deliveryData) => {
     try {
         console.log(deliveryData);
-        
+
         const response = await apiClient.post('/delivery/add', { data: deliveryData });
         return response.data;
     } catch (error) {
@@ -14,8 +14,36 @@ export const addDelivery = async (deliveryData) => {
     }
 };
 
+export const findDeliveryById = async (deliveryId) => {
+    try {
+        console.log("enviando datos al back", deliveryId);
+        const response = await apiClient.get(`/delivery/domiciliary/${deliveryId}`);
+        console.log("respuesta del back", response);
+        return response.data;
+    } catch (error) {
+        const errorMessage = error.response?.data?.message
+            || error.message
+            || `Error desconocido al buscar delivery por ID de domiciliario: ${deliveryId}`;
+        throw new Error(errorMessage);
+    }
+};
+
+export const togglerStatus = async (id, status) => {
+    try {
+        console.log("enviando datos al back togglerStatus", status);
+        const response = await apiClient.post(`/delivery/toggler/${id}`, { data: status });
+        console.log("respuesta del back togglerStatus", response);
+        return response.data;
+    } catch (error) {
+        const errorMessage = error.response?.data?.message
+            || error.message
+            || `Error desconocido al buscar delivery por ID de domiciliario: ${deliveryId}`;
+        throw new Error(errorMessage);
+    }
+};
+
 export const updateDelivery = async (deliveryId, deliveryData) => {
-    try {        
+    try {
         const response = await apiClient.put(`/delivery/update/${deliveryId}`, { data: deliveryData });
         return response.data;
     } catch (error) {

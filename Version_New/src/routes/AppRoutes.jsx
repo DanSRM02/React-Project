@@ -24,6 +24,8 @@ import CreateReviewPage from '../feature/review/CreateReviewPage.jsx';
 import VendorDeliveryPage from '../feature/delivery/VendorDeliveryPage.jsx';
 import AccountSettings from '../feature/client/AccountPage.jsx';
 import OrdersPendingPage from '../feature/order/OrdersPendingPage.jsx';
+import CreateProductPage from '../feature/products/ManageProductPage.jsx';
+import ManageProductPage from '../feature/products/ManageProductPage.jsx';
 
 const AppRoutes = () => {
     // Suponiendo que conoces el rol del usuario autenticado
@@ -201,6 +203,18 @@ const AppRoutes = () => {
                         </ProtectedRoute>
                     }
                 />
+
+                <Route
+                    path="/manager/product"
+                    element={
+                        <ProtectedRoute allowedRoles={["gerente"]}>
+                            <PrivateLayout title={`${nameSite} / Mi cuenta`}>
+                                <ManageProductPage />
+                            </PrivateLayout>
+                        </ProtectedRoute>
+                    }
+                />
+
 
                 {/* Rutas privadas para gerentes */}
                 <Route

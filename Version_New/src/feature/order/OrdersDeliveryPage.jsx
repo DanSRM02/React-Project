@@ -1,183 +1,141 @@
 import React, { useEffect, useState } from "react";
 import { FaExclamationCircle, FaTruckMoving, FaCheckCircle } from "react-icons/fa";
 import { useAuth } from "../../contexts/AuthContext";
-
-// Datos mockeados
-const mockOrders = [
-    {
-        id: 1,
-        status: "PENDIENTE",
-        isPriority: true,
-        order: {
-            id: 1001,
-            clientName: "Industrias ACME",
-            address: "Calle 123 #45-67, Zona Industrial",
-            products: [
-                { id: 501, name: "Oxígeno Industrial Grado A", quantity: 15 },
-                { id: 502, name: "Nitrógeno Comprimido", quantity: 8 }
-            ]
-        }
-    },
-    {
-        id: 2,
-        status: "EN_CAMINO",
-        isPriority: false,
-        order: {
-            id: 1002,
-            clientName: "Taller Metalúrgico Herrera",
-            address: "Avenida Principal #98-76",
-            products: [
-                { id: 503, name: "Acetileno para Soldadura", quantity: 12 },
-                { id: 504, name: "Argón Ultra Puro", quantity: 5 }
-            ]
-        }
-    },
-    {
-        id: 3,
-        status: "PENDIENTE",
-        isPriority: false,
-        order: {
-            id: 1003,
-            clientName: "Fábrica de Vidrios Seguros",
-            address: "Carrera 45 #12-34, Bodega 5",
-            products: [
-                { id: 505, name: "CO2 para Enfriamiento", quantity: 20 }
-            ]
-        }
-    }
-];
+import { useDeliveries } from "../../hooks/useDeliveries";
 
 const OrdersDeliveryPage = () => {
-
-    const [orders, setOrders] = useState([]);
+    const [order, setOrder] = useState(null);
+    const { user } = useAuth();
+    const { findDeliveryById, loadingFind, errorFind, togglerStatus } = useDeliveries();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
     useEffect(() => {
-        // Simular llamada API con delay
-        const fetchPendingOrders = async () => {
+        const fetchOrder = async () => {
             try {
-                await new Promise(resolve => setTimeout(resolve, 1000)); // Simular delay de carga
-                setOrders(mockOrders);
+                console.log(user.id);
+                const response = await findDeliveryById(user.id);
+                console.log(response);
+                setOrder(response.data[0]); // Asume que solo hay una orden
             } catch (err) {
-                setError("Error cargando órdenes mockeadas");
+                setError("Error cargando la orden");
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchPendingOrders();
-    }, []);
+        fetchOrder();
+    }, [user.id, findDeliveryById]);
 
-    const handleStatusUpdate = (orderId, newStatus) => {
-        // Actualización local de estado sin backend
-        setOrders(orders.map(order =>
-            order.id === orderId ? { ...order, status: newStatus } : order
-        ));
+    const handleStateChange = async (newState) => {
+        try {
+            await togglerStatus(order.order.id, { state: newState });
+            // Actualiza el estado local de la orden
+            setOrder({ ...order, delivery_state: newState });
+        } catch (error) {
+            console.error(`Error actualizando estado: ${error.message}`);
+        }
     };
 
-    if (loading) return (
+    if (loading || loadingFind) return (
         <div className="text-center py-8">
             <div className="animate-pulse">
                 <div className="h-8 bg-gray-200 rounded w-64 mx-auto mb-4"></div>
                 <div className="space-y-4">
-                    {[1, 2, 3].map((i) => (
-                        <div key={i} className="bg-white rounded-lg shadow-md p-6">
-                            <div className="h-6 bg-gray-200 rounded w-1/3 mb-2"></div>
-                            <div className="h-4 bg-gray-200 rounded w-2/3 mb-4"></div>
-                            <div className="h-4 bg-gray-200 rounded w-full"></div>
-                        </div>
-                    ))}
+                    <div className="bg-white rounded-lg shadow-md p-6">
+                        <div className="h-6 bg-gray-200 rounded w-1/3 mb-2"></div>
+                        <div className="h-4 bg-gray-200 rounded w-2/3 mb-4"></div>
+                        <div className="h-4 bg-gray-200 rounded w-full"></div>
+                    </div>
                 </div>
             </div>
         </div>
     );
 
-    if (error) return <div className="text-red-500 text-center py-8">Error: {error}</div>;
+    if (error || errorFind) return <div className="text-red-500 text-center py-8">Error: {error || errorFind}</div>;
+
+    if (!order) return <div className="text-center py-8">No hay órdenes pendientes de despacho.</div>;
 
     return (
-        <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto px-4 py-8">
             <h2 className="text-2xl font-bold mb-6 text-green-600">Órdenes Pendientes de Despacho</h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {orders.map((order) => (
-                    <div key={order.id} className={`bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow
-                        relative border-l-4 ${order.isPriority ? 'border-green-500' : 'border-gray-200'}`}>
+            <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow
+                relative border-l-4 ${order.order.priority ? 'border-green-500' : 'border-gray-200'}">
+                {order.order.priority && (
+                    <div className="absolute top-2 right-2 animate-pulse">
+                        <FaExclamationCircle className="text-green-600 text-2xl" />
+                    </div>
+                )}
 
-                        {order.isPriority && (
-                            <div className="absolute top-2 right-2 animate-pulse">
-                                <FaExclamationCircle className="text-green-600 text-2xl" />
-                            </div>
-                        )}
+                <div className="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 className="text-lg font-semibold text-gray-800">
+                            Orden #{order.order.id}
+                            {order.order.priority && (
+                                <span className="ml-2 text-green-600 text-sm">
+                                    PRIORITARIA
+                                </span>
+                            )}
+                        </h3>
+                        <p className="text-gray-600">{order.order.user.individual.name}</p>
+                        <p className="text-sm text-gray-500">{order.order.user.individual.address}</p>
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-sm 
+                        ${order.delivery_state === 'READY_TO_DISPATCH' ? 'bg-yellow-100 text-yellow-800' :
+                            order.delivery_state === 'ON_THE_WAY' ? 'bg-blue-100 text-blue-800' :
+                                'bg-green-100 text-green-800'}`}>
+                        {order.delivery_state.replace(/_/g, ' ')}
+                    </span>
+                </div>
 
-                        <div className="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 className="text-lg font-semibold text-gray-800">
-                                    Orden #{order.order.id}
-                                    {order.isPriority && (
-                                        <span className="ml-2 text-green-600 text-sm">
-                                            PRIORITARIA
+                <div className="border-t border-green-50 pt-4 mt-4">
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <p className="font-medium text-gray-700">Productos:</p>
+                            <ul className="list-disc pl-5">
+                                {order.order.orderLines.map((line) => (
+                                    <li key={line.id} className="text-sm">
+                                        <span className="font-medium text-gray-700">
+                                            Producto #{line.product_variant.id}
                                         </span>
-                                    )}
-                                </h3>
-                                <p className="text-gray-600">{order.order.clientName}</p>
-                                <p className="text-sm text-gray-500">{order.order.address}</p>
-                            </div>
-                            <span className={`px-3 py-1 rounded-full text-sm 
-    ${order.status === 'PENDIENTE' ? 'bg-yellow-100 text-yellow-800' :
-                                    order.status === 'EN_CAMINO' ? 'bg-blue-100 text-blue-800' :
-                                        'bg-green-100 text-green-800'}`}>
-                                {order.status.replace('_', ' ')}
-                            </span>
+                                        <span className="ml-2 text-gray-500">
+                                            ({line.quantity} {line.product_variant.unit.acronym})
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
 
-                        <div className="border-t border-green-50 pt-4 mt-4">
-                            <div className="flex justify-between items-center">
-                                <div>
-                                    <p className="font-medium text-gray-700">Productos:</p>
-                                    <ul className="list-disc pl-5">
-                                        {order.order.products.map((product) => (
-                                            <li key={product.id} className="text-sm">
-                                                <span className="font-medium text-gray-700">{product.name}</span>
-                                                <span className="ml-2 text-gray-500">
-                                                    ({product.quantity} cilindros)
-                                                </span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
+                        <div className="flex flex-col gap-2">
+                            {order.delivery_state === 'READY_TO_DISPATCH' && (
+                                <button
+                                    onClick={() => handleStateChange('ON_THE_WAY')}
+                                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md 
+                                        flex items-center gap-2 transition-colors"
+                                >
+                                    <FaTruckMoving className="text-lg" />
+                                    Iniciar Entrega
+                                </button>
+                            )}
 
-                                <div className="flex flex-col gap-2">
-                                    {order.status === 'PENDIENTE' && (
-                                        <button
-                                            onClick={() => handleStatusUpdate(order.id, 'EN_CAMINO')}
-                                            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md 
-                                                flex items-center gap-2 transition-colors"
-                                        >
-                                            <FaTruckMoving className="text-lg" />
-                                            Iniciar Entrega
-                                        </button>
-                                    )}
-
-                                    {order.status === 'EN_CAMINO' && (
-                                        <button
-                                            onClick={() => handleStatusUpdate(order.id, 'ENTREGADO')}
-                                            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md 
-                                                flex items-center gap-2 transition-colors"
-                                        >
-                                            <FaCheckCircle className="text-lg" />
-                                            Marcar como Entregado
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
+                            {order.delivery_state === 'ON_THE_WAY' && (
+                                <button
+                                    onClick={() => handleStateChange('DELIVERED')}
+                                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md 
+                                        flex items-center gap-2 transition-colors"
+                                >
+                                    <FaCheckCircle className="text-lg" />
+                                    Marcar como Entregado
+                                </button>
+                            )}
                         </div>
                     </div>
-                ))}
+                </div>
             </div>
 
             <div className="mt-8 text-center text-green-500 text-sm">
-                <p>Total de órdenes cargadas: {orders.length}</p>
+                <p>Total de órdenes cargadas: 1</p>
             </div>
         </div>
     );

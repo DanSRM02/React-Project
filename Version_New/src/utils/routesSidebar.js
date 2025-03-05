@@ -21,7 +21,7 @@ const RoutesSidebar = {
     ],
     gerente: [
         { to: '/manager/home', label: 'Dashboard' },
-        // { to: '/manager/reports', label: 'Reportes' },
+        { to: '/manager/product', label: 'Productos' },
         { to: '/manager/users', label: 'Usuarios' },
         { to: '/manager/account ', label: 'Configuración' },
         { to: '/logout', label: 'Cerrar Sesión' },

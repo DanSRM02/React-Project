@@ -17,7 +17,7 @@ const VendorHomePage = () => {
             </h1>
 
             {/* Sección de métricas (puedes adaptar los valores con datos reales) */}
-            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 <StatCard
                     title="Órdenes Pendientes"
                     value="12"
@@ -32,16 +32,11 @@ const VendorHomePage = () => {
                     title="Productos Activos"
                     value="25"
                     icon={<FaBox className="w-6 h-6" />}
-                />
-                <StatCard
-                    title="Ventas del Día"
-                    value="$1,500,000"
-                    icon={<FaUserShield className="w-6 h-6" />}
-                />
+                />               
             </section>
 
             {/* Sección de accesos rápidos con gradientes */}
-            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <Card
                     title="Gestión de Órdenes"
                     description="Visualiza y prioriza las órdenes pendientes."
@@ -65,15 +60,7 @@ const VendorHomePage = () => {
                     linkTo="/vendor/reports"
                     icon={FaUserShield}
                     gradient="from-purple-50 to-purple-100"
-                />
-                <Card
-                    title="Pendientes de Entrega"
-                    description="Revisa los pedidos listos para ser despachados."
-                    linkLabel="Ver Entregas"
-                    linkTo="/vendor/deliveries"
-                    icon={FaTasks}
-                    gradient="from-yellow-50 to-yellow-100"
-                />
+                />              
             </section>
         </div>
     );

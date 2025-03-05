@@ -5,7 +5,7 @@ import { useOrders } from "../../hooks/useOrders";
 import { useUsers } from "../../hooks/useUsers";
 import OrderDetailsModal from "./OrderDetailsModal";
 import { AssignDeliveryModal } from "./AssignDeliveryModal";
-import { useDeliveries } from "../../hooks/useDelivery";
+import { useDeliveries } from "../../hooks/useDeliveries";
 
 
 const OrdersVendorPage = () => {

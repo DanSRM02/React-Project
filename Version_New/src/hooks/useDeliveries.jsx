@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { addDelivery, updateDelivery, findDelivery } from '../services/deliveryService';
+import { useState, useCallback } from 'react';
+import { addDelivery, updateDelivery, findDelivery, findDeliveryById, togglerStatus as apiTogglerStatus } from '../services/deliveryService';
 
 export const useDeliveries = () => {
     const [loadingAdd, setLoadingAdd] = useState(false);
@@ -23,6 +23,21 @@ export const useDeliveries = () => {
             setLoadingAdd(false);
         }
     };
+
+    const handleFindDeliveryById = useCallback(async (deliveryId) => {
+        setLoadingFind(true);
+        setErrorFind(null);
+        try {
+            const result = await findDeliveryById(deliveryId);
+            setCurrentDelivery(result.data);
+            return result;
+        } catch (error) {
+            setErrorFind(error.message);
+            throw error;
+        } finally {
+            setLoadingFind(false);
+        }
+    }, []);
 
     const handleUpdateDelivery = async (deliveryId, deliveryData) => {
         setLoadingUpdate(true);
@@ -53,6 +68,20 @@ export const useDeliveries = () => {
         }
     };
 
+    const handleTogglerStatus = async (id, status) => {
+        setLoadingFind(true);
+        setErrorFind(null);
+        try {
+            const result = await apiTogglerStatus(id, status);
+            return result;
+        } catch (error) {
+            setErrorFind(error.message);
+            throw error;
+        } finally {
+            setLoadingFind(false);
+        }
+    };
+
     return {
         // Estados de carga
         loadingAdd,
@@ -69,8 +98,10 @@ export const useDeliveries = () => {
 
         // Métodos
         addDelivery: handleAddDelivery,
+        togglerStatus: handleTogglerStatus,
         updateDelivery: handleUpdateDelivery,
         findDelivery: handleFindDelivery,
+        findDeliveryById: handleFindDeliveryById,
 
         // Helpers
         resetErrors: () => {

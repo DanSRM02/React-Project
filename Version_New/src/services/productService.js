@@ -15,6 +15,35 @@ export const addProductVariant = async (productVariantData) => {
     }
 };
 
+export const addProduct = async (productData) => {
+    try {
+        console.log("addProduct - Enviando datos:", productData);
+        const response = await apiClient.post(
+            "product/add",
+            productData
+        );
+        console.log("addProduct - Respuesta:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("addProduct - Error:", error);
+        throw error;
+    }
+};
+
+export const removeProduct = async (productId) => {
+    try {
+        console.log("removeProduct - Enviando datos:", productId);
+        const response = await apiClient.post(
+            `product/delete/${productId}`   
+        );
+        console.log("removeProduct - Respuesta:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("removeProduct - Error:", error);
+        throw error;
+    }
+};
+
 export const toggleProductStateVariant = async (id, productData) => {
     try {
         console.log("changeState - Actualizando estado:", id, productData);
