@@ -6,7 +6,7 @@ import Input from '../UI/Input';
 import CircleButton from '../UI/CircleButton';
 import { FaTimes, FaBars } from '../UI/Icons';
 import { useAuth } from '../../contexts/AuthContext';
-import RoutesSidebar from '../../utils/RoutesSidebar';
+import RoutesSidebar from '../../utils/routesSidebar';
 
 const PrivateLayout = ({ children, role, title }) => {
     const navigate = useNavigate();
