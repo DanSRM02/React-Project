@@ -5,9 +5,11 @@ import { ProductCard } from "../../components/UI/ProductCard";
 import { DetailItem } from "../../components/UI/DetailItem";
 import { useAuth } from "../../contexts/AuthContext";
 
-const OrderDetailsModal = ({ order = {}, onClose }) => {
+const OrderDetailsModal = ({ isOpen, order, onClose }) => {
     const { user } = useAuth();
     const isVendor = user?.role === "vendedor";
+
+    if (!isOpen || !order) return null; // Cambiar condición de renderizado
 
     const {
         id = "N/A",
@@ -37,8 +39,14 @@ const OrderDetailsModal = ({ order = {}, onClose }) => {
     };
 
     return (
-        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl w-full max-w-2xl shadow-2xl">
+        <div
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            onClick={onClose} // Cerrar al hacer clic fuera
+        >
+            <div
+                className="bg-white rounded-xl w-full max-w-2xl shadow-2xl"
+                onClick={(e) => e.stopPropagation()} // Prevenir cierre al hacer clic dentro
+            >
                 {/* Header */}
                 <div className="flex justify-between items-center p-6 border-b border-gray-200">
                     <h2 className="text-2xl font-bold text-gray-800">
@@ -46,11 +54,12 @@ const OrderDetailsModal = ({ order = {}, onClose }) => {
                     </h2>
                     <button
                         onClick={onClose}
-                        className="text-gray-500 hover:text-gray-700 transition-colors"
+                        className="text-gray-500 hover:text-gray-700 transition-colors p-2 rounded-lg hover:bg-gray-100"
                     >
                         <FaTimes className="w-6 h-6" />
                     </button>
                 </div>
+
 
                 {/* Cuerpo del modal */}
                 <div className="p-6 space-y-6">
@@ -68,8 +77,8 @@ const OrderDetailsModal = ({ order = {}, onClose }) => {
                                         label="Estado"
                                         value={
                                             <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${state === "PENDING" ? "bg-yellow-100 text-yellow-800" :
-                                                    state === "PRIORITIZED" ? "bg-blue-100 text-blue-800" :
-                                                        "bg-green-100 text-green-800"
+                                                state === "PRIORITIZED" ? "bg-blue-100 text-blue-800" :
+                                                    "bg-green-100 text-green-800"
                                                 }`}>
                                                 {STATE_LABELS[state] || state.toLowerCase()}
                                             </span>

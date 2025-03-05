@@ -21,7 +21,6 @@ import OrdersDeliveryPage from '../feature/order/OrdersDeliveryPage.jsx';
 import ReviewsPage from '../feature/review/ReviewsClientPage.jsx';
 import UnauthorizedPage from '../feature/index/UnauthorizedPage.jsx';
 import CreateReviewPage from '../feature/review/CreateReviewPage.jsx';
-import AccountPage from '../feature/client/AccountPage.jsx';
 import VendorDeliveryPage from '../feature/delivery/VendorDeliveryPage.jsx';
 import AccountSettings from '../feature/client/AccountPage.jsx';
 import OrdersPendingPage from '../feature/order/OrdersPendingPage.jsx';
@@ -124,7 +123,7 @@ const AppRoutes = () => {
                     element={
                         <ProtectedRoute allowedRoles={["cliente"]}>
                             <PrivateLayout title={`${nameSite} / Mi Cuenta`}>
-                                <AccountPage />
+                                <AccountSettings />
                             </PrivateLayout>
                         </ProtectedRoute>
                     }

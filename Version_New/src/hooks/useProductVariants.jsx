@@ -4,6 +4,7 @@ import {
     addProductVariant,
     updateProductVariant,
     deleteProductVariant,
+    toggleProductStateVariant,
     findProductVariant,
 } from "../services/productService";
 
@@ -102,10 +103,26 @@ export const useProductVariants = () => {
         }
     };
 
+    const toggleProductState = async (id, status) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await toggleProductStateVariant(id, { data: status });
+            return response
+        } catch (error) {
+            console.error("Error al buscar variante:", error);
+            setError(error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return {
         variants,
         loading,
         error,
+        toggleProductState,
         fetchVariants,
         addVariant,
         updateVariant,

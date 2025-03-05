@@ -119,7 +119,7 @@ const Login = () => {
                             </button>
                             {error && (
                                 <p className="text-red-500 text-sm">
-                                    {error.message || "Ocurrió un error"}
+                                    {error.response.data.message || "Ocurrió un error"}
                                 </p>
                             )}
                         </Form>

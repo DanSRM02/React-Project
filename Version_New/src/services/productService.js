@@ -15,6 +15,21 @@ export const addProductVariant = async (productVariantData) => {
     }
 };
 
+export const toggleProductStateVariant = async (id, productData) => {
+    try {
+        console.log("changeState - Actualizando estado:", id, productData);
+        const response = await apiClient.post(
+            `product/toggler/${id}`,
+            productData
+        );
+        console.log("updateProductVariant - Respuesta:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("updateProductVariant - Error:", error);
+        throw error;
+    }
+};
+
 export const updateProductVariant = async (id, productVariantData) => {
     try {
         console.log("updateProductVariant - Actualizando variante:", id, productVariantData);

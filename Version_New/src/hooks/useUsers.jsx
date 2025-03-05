@@ -4,6 +4,7 @@ import { userService } from "../services/userSerivce";
 export const useUsers = (autoFetch = true) => {
     // Estados generales
     const [users, setUsers] = useState([]);
+    const [deliveriesActive, setDeliveriesActive] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
 
     // Estados de carga
@@ -25,13 +26,30 @@ export const useUsers = (autoFetch = true) => {
     });
 
     // Obtener todos los usuarios
+    const fetchDeliveriesActive = async () => {
+        setIsLoading(prev => ({ ...prev, all: true }));
+        setError(prev => ({ ...prev, all: null }));
+
+        try {
+            const response = await userService.getDeliveriesActive();
+            setDeliveriesActive(response.data);
+            return response;
+        } catch (err) {
+            setError(prev => ({ ...prev, all: err }));
+            throw err;
+        } finally {
+            setIsLoading(prev => ({ ...prev, all: false }));
+        }
+    };
+
+    // Obtener todos los usuarios
     const fetchUsers = async () => {
         setIsLoading(prev => ({ ...prev, all: true }));
         setError(prev => ({ ...prev, all: null }));
 
         try {
             const response = await userService.getAllUsers();
-            setUsers(response);
+            setUsers(response.data);
             return response;
         } catch (err) {
             setError(prev => ({ ...prev, all: err }));
@@ -48,7 +66,7 @@ export const useUsers = (autoFetch = true) => {
 
         try {
             const response = await userService.getUserById(id);
-            setSelectedUser(response);
+            setSelectedUser(response.data);
             return response;
         } catch (err) {
             setError(prev => ({ ...prev, single: err }));
@@ -64,7 +82,7 @@ export const useUsers = (autoFetch = true) => {
         setError(prev => ({ ...prev, add: null }));
 
         try {
-            const response = await userService.addUser(userData);
+            const response = await userService.addUser({ data: userData });
             setUsers(prev => [...prev, response]);
             return response;
         } catch (err) {
@@ -81,11 +99,11 @@ export const useUsers = (autoFetch = true) => {
         setError(prev => ({ ...prev, update: null }));
 
         try {
-            const response = await userService.updateUser(id, userData);
+            const response = await userService.updateUser(id, { data: userData });
             setUsers(prev =>
                 prev.map(user => user.id === id ? response : user)
             );
-            if (selectedUser?.id === id) setSelectedUser(response);
+            if (selectedUser?.id === id) setSelectedUser(response.data);
             return response;
         } catch (err) {
             setError(prev => ({ ...prev, update: err }));
@@ -121,6 +139,7 @@ export const useUsers = (autoFetch = true) => {
         // Estados
         users,
         selectedUser,
+        deliveriesActive,
         isLoading,
         error,
 
@@ -130,6 +149,7 @@ export const useUsers = (autoFetch = true) => {
         createUser,
         updateUser,
         deleteUser,
+        fetchDeliveriesActive,
 
         // Helpers
         resetErrors: () => setError({

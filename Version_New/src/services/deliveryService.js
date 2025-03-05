@@ -1,18 +1,39 @@
-import axios from 'axios';
-
-const API_BASE = import.meta.env.VITE_API_BASE;
+import apiClient from './apiClient';
 
 export const addDelivery = async (deliveryData) => {
-    const response = await axios.post(`${API_BASE}/delivery/add`, { data: deliveryData });
-    return response.data;
+    try {
+        console.log(deliveryData);
+        
+        const response = await apiClient.post('/delivery/add', { data: deliveryData });
+        return response.data;
+    } catch (error) {
+        const errorMessage = error.response?.data?.message
+            || error.message
+            || 'Error desconocido al crear domiciliario';
+        throw new Error(errorMessage);
+    }
 };
 
 export const updateDelivery = async (deliveryId, deliveryData) => {
-    const response = await axios.put(`${API_BASE}/delivery/update/${deliveryId}`, { data: deliveryData });
-    return response.data;
+    try {        
+        const response = await apiClient.put(`/delivery/update/${deliveryId}`, { data: deliveryData });
+        return response.data;
+    } catch (error) {
+        const errorMessage = error.response?.data?.message
+            || error.message
+            || `Error desconocido al actualizar domiciliario ID: ${deliveryId}`;
+        throw new Error(errorMessage);
+    }
 };
 
 export const findDelivery = async (deliveryId) => {
-    const response = await axios.get(`${API_BASE}/delivery/find/${deliveryId}`);
-    return response.data;
+    try {
+        const response = await apiClient.get(`/delivery/find/${deliveryId}`);
+        return response.data;
+    } catch (error) {
+        const errorMessage = error.response?.data?.message
+            || error.message
+            || `Error desconocido al buscar domiciliario ID: ${deliveryId}`;
+        throw new Error(errorMessage);
+    }
 };

@@ -7,7 +7,7 @@ import AddProductModal from "./AddProductModal";
 import EditProductModal from "./EditProductModal";
 
 const ProductsPage = () => {
-    const { variants, loading, error, fetchVariants } = useProductVariants();
+    const { variants, loading, error, fetchVariants, toggleProductState } = useProductVariants();
 
     // Estado para los modales
     const [showFormModal, setShowFormModal] = useState(false);
@@ -38,7 +38,7 @@ const ProductsPage = () => {
         if (!selectedProduct) return;
         try {
             const newState = !selectedProduct.state;
-            await toggleProductState(selectedProduct.id, newState);
+            await toggleProductState(selectedProduct.id, { state: newState });
             await fetchVariants();
         } catch (err) {
             console.error("Error al togglear estado del producto:", err);

@@ -32,56 +32,19 @@ export const useOrders = () => {
         }
     };
 
-    // Actualizar orden existente
-    const modifyOrder = async (orderId, orderData) => {
-        console.groupCollapsed(`🛠️ [modifyOrder] Iniciando actualización orden #${orderId}`);
+    // En useOrders.js
+    const changeStatus = async (orderId, state) => {
         try {
-            console.log('📤 Datos enviados:', orderData);
-            console.log('🔄 Estado actual orders:', orders);
-
-            // 1. Ejecutar la petición
-            console.log(`📡 Enviando solicitud de actualización para orden ${orderId}...`);
-            const result = await handleRequest(orderService.updateOrder, orderId, orderData);
-
-            // 2. Validar respuesta
-            if (!result?.data) {
-                console.warn('⚠️ Respuesta inesperada de la API:', result);
-                throw new Error('Estructura de respuesta inválida');
-            }
-            console.log('✅ Actualización API exitosa:', result.data);
-
-            // 3. Actualizar estado con logging
-            setOrders(prev => {
-                console.log('📦 Estado anterior:', prev);
-
-                const updated = prev.map(order =>
-                    order.id === orderId ? { ...order, ...result.data } : order
-                );
-
-                console.log('🆕 Nuevo estado:', updated);
-                console.groupEnd();
-
-                return updated;
-            });
-
-            // 4. Verificar si se encontró la orden
-            const orderExists = orders.some(order => order.id === orderId);
-            if (!orderExists) {
-                console.warn(`⚠️ Orden #${orderId} no encontrada en el estado local`);
-            }
-
-            return { data: result.data };
+            const result = await handleRequest(orderService.changeStatus, orderId, state);
+            // Actualiza solo la orden modificada
+            setOrders(prev => ({
+                data: prev.data.map(order =>
+                    order.id === orderId ? { ...order, ...state } : order
+                )
+            }));
+            return result;
         } catch (err) {
-            console.error('❌ Error en modifyOrder:', {
-                orderId,
-                error: err.message,
-                stack: err.stack
-            });
-            console.groupEnd();
-            return {
-                error: err.message || 'Error al actualizar la orden',
-                originalError: err // Para debugging en componentes
-            };
+            throw err;
         }
     };
 
@@ -98,7 +61,8 @@ export const useOrders = () => {
 
     const fetchOrderDetails = async (orderId) => {
         try {
-            const productDetails = await handleRequest(orderService.getOrderDetails, orderId);
+            const productDetails = await handleRequest(orderService.getOrderDetails, orderId);            
+            
             const mainOrder = orders.data?.find(order => order.id === orderId) || {};
 
             const mergedOrder = {
@@ -142,7 +106,7 @@ export const useOrders = () => {
         currentOrder,
         setCurrentOrder,
         createOrder,
-        modifyOrder,
+        changeStatus,
         fetchOrdersByState,
         fetchOrderDetails,
         fetchAllOrders,

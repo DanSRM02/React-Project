@@ -150,6 +150,8 @@ const AddProductModal = ({ isOpen, onClose, product, variant, products = [] }) =
                             <Input
                                 type="number"
                                 name="quantity"
+                                min={1}
+                                max={50}                                
                                 id="quantity"
                                 value={variantForm.quantity}
                                 onChange={handleChange}
@@ -163,6 +165,8 @@ const AddProductModal = ({ isOpen, onClose, product, variant, products = [] }) =
                                 type="number"
                                 name="price"
                                 id="price"
+                                min={1}
+                                max={100000}
                                 value={variantForm.price}
                                 onChange={handleChange}
                                 required

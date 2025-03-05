@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { STATES, STATE_LABELS } from "../../utils/states";
 import DataTable from "../../components/UI/DataTable";
-import OrderDetailsModal from "./OrderDetailsModal";
 import { useOrders } from "../../hooks/useOrders";
+import { useUsers } from "../../hooks/useUsers";
+import OrderDetailsModal from "./OrderDetailsModal";
+import { AssignDeliveryModal } from "./AssignDeliveryModal";
+import { useDeliveries } from "../../hooks/useDelivery";
+
 
 const OrdersVendorPage = () => {
     const [selectedState, setSelectedState] = useState("PENDING");
-    const [showDetailsModal, setShowDetailsModal] = useState(false);
+    const [activeModal, setActiveModal] = useState(null);
+    const [selectedOrder, setSelectedOrder] = useState(null);
 
+    const { deliveriesActive, fetchDeliveriesActive } = useUsers();
+    const { addDelivery } = useDeliveries();
     const {
         orders,
         currentOrder,
@@ -15,29 +22,57 @@ const OrdersVendorPage = () => {
         error,
         fetchOrdersByState,
         fetchOrderDetails,
-        modifyOrder
+        changeStatus
     } = useOrders();
+
+    console.log(orders);
+
 
     useEffect(() => {
         fetchOrdersByState(selectedState);
+        fetchDeliveriesActive();
     }, [selectedState]);
 
     const handleStateChange = async (orderId, newState) => {
         try {
-            await modifyOrder(orderId, { state: newState });
+            await changeStatus(orderId, { state: newState });
             fetchOrdersByState(selectedState);
         } catch (error) {
             console.error(`Error actualizando estado: ${error.message}`);
         }
     };
 
-    const handleViewDetails = async (orderId) => {
+    const handleAssignDelivery = async (orderId, deliveryId) => {
+        try {
+            // Crear registro en tabla deliveries
+            await addDelivery({
+                order_id: orderId,
+                user_id: deliveryId,
+            });
+
+            // Cerrar modal y actualizar datos
+            setActiveModal(null);
+            fetchOrdersByState(selectedState);
+
+        } catch (error) {
+            console.error("Error asignando domiciliario:", error);
+            // Puedes agregar un toast o alerta de error aquí
+        }
+    };
+
+    const handleOpenDetails = async (orderId) => {
         try {
             await fetchOrderDetails(orderId);
-            setShowDetailsModal(true);
+            setActiveModal('details');
+            setSelectedOrder(orderId);
         } catch (error) {
             console.error("Error cargando detalles:", error);
         }
+    };
+
+    const handleOpenAssignment = (order) => {
+        setSelectedOrder(order);
+        setActiveModal('assign');
     };
 
     const columns = [
@@ -45,29 +80,40 @@ const OrdersVendorPage = () => {
             header: "Fecha",
             accessor: "createdAt",
             render: (order) => new Date(order.createdAt).toLocaleDateString("es-ES"),
-            headerClassName: "text-gray-600 font-medium py-4",
-            cellClassName: "text-gray-700 text-center"
+            headerClassName: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider",
+            cellClassName: "px-6 py-4 whitespace-nowrap text-sm text-gray-900"
         },
         {
             header: "Cliente",
             accessor: "individual_name",
             render: (order) => order.individual_name || "N/A",
-            headerClassName: "text-gray-600 font-medium",
-            cellClassName: "text-gray-700 text-center font-medium"
+            headerClassName: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider",
+            cellClassName: "px-6 py-4 whitespace-nowrap text-sm text-gray-900"
         },
         {
             header: "Estado",
             accessor: "state",
             render: (order) => (
-                <span className={`px-3 py-1.5 rounded-full text-sm font-semibold ${order.state === "PENDING" ? "bg-amber-100 text-amber-700" :
-                        order.state === "PRIORITIZED" ? "bg-blue-100 text-blue-700" :
+                <div className="flex flex-col items-center">
+                    <span className={`px-3 py-1.5 rounded-full text-sm font-semibold ${order.order_state === "PENDING" ? "bg-amber-100 text-amber-700" :
+                        order.order_state === "PRIORITIZED" ? "bg-blue-100 text-blue-700" :
                             "bg-emerald-100 text-emerald-700"
-                    }`}>
-                    {STATE_LABELS[order.state]}
-                </span>
+                        }`}>
+                        {STATE_LABELS[order.order_state]}
+                    </span>
+
+                    {/* Mostrar domiciliario solo para órdenes aprobadas */}
+                    {order.order_state === "APPROVED" && (
+                        <span className="text-xs text-gray-500 mt-1">
+                            {(order.delivery_person)
+                                ? `Asignado a: ${order.delivery_person}`
+                                : "Sin domiciliario asignado"}
+                        </span>
+                    )}
+                </div>
             ),
-            headerClassName: "text-gray-600 font-medium",
-            cellClassName: "text-center"
+            headerClassName: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider",
+            cellClassName: "px-6 py-4 whitespace-nowrap text-sm text-gray-900"
         },
         {
             header: "Total",
@@ -80,49 +126,47 @@ const OrdersVendorPage = () => {
                     })}
                 </span>
             ),
-            headerClassName: "text-gray-600 font-medium",
-            cellClassName: "text-right text-gray-800"
+            headerClassName: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider",
+            cellClassName: "px-6 py-4 whitespace-nowrap text-sm text-gray-900"
         },
         {
             header: "Acciones",
             render: (order) => (
                 <div className="flex gap-2 justify-center">
-                    {order.state === "PENDING" && (
+                    {order.order_state === "PENDING" && (
                         <button
                             onClick={() => handleStateChange(order.id, "PRIORITIZED")}
-                            className="flex items-center gap-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm transition-all"
+                            className="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
-                            </svg>
                             Priorizar
                         </button>
                     )}
-                    {["PENDING", "PRIORITIZED"].includes(order.state) && (
+                    {["PENDING", "PRIORITIZED"].includes(order.order_state) && (
                         <button
                             onClick={() => handleStateChange(order.id, "APPROVED")}
-                            className="flex items-center gap-1 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md text-sm transition-all"
+                            className="px-3 py-1.5 text-xs font-medium text-white bg-emerald-600 rounded-md hover:bg-emerald-700"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
                             Aprobar
                         </button>
                     )}
+                    {order.order_state === "APPROVED" && !order.delivery_id && (
+                        <button
+                            onClick={() => handleOpenAssignment(order)}
+                            className="px-3 py-1.5 text-xs font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700"
+                        >
+                            Asignar
+                        </button>
+                    )}
                     <button
-                        onClick={() => handleViewDetails(order.id)}
-                        className="flex items-center gap-1 px-3 py-1.5 bg-gray-600 hover:bg-gray-700 text-white rounded-md text-sm transition-all"
+                        onClick={() => handleOpenDetails(order.id)}
+                        className="px-3 py-1.5 text-xs font-medium text-white bg-gray-600 rounded-md hover:bg-gray-700"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                            <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-                        </svg>
                         Detalles
                     </button>
                 </div>
             ),
-            headerClassName: "text-gray-600 font-medium",
-            cellClassName: "text-center"
+            headerClassName: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider",
+            cellClassName: "px-6 py-4 whitespace-nowrap text-sm text-gray-900"
         }
     ];
 
@@ -130,14 +174,15 @@ const OrdersVendorPage = () => {
         <div className="max-w-7xl mx-auto px-4 py-8">
             <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Gestión de Órdenes</h2>
 
-            <div className="flex flex-wrap justify-center gap-2 mb-8">
+            {/* Filtro de estados */}
+            <div className="flex mb-8 border-b border-gray-200">
                 {STATES.map((state) => (
                     <button
                         key={state.key}
                         onClick={() => setSelectedState(state.key)}
-                        className={`px-4 py-2 rounded-full border transition-all ${selectedState === state.key
-                                ? "bg-green-600 text-white shadow-md"
-                                : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                        className={`px-4 py-2 mx-1 -mb-px font-medium ${selectedState === state.key
+                            ? "text-green-600 border-b-2 border-green-600"
+                            : "text-gray-500 hover:text-gray-700"
                             }`}
                     >
                         {state.label}
@@ -145,6 +190,7 @@ const OrdersVendorPage = () => {
                 ))}
             </div>
 
+            {/* Contenido principal */}
             {loading && <p className="text-center text-gray-600 py-8">Cargando órdenes...</p>}
             {error && <p className="text-center text-red-600 py-8">Error: {error}</p>}
 
@@ -153,18 +199,31 @@ const OrdersVendorPage = () => {
                     columns={columns}
                     data={orders.data || []}
                     emptyMessage="No hay órdenes en este estado"
-                    headerClassName="bg-gray-50 border-b border-gray-200"
-                    rowClassName="border-b border-gray-100 hover:bg-gray-50 transition-colors"
-                    containerClassName="rounded-xl border border-gray-200 overflow-hidden shadow-sm"
+                    containerClassName="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
+                    tableClassName="min-w-full divide-y divide-gray-200"
                 />
             )}
 
-            {showDetailsModal && currentOrder && (
-                <OrderDetailsModal
-                    order={currentOrder}
-                    onClose={() => setShowDetailsModal(false)}
-                />
-            )}
+            {/* Modales */}
+            <OrderDetailsModal
+                isOpen={activeModal === 'details'}
+                order={currentOrder}
+                onClose={() => {
+                    setActiveModal(null);
+                    setSelectedOrder(null);
+                }}
+            />
+
+            <AssignDeliveryModal
+                isOpen={activeModal === 'assign'}
+                order={selectedOrder}
+                deliveries={deliveriesActive}
+                onAssign={handleAssignDelivery}
+                onClose={() => {
+                    setActiveModal(null);
+                    setSelectedOrder(null);
+                }}
+            />
         </div>
     );
 };

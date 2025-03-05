@@ -27,23 +27,13 @@ export const orderService = {
         } catch (error) {
             throw new Error(error.response?.data?.error || "Error adding order");
         }
-    },
+    },    
 
-    updateOrder: async (orderId, orderData) => {
-        const userId = getUserIdFromToken();
+    changeStatus: async (orderId, status) => {
         try {
-            // Estructura requerida por el backend Java
-            const payload = {
-                user_id: userId, // Mismo nombre que en validateData
-                product_ids: orderData.products.map(p => ({
-                    id: p.productVariant.id, // Coincide con productJson.getLong("id")
-                    quantity: p.quantity // Coincide con productJson.optInt("quantity", 1)
-                })),
-                state: orderData.state, // Campo adicional si es necesario
-                priority: orderData.priority // Campo adicional si es necesario
-            };
-
-            const response = await apiClient.put(`/order/update/${orderId}`, payload);
+            console.log("Datos enviados al back ",status);
+            
+            const response = await apiClient.post(`/order/toggler/${orderId}`, {data:status});
             return response.data;
         } catch (error) {
             throw new Error(error.response?.data?.error || "Error actualizando orden");

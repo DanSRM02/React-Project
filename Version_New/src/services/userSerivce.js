@@ -33,6 +33,18 @@ export const userService = {
         }
     },
 
+    getDeliveriesActive: async () => {
+        try {
+            console.log("getDeliveriesActive - Solicitando todos los usuarios");
+            const response = await apiClient.get("user/deliveries/active");
+            console.log("getDeliveriesActive - Respuesta:", response.data);
+            return response.data;
+        } catch (error) {
+            console.error("getDeliveriesActive - Error:", error);
+            throw error;
+        }
+    },
+
     // Obtener todos los usuarios
     getAllUsers: async () => {
         try {
