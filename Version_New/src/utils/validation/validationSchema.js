@@ -35,6 +35,32 @@ export const registerSchema = Yup.object().shape({
         .required("El número de documento es obligatorio"),
 });
 
+export const passwordChangeSchema = Yup.object().shape({
+    currentPassword: Yup.string()
+        .min(8, "Debe tener al menos 8 caracteres")
+        .max(16, "No puede exceder los 16 caracteres")
+        .required("La contraseña actual es obligatoria"),
+
+    newPassword: Yup.string()
+        .min(8, "Debe tener al menos 8 caracteres")
+        .max(16, "No puede exceder los 16 caracteres")
+        .matches(/[A-Z]/, "Debe contener al menos una mayúscula")
+        .matches(/[0-9]/, "Debe contener al menos un número")
+        .matches(
+            /[!@#$%^&*(),.?":{}|<>]/,
+            "Debe contener al menos un carácter especial"
+        )
+        .notOneOf(
+            [Yup.ref("currentPassword")],
+            "La nueva contraseña debe ser diferente a la actual"
+        )
+        .required("La nueva contraseña es obligatoria"),
+
+    confirmPassword: Yup.string()
+        .oneOf([Yup.ref("newPassword")], "Las contraseñas deben coincidir")
+        .required("Confirma tu nueva contraseña"),
+});
+
 export const orderSchema = Yup.object().shape({
     selectedVariants: Yup.array()
         .min(1, 'Debes seleccionar al menos una variante')

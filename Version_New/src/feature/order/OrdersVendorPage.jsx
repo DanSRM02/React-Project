@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { STATES, STATE_LABELS } from "../../utils/states";
-import DataTable from "../../components/UI/DataTable";
+import { STATE_LABELS } from "../../utils/constans/states";
+import DataTable from "../../components/UI/datatable/DataTable";
 import { useOrders } from "../../hooks/useOrders";
 import { useUsers } from "../../hooks/useUsers";
-import OrderDetailsModal from "./OrderDetailsModal";
-import { AssignDeliveryModal } from "./AssignDeliveryModal";
+import OrderDetailsModal from "../../components/UI/order/OrderDetailsModal";
+import { AssignDeliveryModal } from "../../components/UI/delivery/AssignDeliveryModal";
 import { useDeliveries } from "../../hooks/useDeliveries";
 
 
@@ -32,6 +32,11 @@ const OrdersVendorPage = () => {
         fetchOrdersByState(selectedState);
         fetchDeliveriesActive();
     }, [selectedState]);
+
+    const STATE_FILTERS = Object.entries(STATE_LABELS).map(([key, label]) => ({
+        key,
+        label
+    }));
 
     const handleStateChange = async (orderId, newState) => {
         try {
@@ -99,7 +104,7 @@ const OrdersVendorPage = () => {
                         order.order_state === "PRIORITIZED" ? "bg-blue-100 text-blue-700" :
                             "bg-emerald-100 text-emerald-700"
                         }`}>
-                        {STATE_LABELS[order.order_state]}
+                        {STATE_FILTERS[order.order_state]}
                     </span>
 
                     {/* Mostrar domiciliario solo para órdenes aprobadas */}
@@ -176,7 +181,7 @@ const OrdersVendorPage = () => {
 
             {/* Filtro de estados */}
             <div className="flex mb-8 border-b border-gray-200">
-                {STATES.map((state) => (
+                {STATE_FILTERS.map((state) => (
                     <button
                         key={state.key}
                         onClick={() => setSelectedState(state.key)}

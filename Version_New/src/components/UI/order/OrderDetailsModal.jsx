@@ -1,9 +1,9 @@
 import React from "react";
 import { FaTimes } from "react-icons/fa";
-import { STATE_LABELS } from "../../utils/states";
-import { ProductCard } from "../../components/UI/ProductCard";
-import { DetailItem } from "../../components/UI/DetailItem";
-import { useAuth } from "../../contexts/AuthContext";
+import { STATE_LABELS } from "../../../utils/constans/states";
+import { ProductCard } from "../product/ProductCard";
+import { DetailItem } from "../datatable/DetailItem";
+import { useAuth } from "../../../contexts/AuthContext";
 
 const OrderDetailsModal = ({ isOpen, order, onClose }) => {
     const { user } = useAuth();

@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/img/logo.svg';
-import Input from '../UI/Input';
-import CircleButton from '../UI/CircleButton';
+import Input from '../UI/form/Input';
 import { FaTimes, FaBars } from '../UI/Icons';
 import { useAuth } from '../../contexts/AuthContext';
 import RoutesSidebar from '../../utils/routesSidebar';
+import CircleButton from '../UI/form/CircleButton';
 
 const PrivateLayout = ({ children, role, title }) => {
     const navigate = useNavigate();

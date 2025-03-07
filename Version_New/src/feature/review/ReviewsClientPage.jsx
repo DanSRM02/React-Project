@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useReviews } from "../../hooks/useReviews";
 import Loader from "../../components/UI/Loader";
-import ErrorMessage from "../../components/UI/ErrorMessage";
+import ErrorMessage from "../../components/UI/alert/ErrorMessage";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { FaStar, FaEdit, FaTrash, FaUserCircle } from "react-icons/fa";
@@ -70,7 +70,7 @@ const ReviewsPage = () => {
                                 Aún no hay reseñas publicadas en la comunidad.
                             </p>
                             <Link
-                                to="/nueva-reseña"
+                                to="/client/review/new"
                                 className="inline-flex items-center px-6 py-2.5 bg-amber-600 text-white rounded-full hover:bg-amber-700 transition-colors"
                             >
                                 <FaEdit className="mr-2" />

@@ -1,7 +1,7 @@
 import React from "react";
 import { FaClipboardList, FaUser, FaBox, FaTachometerAlt, FaHistory, FaStar } from "react-icons/fa";
-import Card from "../../components/UI/Card";
-import { StatCard } from "../../components/UI/StatCard";
+import Card from "../../components/UI/card/Card";
+import { StatCard } from "../../components/UI/card/StatCard";
 
 const DomiciliaryHomePage = () => {
     return (

@@ -1,5 +1,5 @@
 import React from "react";
-import { DeliveryCard } from "../../components/UI/DeliveryCard";
+import { DeliveryCard } from "../card/DeliveryCard";
 
 export const AssignDeliveryModal = ({ isOpen, order, deliveries, onAssign, onClose }) => {
     if (!isOpen || !order) return null;

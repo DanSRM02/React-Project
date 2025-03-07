@@ -12,3 +12,9 @@ export const loginUser = async (authetication) =>{
     const response = await apiClient.post("/auth/login", {data: authetication}, );
     return response.data;
 }
+
+export const changePassword = async (id, userData) =>{
+    console.log("Enviando solicitud a /auth/change-password con datos:", userData);
+    const response = await apiClient.post(`/auth/change-password/${id}`, {data: userData}, );
+    return response.data;
+}

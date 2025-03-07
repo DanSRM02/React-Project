@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { userService } from "../services/userSerivce";
+import { userService } from "../services/userService";
+import { changePassword } from "../services/authService";
 
 export const useUsers = (autoFetch = true) => {
     // Estados generales
@@ -76,6 +77,38 @@ export const useUsers = (autoFetch = true) => {
         }
     };
 
+    const handleChangePassword = async (id, userData) => {
+        setIsLoading(prev => ({ ...prev, single: true }));
+        setError(prev => ({ ...prev, single: null }));
+
+        try {
+            const response = await changePassword(id, userData);
+            setSelectedUser(response.data);
+            return response;
+        } catch (err) {
+            setError(prev => ({ ...prev, single: err }));
+            throw err;
+        } finally {
+            setIsLoading(prev => ({ ...prev, single: false }));
+        }
+    }
+
+    const handleChangeStatus = async (id, status) => {
+        setIsLoading(prev => ({ ...prev, single: true }));
+        setError(prev => ({ ...prev, single: null }));
+
+        try {
+            const response = await userService.changeStatus(id, { state: status });
+            setSelectedUser(response.data);
+            return response;
+        } catch (err) {
+            setError(prev => ({ ...prev, single: err }));
+            throw err;
+        } finally {
+            setIsLoading(prev => ({ ...prev, single: false }));
+        }
+    }
+
     // Crear usuario
     const createUser = async (userData) => {
         setIsLoading(prev => ({ ...prev, add: true }));
@@ -113,23 +146,6 @@ export const useUsers = (autoFetch = true) => {
         }
     };
 
-    // Eliminar usuario
-    const deleteUser = async (id) => {
-        setIsLoading(prev => ({ ...prev, delete: true }));
-        setError(prev => ({ ...prev, delete: null }));
-
-        try {
-            await userService.deleteUser(id);
-            setUsers(prev => prev.filter(user => user.id !== id));
-            if (selectedUser?.id === id) setSelectedUser(null);
-        } catch (err) {
-            setError(prev => ({ ...prev, delete: err }));
-            throw err;
-        } finally {
-            setIsLoading(prev => ({ ...prev, delete: false }));
-        }
-    };
-
     // Carga inicial automática
     useEffect(() => {
         if (autoFetch) fetchUsers();
@@ -148,7 +164,8 @@ export const useUsers = (autoFetch = true) => {
         fetchUserById,
         createUser,
         updateUser,
-        deleteUser,
+        handleChangePassword,
+        handleChangeStatus,
         fetchDeliveriesActive,
 
         // Helpers

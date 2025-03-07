@@ -21,8 +21,8 @@ export const userService = {
     updateUser: async (id, userData) => {
         try {
             console.log("updateUser - Actualizando usuario:", id, userData);
-            const response = await apiClient.put(
-                `user/update/${id}`,
+            const response = await apiClient.post(
+                `individual/update/${id}`,
                 userData
             );
             console.log("updateUser - Respuesta:", response.data);
@@ -41,6 +41,20 @@ export const userService = {
             return response.data;
         } catch (error) {
             console.error("getDeliveriesActive - Error:", error);
+            throw error;
+        }
+    },
+
+    changeStatus: async (id, status) => {
+        try {
+            console.log("changeStatus - Solicitando todos los usuarios");
+            console.log(status);
+
+            const response = await apiClient.post(`user/toggler/${id}`, { data: status });
+            console.log("changeStatus - Respuesta:", response.data);
+            return response.data;
+        } catch (error) {
+            console.error("changeStatus - Error:", error);
             throw error;
         }
     },

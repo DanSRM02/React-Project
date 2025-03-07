@@ -5,7 +5,7 @@ import {
     HiOutlineClipboardList,
     HiOutlineTrendingUp,
 } from "react-icons/hi";
-import { StatCard } from "../../components/UI/StatCard";
+import { StatCard } from "../../components/UI/card/StatCard";
 
 const ManagerHomePage = () => {
     return (

@@ -1,188 +1,211 @@
-import React, { useEffect, useState } from "react";
-import { useUsers } from "../../hooks/useUsers";
-import { useAuth } from "../../contexts/AuthContext";
-import Input from "../../components/UI/Input";
-import Label from "../../components/UI/Label";
-import Loader from "../../components/UI/Loader";
+import React, { useEffect } from 'react';
+import { useFormik } from 'formik';
+import { InfoAlert } from '../../components/UI/alert/InfoAlert';
+import { passwordChangeSchema } from '../../utils/validation/validationSchema';
+import ErrorMessage from '../../components/UI/alert/ErrorMessage';
+import Input from '../../components/UI/form/Input';
+import Label from '../../components/UI/form/Label';
+import { useAuth } from '../../contexts/AuthContext';
+import { useUsers } from '../../hooks/useUsers';
+import Loader from '../../components/UI/Loader';
+import { DetailItem } from '../../components/UI/datatable/DetailItem';
+import { LockClosedIcon } from '../../components/UI/Icons';
+import { Button } from '../../components/UI/form/Button';
 
-const AccountSettings = () => {
-    const { fetchUserById, updateUser, error, isLoading, selectedUser } = useUsers();
+const AccountSettingsPage = () => {
     const { user } = useAuth();
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        address: "",
-        document: "",
-        phone: ""
-    });
-    const [newPassword, setNewPassword] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
+    const [status, setStatus] = React.useState(null);
+    const { fetchUserById, handleChangePassword, error, isLoading, selectedUser } = useUsers();
 
+    // Obtener datos del usuario al montar el componente
     useEffect(() => {
-        const loadUserData = async () => {
-            try {
-                await fetchUserById(user.id);
-            } catch (err) {
-                console.error("Error cargando usuario:", err);
-            }
-        };
-        loadUserData();
-    }, []);    
-
-
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const userData = { individual: { ...formData } };
-            if (newPassword) userData.password = newPassword;
-
-            await updateUser(selectedUser.id, userData);
-            setSuccessMessage("Cambios guardados exitosamente!");
-            setTimeout(() => setSuccessMessage(""), 3000);
-            setNewPassword("");
-        } catch (err) {
-            console.error("Error actualizando usuario:", err);
+        if (user?.id) {
+            fetchUserById(user.id);
         }
-    };
+    }, [user?.id]);
+
+    const formik = useFormik({
+        initialValues: {
+            currentPassword: '',
+            newPassword: '',
+            confirmPassword: ''
+        },
+        validationSchema: passwordChangeSchema,
+        onSubmit: async (values, { resetForm }) => {
+            try {
+                // Corrección aquí: separar id y datos
+                await handleChangePassword(user.id, {
+                    currentPassword: values.currentPassword,
+                    password: values.newPassword,
+                    username: selectedUser.individual.email
+                });
+
+                setStatus({ type: 'success', message: '¡Contraseña actualizada exitosamente!' });
+                resetForm();
+            } catch (error) {
+                setStatus({
+                    type: 'error',
+                    message: error.response?.data?.message || 'Error al actualizar la contraseña'
+                });
+            }
+        }
+    });
+
+    if (isLoading.single) return <Loader className="mx-auto my-8" />;
+    if (error.single) return <ErrorMessage message={error.single.message} />;
 
     return (
-        <div className="max-w-4xl mx-auto p-6">
-            <div className="mb-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+            {/* Encabezado con icono */}
+            <div className="flex items-center gap-4">
+                <div className="p-3 bg-blue-100 rounded-lg">
+                    <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                </div>
                 <h1 className="text-3xl font-bold text-gray-800">Configuración de Cuenta</h1>
-                <p className="text-gray-600 mt-2">
-                    Gestiona tu información personal y preferencias de cuenta
-                </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-8">
-                {/* Sección de Información del Sistema */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-6">Información del Sistema</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <Label>Nombre de usuario</Label>
-                            <Input
-                                showIcon={false}
-                                value={selectedUser?.username || ""}
-                                readOnly
-                                className="bg-gray-50"
-                            />
-                        </div>
-                        <div>
-                            <Label>Rol del usuario</Label>
-                            <Input
-                                showIcon={false}
-                                value={selectedUser?.rol_type?.name || ""}
-                                readOnly
-                                className="bg-gray-50"
-                            />
-                        </div>
+            {/* Sección de Información Personal */}
+            {selectedUser && (
+                <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-xl font-semibold text-gray-800">Información Personal</h2>
+                        <span className="text-sm px-3 py-1 bg-green-100 text-green-800 rounded-full">
+                            Cuenta verificada
+                        </span>
                     </div>
-                </div>
 
-                {/* Sección de Información Personal */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-6">Información Personal</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <Label>Nombre completo</Label>
-                            <Input
-                                showIcon={false}
-                                name="name"
-                                value={selectedUser?.individual.name}
-                                onChange={handleChange}
-                                placeholder="Ej: Juan Pérez"
+                        {/* Columna izquierda */}
+                        <div className="space-y-5">
+                            <DetailItem
+                                label="Nombre completo"
+                                value={selectedUser.individual.name}
+                                icon="user"
+                            />
+                            <DetailItem
+                                label="Documento"
+                                value={`${selectedUser.individual.document_type.acronym} ${selectedUser.individual.document}`}
+                                icon="id"
+                            />
+                            <DetailItem
+                                label="Correo electrónico"
+                                value={selectedUser.individual.email}
+                                icon="email"
                             />
                         </div>
-                        <div>
-                            <Label>Correo electrónico</Label>
-                            <Input                            
-                                showIcon={false}
-                                type="email"
-                                name="email"
-                                value={selectedUser?.individual.email}
-                                onChange={handleChange}
-                                placeholder="Ej: juan@example.com"
+
+                        {/* Columna derecha */}
+                        <div className="space-y-5">
+                            <DetailItem
+                                label="Teléfono"
+                                value={selectedUser.individual.phone}
+                                icon="phone"
                             />
-                        </div>
-                        <div>
-                            <Label>Documento</Label>
-                            <div className="flex gap-3">
-                                <Input
-                                    showIcon={false}
-                                    name="document"
-                                    value={selectedUser?.individual.document}
-                                    onChange={handleChange}
-                                    className="flex-1"
-                                    placeholder="Número de documento"
+                            <DetailItem
+                                label="Dirección"
+                                value={selectedUser.individual.address}
+                                icon="location"
+                            />
+                            <div className="grid grid-cols-2 gap-5">
+                                <DetailItem
+                                    label="Rol"
+                                    value={selectedUser.rol_type.name}
+                                    icon="badge"
                                 />
-                                <Input
-                                    showIcon={false}
-                                    value={selectedUser?.individual?.document_type?.acronym || ""}
-                                    readOnly
-                                    className="w-20 bg-gray-50"
+                                <DetailItem
+                                    label="Tipo"
+                                    value={selectedUser.individual.individual_type.name}
+                                    icon="person"
                                 />
                             </div>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Sección de Cambio de Contraseña */}
+            <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+                <div className="mb-8">
+                    <h2 className="text-xl font-semibold text-gray-800 mb-2">Seguridad</h2>
+                    <p className="text-gray-500 text-sm">Actualiza tu contraseña regularmente para mantener la seguridad de tu cuenta</p>
+                </div>
+
+                {status?.type === 'success' && <InfoAlert message={status.message} className="mb-6" />}
+                {status?.type === 'error' && <ErrorMessage message={status.message} className="mb-6" />}
+
+                <form onSubmit={formik.handleSubmit} className="space-y-6">
+                    <div className="space-y-4">
                         <div>
-                            <Label>Teléfono</Label>
+                            <Label htmlFor="currentPassword" className="mb-1.5">Contraseña actual</Label>
                             <Input
                                 showIcon={false}
-                                type="tel"
-                                name="phone"
-                                value={selectedUser?.individual.phone}
-                                onChange={handleChange}
-                                placeholder="Ej: 300 123 4567"
+                                id="currentPassword"
+                                name="currentPassword"
+                                type="password"
+                                placeholder="••••••••"
+                                leftIcon={<LockClosedIcon className="h-5 w-5 text-gray-400" />}
+                                onChange={formik.handleChange}
+                                value={formik.values.currentPassword}
                             />
+                            {formik.errors.currentPassword && (
+                                <ErrorMessage message={formik.errors.currentPassword} className="mt-1" />
+                            )}
                         </div>
-                        <div className="md:col-span-2">
-                            <Label>Dirección</Label>
-                            <Input
-                                showIcon={false}
-                                name="address"
-                                value={selectedUser?.individual.address}
-                                onChange={handleChange}
-                                placeholder="Ej: Carrera 45 # 20-30"
-                            />
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <Label htmlFor="newPassword" className="mb-1.5">Nueva contraseña</Label>
+                                <Input
+                                    showIcon={false}
+                                    id="newPassword"
+                                    name="newPassword"
+                                    type="password"
+                                    placeholder="••••••••"
+                                    leftIcon={<LockClosedIcon className="h-5 w-5 text-gray-400" />}
+                                    onChange={formik.handleChange}
+                                    value={formik.values.newPassword}
+                                />
+                                {formik.errors.newPassword && (
+                                    <ErrorMessage message={formik.errors.newPassword} className="mt-1" />
+                                )}
+                            </div>
+
+                            <div>
+                                <Label htmlFor="confirmPassword" className="mb-1.5">Confirmar contraseña</Label>
+                                <Input
+                                    showIcon={false}
+                                    id="confirmPassword"
+                                    name="confirmPassword"
+                                    type="password"
+                                    placeholder="••••••••"
+                                    leftIcon={<LockClosedIcon className="h-5 w-5 text-gray-400" />}
+                                    onChange={formik.handleChange}
+                                    value={formik.values.confirmPassword}
+                                />
+                                {formik.errors.confirmPassword && (
+                                    <ErrorMessage message={formik.errors.confirmPassword} className="mt-1" />
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Mensajes de estado */}
-                {successMessage && (
-                    <div className="p-4 bg-green-50 text-green-700 rounded-lg">
-                        {successMessage}
+                    <div className="border-t pt-6">
+                        <Button
+                            type="submit"
+                            disabled={isLoading.update}
+                            variant="primary"
+                            loading={isLoading.update}
+                            className="w-full px-4 py-3 text-base font-medium bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+                        >
+                            {isLoading.update ? 'Actualizando...' : 'Cambiar contraseña'}
+                        </Button>
                     </div>
-                )}
-
-                {error.update && (
-                    <div className="p-4 bg-red-50 text-red-700 rounded-lg">
-                        Error al guardar: {error.update.message}
-                    </div>
-                )}
-
-                {/* Botón de enviar */}
-                <div className="flex justify-end">
-                    <button
-                        type="submit"
-                        disabled={isLoading.update}
-                        className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        {isLoading.update ? (
-                            <Loader />
-                        ) : (
-                            "Guardar Cambios"
-                        )}
-                    </button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-
     );
 };
 
-export default AccountSettings;
+export default AccountSettingsPage;

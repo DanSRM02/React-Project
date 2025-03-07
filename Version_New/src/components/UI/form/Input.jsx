@@ -5,13 +5,21 @@ const Input = ({
     placeholder,
     value,
     onChange,
+    label,
     onBlur, // Destructuramos onBlur para asegurarnos de que se pase correctamente
     showIcon = true,
+    required = false,
     className = "",
     ...props
 }) => {
     return (
         <div className={`relative ${className}`}>
+            {label && (
+                <label className="block mb-2 text-sm font-medium text-gray-700">
+                    {label}
+                    {required && <span className="text-red-500 ml-1">*</span>}
+                </label>
+            )}
             <input
                 type={type}
                 placeholder={placeholder}

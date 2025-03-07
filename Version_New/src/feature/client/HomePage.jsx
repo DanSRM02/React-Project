@@ -1,5 +1,5 @@
 import React from "react";
-import Card from "../../components/UI/Card";
+import Card from "../../components/UI/card/Card";
 import {
     FaClipboardList,
     FaPlusCircle,
@@ -10,7 +10,7 @@ import {
     FaMoneyBillWave,
     FaShoppingBag
 } from "react-icons/fa";
-import { StatCard } from "../../components/UI/StatCard";
+import { StatCard } from "../../components/UI/card/StatCard";
 
 const ClientHomePage = ({ role }) => {
     return (

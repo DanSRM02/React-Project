@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import Input from "../../components/UI/Input";
-import Label from "../../components/UI/Label";
-import ConfirmationModal from "../../components/UI/ConfirmationModal";
+import Input from "../../components/UI/form/Input";
+import Label from "../../components/UI/form/Label";
+import ConfirmationModal from "../../components/UI/alert/ConfirmationModal";
 import { useRegisterIndividual } from "./hooks/useRegisterIndividual";
 import { useDocumentTypes } from "../../hooks/useDocumentTypes";
 import { useIndividualTypes } from "../../hooks/useIndividualTypes"; // Necesitamos crear este hook

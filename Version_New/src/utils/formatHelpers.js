@@ -6,9 +6,12 @@ export const formatCurrency = (amount) =>
         maximumFractionDigits: 2
     }).format(amount);
 
-export const formatLongDate = (dateString) =>
-    new Intl.DateTimeFormat('es-ES', {
+export const formatLongDate = (dateString) => {
+    const date = new Date(dateString);
+    if (isNaN(date)) return ''; // Manejo de fechas inválidas
+    return new Intl.DateTimeFormat('es-ES', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
-    }).format(new Date(dateString));
+    }).format(date);
+};

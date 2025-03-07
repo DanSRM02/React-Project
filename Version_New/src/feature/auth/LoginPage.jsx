@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
-import Input from "../../components/UI/Input";
-import Label from "../../components/UI/Label";
+import Input from "../../components/UI/form/Input";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { loginSchema } from "../../utils/validation/validationSchema";
 import { useAuth } from "../../contexts/AuthContext";
+import Label from "../../components/UI/form/Label";
 
 const Login = () => {
     const { login, loading, error, user } = useAuth();
@@ -39,7 +39,7 @@ const Login = () => {
     }, [user, navigate]);
 
     // Función de envío del formulario
-    const handleSubmit = async (values, { setSubmitting }) => {        
+    const handleSubmit = async (values, { setSubmitting }) => {
         await login(values); // La función login del contexto usa las credenciales
         setSubmitting(false);
     };
@@ -66,7 +66,7 @@ const Login = () => {
                                 <Label htmlFor="username">Correo Electrónico</Label>
                                 <Field name="username">
                                     {({ field }) => (
-                                         
+
                                         <Input
                                             {...field}
                                             type="text"

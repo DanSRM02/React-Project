@@ -9,7 +9,8 @@ export const useRegisterIndividual = () => {
         document: "",
         phone: "",
         document_type_id: "",
-        individual_type_id: ""
+        individual_type_id: "",
+        state: null
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -17,27 +18,21 @@ export const useRegisterIndividual = () => {
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        if (name === "document_type_id") {
-            // Convert to number for comparison
-            const docTypeId = Number(value);
-            // Set individual type based on document type
-            const autoIndividualType =
-                docTypeId === 1 || docTypeId === 3 ? 1 : // CC or CE -> Persona
-                    docTypeId === 2 ? 2 : // NIT -> Empresa
-                        ""; // Default empty if not matched
-
-            console.log(`Setting document_type_id: ${docTypeId}, individual_type_id: ${autoIndividualType}`);
-
-            setIndividual((prev) => ({
+        // Para selects normales
+        if (name === "document_type_id" || name === "individual_type_id") {
+            const numericValue = Number(value);
+            setIndividual(prev => ({
                 ...prev,
-                document_type_id: docTypeId,
-                individual_type_id: autoIndividualType
+                [name]: numericValue,
+                // Actualizar individual_type_id automáticamente si es document_type_id
+                ...(name === "document_type_id" && {
+                    individual_type_id: numericValue === 2 ? 2 : 1
+                })
             }));
         } else {
-            setIndividual((prev) => ({ ...prev, [name]: value }));
+            setIndividual(prev => ({ ...prev, [name]: value }));
         }
     };
-
     // Función que realiza el registro con los datos correctamente formateados
     const registerIndividual = async (formValues = null) => {
         setLoading(true);
@@ -72,5 +67,5 @@ export const useRegisterIndividual = () => {
         }
     };
 
-    return { individual, handleChange, registerIndividual, loading, error };
+    return { individual, handleChange, setIndividual, registerIndividual, loading, error };
 };

@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import { useProducts } from "../../hooks/useProduct";
-import { FiTrash2, FiPackage, FiPlus, FiAlertTriangle } from "react-icons/fi";
-import ConfirmationModal from "../../components/UI/ConfirmationModal";
+import { FiTrash2, FiPackage, FiPlus, FiAlertTriangle, FiEdit } from "react-icons/fi";
+import ConfirmationModal from "../../components/UI/alert/ConfirmationModal";
 import { useProductVariants } from "../../hooks/useProductVariants";
+import EditProductModal from "./EditProductModal";
+import AddProductModal from "./AddProductModal";
 
 const ManageProductPage = () => {
     const { handlerAddProduct, handlerRemoveProduct } = useProducts();
-    const { variants, loading, error, } = useProductVariants();
+    const { variants, loading, error, fetchVariants } = useProductVariants();
+    const [productToEdit, setProductToEdit] = useState(null);
+    const [showAddVariantModal, setShowAddVariantModal] = useState(false);
+    const [selectedProductForVariant, setSelectedProductForVariant] = useState(null);
     const [newProductName, setNewProductName] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const [productToDelete, setProductToDelete] = useState(null);
@@ -23,6 +28,7 @@ const ManageProductPage = () => {
             setNewProductName("");
             setSuccessMessage("¡Producto creado exitosamente!");
             setTimeout(() => setSuccessMessage(""), 3000);
+            fetchVariants();
         } catch (err) {
             console.error("Error creating product:", err);
         }
@@ -34,6 +40,7 @@ const ManageProductPage = () => {
                 await handlerRemoveProduct(productToDelete);
                 setSuccessMessage("¡Producto eliminado correctamente!");
                 setTimeout(() => setSuccessMessage(""), 3000);
+                fetchVariants();
             } catch (err) {
                 console.error("Error deleting product:", err);
             }
@@ -87,6 +94,7 @@ const ManageProductPage = () => {
                             {error.message}
                         </div>
                     )}
+
                     {successMessage && (
                         <div className="flex items-center gap-2 p-3 bg-green-50 text-green-700 rounded-lg">
                             <FiPackage />
@@ -121,19 +129,38 @@ const ManageProductPage = () => {
                                             {product.state ? 'Activo' : 'Inactivo'}
                                         </span>
                                     </div>
-                                    <button
-                                        onClick={() => setProductToDelete(product.id)}
-
-                                        className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
-                                        title="Eliminar producto"
-                                    >
-                                        <FiTrash2 className="text-lg" />
-                                    </button>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => setProductToEdit(product)}
+                                            className="text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50 transition-colors"
+                                            title="Editar producto"
+                                        >
+                                            <FiEdit className="text-lg" />
+                                        </button>
+                                        <button
+                                            onClick={() => setProductToDelete(product.id)}
+                                            className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                                            title="Eliminar producto"
+                                        >
+                                            <FiTrash2 className="text-lg" />
+                                        </button>
+                                    </div>
                                 </div>
 
                                 {product.variants.length > 0 ? (
                                     <div className="mt-4">
-                                        <h4 className="text-sm font-medium text-gray-600 mb-2">Variantes disponibles:</h4>
+                                        <div className="flex justify-between items-center mb-2">
+                                            <h4 className="text-sm font-medium text-gray-600">Variantes disponibles:</h4>
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedProductForVariant(product);
+                                                    setShowAddVariantModal(true);
+                                                }}
+                                                className="text-green-600 hover:text-green-700 text-xs flex items-center gap-1"
+                                            >
+                                                <FiPlus /> Nueva Variante
+                                            </button>
+                                        </div>
                                         <div className="space-y-2">
                                             {product.variants.map((variant) => (
                                                 <div key={variant.id} className="bg-gray-50 p-3 rounded-lg flex justify-between items-center">
@@ -151,9 +178,20 @@ const ManageProductPage = () => {
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="mt-4 p-3 bg-yellow-50 text-yellow-700 rounded-lg text-sm">
-                                        <FiAlertTriangle className="inline-block mr-2" />
-                                        Este producto no tiene variantes registradas
+                                    <div className="mt-4 p-3 bg-yellow-50 text-yellow-700 rounded-lg text-sm flex justify-between items-center">
+                                        <div>
+                                            <FiAlertTriangle className="inline-block mr-2" />
+                                            Este producto no tiene variantes registradas
+                                        </div>
+                                        <button
+                                            onClick={() => {
+                                                setSelectedProductForVariant(product);
+                                                setShowAddVariantModal(true);
+                                            }}
+                                            className="text-green-600 hover:text-green-700 text-xs flex items-center gap-1"
+                                        >
+                                            <FiPlus /> Agregar Variante
+                                        </button>
                                     </div>
                                 )}
                             </div>
@@ -162,7 +200,33 @@ const ManageProductPage = () => {
                 )}
             </div>
 
-            {/* Modal de confirmación */}
+            {/* Modales */}
+            <EditProductModal
+                isOpen={!!productToEdit}
+                onClose={() => setProductToEdit(null)}
+                product={productToEdit}
+                onSuccess={() => {
+                    fetchVariants();
+                    setSuccessMessage("¡Producto actualizado correctamente!");
+                    setTimeout(() => setSuccessMessage(""), 3000);
+                }}
+            />
+
+            <AddProductModal
+                isOpen={showAddVariantModal}
+                onClose={() => {
+                    setShowAddVariantModal(false);
+                    setSelectedProductForVariant(null);
+                }}
+                product={selectedProductForVariant}
+                products={variants}
+                onSuccess={() => {
+                    fetchVariants();
+                    setSuccessMessage("¡Variante agregada correctamente!");
+                    setTimeout(() => setSuccessMessage(""), 3000);
+                }}
+            />
+
             <ConfirmationModal
                 isOpen={!!productToDelete}
                 onClose={() => setProductToDelete(null)}

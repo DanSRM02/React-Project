@@ -4,7 +4,6 @@ import { Navigate } from 'react-router-dom';
 import PrivateLayout from '../components/layout/PrivateLayout.jsx';
 import PublicLayout from '../components/layout/PublicLayout';
 import Home from '../feature/index/HomePage.jsx';
-import Login from '../feature/auth/LoginPage.jsx';
 import Products from '../feature/index/ProductsPage.jsx';
 import ClientHomePage from '../feature/client/HomePage.jsx';
 import CreateOrderPage from '../feature/order/CreateOrderPage.jsx';
@@ -12,8 +11,8 @@ import VendorHomePage from '../feature/vendor/HomePage.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import Register from '../feature/auth/RegisterPage.jsx';
 import ManagerHomePage from '../feature/manager/HomePage.jsx';
-import CreateUserPage from '../feature/manager/CreateUser.jsx';
-import ProductsPage from '../feature/products/ProductPage.jsx';
+import CreateUserPage from '../feature/manager/ManageUser.jsx';
+import ProductsPage from '../feature/products/VendorProductPage.jsx';
 import OrdersClientPage from '../feature/order/OrdersClientPage.jsx';
 import OrdersVendorPage from '../feature/order/OrdersVendorPage.jsx';
 import DomiciliaryHomePage from '../feature/delivery/HomePage.jsx';
@@ -21,11 +20,10 @@ import OrdersDeliveryPage from '../feature/order/OrdersDeliveryPage.jsx';
 import ReviewsPage from '../feature/review/ReviewsClientPage.jsx';
 import UnauthorizedPage from '../feature/index/UnauthorizedPage.jsx';
 import CreateReviewPage from '../feature/review/CreateReviewPage.jsx';
-import VendorDeliveryPage from '../feature/delivery/VendorDeliveryPage.jsx';
 import AccountSettings from '../feature/client/AccountPage.jsx';
 import OrdersPendingPage from '../feature/order/OrdersPendingPage.jsx';
-import CreateProductPage from '../feature/products/ManageProductPage.jsx';
 import ManageProductPage from '../feature/products/ManageProductPage.jsx';
+import Login from '../feature/auth/LoginPage.jsx';
 
 const AppRoutes = () => {
     // Suponiendo que conoces el rol del usuario autenticado
@@ -151,6 +149,16 @@ const AppRoutes = () => {
                         </ProtectedRoute>
                     }
                 />
+                 <Route
+                    path="/vendor/account"
+                    element={
+                        <ProtectedRoute allowedRoles={["vendedor"]}>
+                            <PrivateLayout title={`${nameSite} / Mi cuenta`}>
+                                <AccountSettings />
+                            </PrivateLayout>
+                        </ProtectedRoute>
+                    }
+                />
                 <Route
                     path="/vendor/products"
                     element={
@@ -160,17 +168,7 @@ const AppRoutes = () => {
                             </PrivateLayout>
                         </ProtectedRoute>
                     }
-                />
-                <Route
-                    path="/vendor/deliveries"
-                    element={
-                        <ProtectedRoute allowedRoles={["vendedor"]}>
-                            <PrivateLayout title={`${nameSite} / Pedidos por Entregar`}>
-                                <VendorDeliveryPage />
-                            </PrivateLayout>
-                        </ProtectedRoute>
-                    }
-                />
+                />             
 
                 {/* Rutas privadas para gerentes */}
                 <Route

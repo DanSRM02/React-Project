@@ -1,5 +1,5 @@
 import React from "react";
-import { DetailItem } from "./DetailItem";
+import { DetailItem } from "../datatable/DetailItem";
 
 export const ProductCard = ({ item }) => (
     <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
