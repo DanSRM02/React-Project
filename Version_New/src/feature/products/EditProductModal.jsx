@@ -27,7 +27,21 @@ const EditProductModal = ({ isOpen, onClose, product, onSuccess }) => {
                 unitText: `${v.unit.acronym} (${v.unit.unit_type})`
             })));
         }
+
+        // Resetear estado de éxito al recibir nuevo producto
+        setShowSuccess(false);
     }, [product]);
+
+    // Efecto para resetear al cerrar
+    useEffect(() => {
+        if (!isOpen) {
+            setProductName("");
+            setVariantsForm([]);
+            setError(null);
+            setLoading(false);
+            setShowSuccess(false);
+        }
+    }, [isOpen]);
 
     const handleVariantChange = (index, field, value) => {
         // Validación numérica
@@ -50,11 +64,6 @@ const EditProductModal = ({ isOpen, onClose, product, onSuccess }) => {
         setError(null);
 
         try {
-            // Actualizar nombre del producto si cambió
-            if (productName !== product.name) {
-                await handlerUpdateProduct(product.id, { name: productName });
-            }
-
             // Actualizar variantes
             await Promise.all(
                 variantsForm.map(variant =>

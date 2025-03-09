@@ -11,7 +11,7 @@ const AddProductModal = ({ isOpen, onClose, product, variant, products = [], onS
         quantity: "",
         price: "",
         unit_id: "",
-        product_id: product?.id || ""
+        product_id: Number(product?.id) || ""
     });
 
     const [localError, setLocalError] = useState(null);
@@ -19,19 +19,27 @@ const AddProductModal = ({ isOpen, onClose, product, variant, products = [], onS
     const { addVariant, updateVariant, loading, error } = useProductVariants();
     const { units, loading: unitsLoading, error: unitsError } = useUnits();
 
+    console.log(product);
+
     useEffect(() => {
         if (!isOpen) {
-            // Resetear estado al cerrar
             setVariantForm({
                 quantity: "",
                 price: "",
                 unit_id: "",
-                product_id: product?.id || ""
+                product_id: product?.id || "" // Usar el product.id actual
             });
             setLocalError(null);
             setShowSuccess(false);
         }
-    }, [isOpen]);
+    }, [isOpen, product]);
+
+    useEffect(() => {
+        setVariantForm(prev => ({
+            ...prev,
+            product_id: product?.id || ""
+        }));
+    }, [product]);
 
     useEffect(() => {
         if (variant) {
@@ -54,6 +62,7 @@ const AddProductModal = ({ isOpen, onClose, product, variant, products = [], onS
         }
 
         setLocalError(null);
+
         setVariantForm(prev => ({ ...prev, [name]: value }));
     };
 
@@ -71,8 +80,9 @@ const AddProductModal = ({ isOpen, onClose, product, variant, products = [], onS
                 quantity: Number(variantForm.quantity),
                 price: Number(variantForm.price),
                 unit_id: variantForm.unit_id,
-                product_id: variantForm.product_id,
+                product_id: Number(variantForm.product_id),
             };
+            console.log("payload", payload);
 
             if (variant) {
                 await updateVariant(variant.id, payload);

@@ -8,7 +8,7 @@ export const useDeliveries = () => {
     const [errorAdd, setErrorAdd] = useState(null);
     const [errorUpdate, setErrorUpdate] = useState(null);
     const [errorFind, setErrorFind] = useState(null);
-    const [currentDelivery, setCurrentDelivery] = useState(null);
+    const [deliveries, setDeliveries] = useState([]);
 
     const handleAddDelivery = async (deliveryData) => {
         setLoadingAdd(true);
@@ -29,7 +29,7 @@ export const useDeliveries = () => {
         setErrorFind(null);
         try {
             const result = await findDeliveryById(deliveryId);
-            setCurrentDelivery(result.data);
+            setDeliveries(result.data || []); // Almacenar todas las entregas
             return result;
         } catch (error) {
             setErrorFind(error.message);
@@ -94,7 +94,7 @@ export const useDeliveries = () => {
         errorFind,
 
         // Datos
-        currentDelivery,
+        deliveries,
 
         // Métodos
         addDelivery: handleAddDelivery,

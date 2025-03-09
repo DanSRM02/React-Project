@@ -218,8 +218,7 @@ const ManageProductPage = () => {
                     setShowAddVariantModal(false);
                     setSelectedProductForVariant(null);
                 }}
-                product={selectedProductForVariant}
-                products={variants}
+                product={selectedProductForVariant}            
                 onSuccess={() => {
                     fetchVariants();
                     setSuccessMessage("¡Variante agregada correctamente!");
@@ -229,7 +228,7 @@ const ManageProductPage = () => {
 
             <ConfirmationModal
                 isOpen={!!productToDelete}
-                onClose={() => setProductToDelete(null)}
+                onCancel={() => setProductToDelete(null)}
                 onConfirm={handleDeleteConfirmation}
                 title="Confirmar eliminación"
                 message="¿Estás seguro que deseas eliminar este producto? Esta acción no se puede deshacer."

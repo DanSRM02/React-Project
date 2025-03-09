@@ -59,12 +59,12 @@ export const orderService = {
         }
     },
 
-    getOrdersByState: async (state) => {
+    getOrdersKanban: async () => {
         try {
-            const response = await apiClient.get(`/order/state/${state}`);
+            const response = await apiClient.get(`/order/kanban`);
             return response.data;
         } catch (error) {
-            throw new Error(error.response?.data?.error || "Error getting orders by state");
+            throw new Error(error.response?.data?.error || "Error getting kanban orders");
         }
     },
 

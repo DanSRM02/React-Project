@@ -29,11 +29,6 @@ const PrivateLayout = ({ children, role, title }) => {
         }
     }, [user, loading, role, navigate]);
 
-    // Manejar cierre de sesión
-    const handleLogout = () => {
-        logout(); // Llamar la función de logout
-        navigate("/login"); // Redirigir al login
-    };
 
     return (
         <>
@@ -59,13 +54,11 @@ const PrivateLayout = ({ children, role, title }) => {
                         <div className="hidden md:flex items-center space-x-4">
                             <Input text="Buscar..." />
                             <CircleButton />
-                            <button onClick={handleLogout}>
-                                <img
-                                    src={logo}
-                                    alt="Usuario"
-                                    className="h-10 w-10 rounded-full border-2 border-green-600"
-                                />
-                            </button>
+                            <img
+                                src={logo}
+                                alt="Usuario"
+                                className="h-10 w-10 rounded-full border-2 border-green-600"
+                            />
                         </div>
 
                         {/* Botón hamburguesa para pantallas pequeñas */}

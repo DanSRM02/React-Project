@@ -1,7 +1,7 @@
 import React from "react";
 import { MobileOrderCard } from "./MobileOrderCard";
 
-const DataTable = ({ columns, data, rowClassName, emptyMessage, mobileRender, ...props }) => {
+const DataTable = ({ columns, data, rowClassName, emptyMessage, mobileRender, onRowClick, ...props }) => { // Añade onRowClick
     return (
         <div>
             <div className="md:hidden space-y-3">
@@ -12,15 +12,13 @@ const DataTable = ({ columns, data, rowClassName, emptyMessage, mobileRender, ..
                 ))}
             </div>
             <div className="hidden md:block">
-                {/* Versión de escritorio */}
                 <table className="min-w-full bg-white shadow rounded-lg">
                     <thead className="bg-gray-100">
                         <tr>
                             {columns.map((col, index) => (
                                 <th
                                     key={index}
-                                    className={`px-4 py-2 text-left text-sm font-semibold text-gray-700 ${col.headerClassName || ""
-                                        }`}
+                                    className={`px-4 py-2 text-left text-sm font-semibold text-gray-700 ${col.headerClassName || ""}`}
                                 >
                                     {col.header}
                                 </th>
@@ -33,6 +31,7 @@ const DataTable = ({ columns, data, rowClassName, emptyMessage, mobileRender, ..
                                 <tr
                                     key={rowIndex}
                                     className={`border-b hover:bg-gray-50 ${rowClassName || ""}`}
+                                    onClick={() => onRowClick(row)} // ← Agrega esto
                                 >
                                     {columns.map((col, colIndex) => (
                                         <td
@@ -46,10 +45,7 @@ const DataTable = ({ columns, data, rowClassName, emptyMessage, mobileRender, ..
                             ))
                         ) : (
                             <tr>
-                                <td
-                                    colSpan={columns.length}
-                                    className="text-center py-4 text-gray-500"
-                                >
+                                <td colSpan={columns.length} className="text-center py-4 text-gray-500">
                                     {emptyMessage || "No data available."}
                                 </td>
                             </tr>
@@ -58,8 +54,6 @@ const DataTable = ({ columns, data, rowClassName, emptyMessage, mobileRender, ..
                 </table>
             </div>
         </div>
-
     );
 };
-
 export default DataTable;

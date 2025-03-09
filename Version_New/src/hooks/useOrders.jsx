@@ -49,9 +49,9 @@ export const useOrders = () => {
     };
 
     // Obtener órdenes por estado    
-    const fetchOrdersByState = async (state) => {
+    const fetchOrdersKanban = async () => {
         try {
-            const result = await handleRequest(orderService.getOrdersByState, state);
+            const result = await handleRequest(orderService.getOrdersKanban);
             setOrders({ data: result?.data || [] });
             return result;
         } catch (err) {
@@ -61,9 +61,9 @@ export const useOrders = () => {
 
     const fetchOrderDetails = async (orderId) => {
         try {
-            const productDetails = await handleRequest(orderService.getOrderDetails, orderId);            
-            
-            const mainOrder = orders.data?.find(order => order.id === orderId) || {};
+            const productDetails = await handleRequest(orderService.getOrderDetails, orderId);
+
+            const mainOrder = orders.find(order => order.id === orderId) || {};                        
 
             const mergedOrder = {
                 ...mainOrder,
@@ -80,8 +80,8 @@ export const useOrders = () => {
     // Obtener todas las órdenes del usuario
     const fetchAllOrders = useCallback(async () => {
         try {
-            const data = await handleRequest(orderService.getOrdersByUser);
-
+            const data = await handleRequest(orderService.getOrdersByUser);            
+            
             setOrders(data.data);
         } catch (err) {
             setError(err);
@@ -107,7 +107,7 @@ export const useOrders = () => {
         setCurrentOrder,
         createOrder,
         changeStatus,
-        fetchOrdersByState,
+        fetchOrdersKanban,
         fetchOrderDetails,
         fetchAllOrders,
         searchOrder,

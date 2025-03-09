@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { addProduct, removeProduct } from "../services/productService";
+import { addProduct, removeProduct, getAllProducts } from "../services/productService";
 
 export const useProducts = () => {
-    const [variants, setVariants] = useState([]);
+    const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     // En la función handlerAddProduct, cambia:
@@ -12,7 +12,7 @@ export const useProducts = () => {
         try {
             const response = await addProduct({ data: productData });
             // Actualiza el estado con la respuesta completa
-            setVariants(prev => [...prev, response.data]);
+            setProducts(prev => [...prev, response.data]);
             return response;
         } catch (err) {
             console.error("Error al agregar producto:", err);
@@ -29,7 +29,22 @@ export const useProducts = () => {
         setError(null);
         try {
             await removeProduct(id);
-            setVariants((prev) => prev.filter((variant) => variant.id !== id));
+            setProducts((prev) => prev.filter((variant) => variant.id !== id));
+        } catch (err) {
+            console.error("Error al eliminar variante:", err);
+            setError(err);
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchAllProducts = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await getAllProducts();
+            setProducts(response);
         } catch (err) {
             console.error("Error al eliminar variante:", err);
             setError(err);
@@ -40,10 +55,11 @@ export const useProducts = () => {
     };
 
     return {
-        variants,
+        products,
         loading,
         error,
         handlerAddProduct,
-        handlerRemoveProduct
+        handlerRemoveProduct,
+        fetchAllProducts
     };
 }

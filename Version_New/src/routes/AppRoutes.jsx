@@ -16,7 +16,6 @@ import ProductsPage from '../feature/products/VendorProductPage.jsx';
 import OrdersClientPage from '../feature/order/OrdersClientPage.jsx';
 import OrdersVendorPage from '../feature/order/OrdersVendorPage.jsx';
 import DomiciliaryHomePage from '../feature/delivery/HomePage.jsx';
-import OrdersDeliveryPage from '../feature/order/OrdersDeliveryPage.jsx';
 import ReviewsPage from '../feature/review/ReviewsClientPage.jsx';
 import UnauthorizedPage from '../feature/index/UnauthorizedPage.jsx';
 import CreateReviewPage from '../feature/review/CreateReviewPage.jsx';
@@ -24,8 +23,10 @@ import AccountSettings from '../feature/client/AccountPage.jsx';
 import OrdersPendingPage from '../feature/order/OrdersPendingPage.jsx';
 import ManageProductPage from '../feature/products/ManageProductPage.jsx';
 import Login from '../feature/auth/LoginPage.jsx';
+import { Logout } from '../feature/auth/Logout.jsx';
+import DeliveriesPage from '../feature/delivery/DeliveriesPage.jsx';
 
-const AppRoutes = () => {
+const AppRoutes = () => {    
     // Suponiendo que conoces el rol del usuario autenticado
     const nameSite = 'OXI';
 
@@ -149,7 +150,7 @@ const AppRoutes = () => {
                         </ProtectedRoute>
                     }
                 />
-                 <Route
+                <Route
                     path="/vendor/account"
                     element={
                         <ProtectedRoute allowedRoles={["vendedor"]}>
@@ -168,7 +169,7 @@ const AppRoutes = () => {
                             </PrivateLayout>
                         </ProtectedRoute>
                     }
-                />             
+                />
 
                 {/* Rutas privadas para gerentes */}
                 <Route
@@ -201,7 +202,6 @@ const AppRoutes = () => {
                         </ProtectedRoute>
                     }
                 />
-
                 <Route
                     path="/manager/product"
                     element={
@@ -212,7 +212,6 @@ const AppRoutes = () => {
                         </ProtectedRoute>
                     }
                 />
-
 
                 {/* Rutas privadas para gerentes */}
                 <Route
@@ -250,11 +249,14 @@ const AppRoutes = () => {
                     element={
                         <ProtectedRoute allowedRoles={["domiciliario"]}>
                             <PrivateLayout title={`${nameSite} / Órdenes por Despachar`}>
-                                <OrdersDeliveryPage />
+                                <DeliveriesPage />
                             </PrivateLayout>
                         </ProtectedRoute>
                     }
                 />
+
+                <Route path="/logout" element={<Logout />}></Route>
+
                 {/* Ruta por defecto si no coincide ninguna */}
                 <Route path="/unauthorized" element={<UnauthorizedPage />} />
                 <Route path="*" element={<Navigate to="/unauthorized" replace />} />

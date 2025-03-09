@@ -86,6 +86,18 @@ export const getAllProductVariants = async () => {
     }
 };
 
+export const getAllProducts = async () => {
+    try {
+        console.log("getAllProducts - Solicitando todos los productos");
+        const response = await apiClient.get("product/all");
+        console.log("getAllProducts - Respuesta:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("getAllProducts - Error:", error);
+        throw error;
+    }
+};
+
 export const findProductVariant = async (id) => {
     try {
         console.log("findProductVariant - Solicitando variante con ID:", id);

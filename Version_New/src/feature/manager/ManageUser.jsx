@@ -4,7 +4,7 @@ import DataTable from "../../components/UI/datatable/DataTable";
 import Loader from "../../components/UI/Loader";
 import ErrorMessage from "../../components/UI/alert/ErrorMessage";
 import { HiOutlinePencil, HiOutlineUserAdd, HiOutlineCheckCircle, HiOutlineXCircle } from "react-icons/hi";
-import { ROLE_COLORS, STATUS } from "../../utils/constans/states";
+import { ROLE_COLORS, STATUS_BADGES } from "../../utils/constans/states";
 import { Button } from "../../components/UI/form/Button";
 import { Modal } from "../../components/UI/alert/Modal";
 import { useRegisterIndividual } from "../auth/hooks/useRegisterIndividual";
@@ -179,34 +179,34 @@ const UsersList = () => {
             accessor: "rol_type.name",
             render: (user) => (
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${ROLE_COLORS[user.rol_type.name]}`}>
-                    {user.rol_type.name.toLowerCase()}
+                    {user.rol_type.name}
                 </span>
             )
         },
         {
             header: "Estado",
             accessor: "state",
-            render: (user) => (
-                <button
-                    onClick={() => toggleStatus(user.id, user.state)}
-                    className={`px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${user.state
-                        ? "bg-green-100 text-green-800 hover:bg-green-200"
-                        : "bg-red-100 text-red-800 hover:bg-red-200"
-                        }`}
-                >
-                    {user.state ? (
-                        <>
-                            <HiOutlineCheckCircle className="w-4 h-4" />
-                            Activo
-                        </>
-                    ) : (
-                        <>
-                            <HiOutlineXCircle className="w-4 h-4" />
-                            Inactivo
-                        </>
-                    )}
-                </button>
-            )
+            render: (user) => {
+                const status = user.state ? 'active' : 'inactive';
+                return (
+                    <button
+                        onClick={() => toggleStatus(user.id, user.state)}
+                        className={`px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${STATUS_BADGES[status]}`}
+                    >
+                        {user.state ? (
+                            <>
+                                <HiOutlineCheckCircle className="w-4 h-4" />
+                                Activo
+                            </>
+                        ) : (
+                            <>
+                                <HiOutlineXCircle className="w-4 h-4" />
+                                Inactivo
+                            </>
+                        )}
+                    </button>
+                );
+            }
         },
         {
             header: "Acciones",
@@ -224,6 +224,31 @@ const UsersList = () => {
             )
         }
     ];
+
+    const mobileRender = (user) => {
+        const status = user.state ? 'active' : 'inactive';
+        return (
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                <div className="flex justify-between items-start mb-2">
+                    <div>
+                        <h3 className="font-medium text-gray-800">{user.individual.name}</h3>
+                        <p className="text-sm text-gray-500">{user.individual.email}</p>
+                    </div>
+                    <span className={`px-2 py-1 text-xs ${ROLE_COLORS[user.rol_type.name]}`}>
+                        {user.rol_type.name}
+                    </span>
+                </div>
+                <div className="flex justify-between items-center">
+                    <p className="text-sm text-gray-600">
+                        {user.individual.document_type.acronym} {user.individual.document}
+                    </p>
+                    <span className={`px-2 py-1 text-xs ${STATUS_BADGES[status]}`}>
+                        {user.state ? 'Activo' : 'Inactivo'}
+                    </span>
+                </div>
+            </div>
+        );
+    };
 
     if (isLoading.all) return <Loader className="mx-auto my-8" />;
     if (error.all) return <ErrorMessage message={error.all.message} />;
@@ -502,27 +527,7 @@ const UsersList = () => {
                 columns={columns}
                 data={filteredUsers}
                 emptyMessage="No se encontraron usuarios"
-                mobileRender={(user) => (
-                    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-                        <div className="flex justify-between items-start mb-2">
-                            <div>
-                                <h3 className="font-medium text-gray-800">{user.individual.name}</h3>
-                                <p className="text-sm text-gray-500">{user.individual.email}</p>
-                            </div>
-                            <span className={`px-2 py-1 text-xs ${ROLE_COLORS[user.rol_type.name]}`}>
-                                {user.rol_type.name}
-                            </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <p className="text-sm text-gray-600">
-                                {user.individual.document_type.acronym} {user.individual.document}
-                            </p>
-                            <span className={`px-2 py-1 text-xs ${STATUS[user.state]}`}>
-                                {user.state ? 'Activo' : 'Inactivo'}
-                            </span>
-                        </div>
-                    </div>
-                )}
+                mobileRender={mobileRender}
             />
         </div>
     );
