@@ -107,16 +107,7 @@ const ClientHomePage = ({ role }) => {
                                 gradient="from-cyan-50 to-cyan-100"
                             />
                         </>
-                    )}
-
-                    <Card
-                        title="Soporte"
-                        description="¿Necesitas ayuda? Contáctanos directamente"
-                        linkLabel="Contactar"
-                        linkTo="/support"
-                        icon={FaLifeRing}
-                        gradient="from-gray-50 to-gray-100"
-                    />
+                    )}                 
                 </div>
             </div>
         </div>
