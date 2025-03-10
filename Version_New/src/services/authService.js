@@ -7,14 +7,20 @@ export const registerUser = async (registrationData) => {
     return response.data;
 };
 
-export const loginUser = async (authetication) =>{
+export const loginUser = async (authetication) => {
     console.log("Enviando solicitud a /auth/login con datos:", authetication);
-    const response = await apiClient.post("/auth/login", {data: authetication}, );
+    const response = await apiClient.post("/auth/login", { data: authetication },);
     return response.data;
 }
 
-export const changePassword = async (id, userData) =>{
+export const fetchAddressById = async (id) => {
+    console.log("Enviando solicitud a /auth/login con datos:", id);
+    const response = await apiClient.get(`/auth/has-address/${id}`);
+    return response.data;
+}
+
+export const changePassword = async (id, userData) => {
     console.log("Enviando solicitud a /auth/change-password con datos:", userData);
-    const response = await apiClient.post(`/auth/change-password/${id}`, {data: userData}, );
+    const response = await apiClient.post(`/auth/change-password/${id}`, { data: userData },);
     return response.data;
 }

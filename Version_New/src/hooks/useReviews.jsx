@@ -66,11 +66,11 @@ export const useReviews = () => {
     };
 
     // Eliminar reseña
-    const deleteReview = async (reviewId) => {
+    const deactivateReview = async (reviewId) => {
         setLoading(true);
         setError(null);
         try {
-            await reviewService.deleteReview(reviewId);
+            await reviewService.deactivateReviewAPI(reviewId);
             setReviews((prev) =>
                 prev.filter((review) => review.id !== reviewId)
             );
@@ -106,7 +106,7 @@ export const useReviews = () => {
         fetchReviews,
         addReview,
         updateReview,
-        deleteReview,
+        deactivateReview,
         findReview,
     };
 };

@@ -10,6 +10,7 @@ import { Modal } from "../../components/UI/alert/Modal";
 import { useRegisterIndividual } from "../auth/hooks/useRegisterIndividual";
 import Input from "../../components/UI/form/Input";
 import { Select } from "../../components/UI/form/Select";
+import ConfirmationModal from "../../components/UI/alert/ConfirmationModal";
 
 const UsersList = () => {
     const {
@@ -38,6 +39,10 @@ const UsersList = () => {
     const [initialEditData, setInitialEditData] = useState(null);
     const [validationError, setValidationError] = useState(null);
 
+    // Estado para el modal de confirmación
+    const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+    const [userToToggle, setUserToToggle] = useState(null);
+
     const roleOptions = [
         { label: "Gerente", value: 4 },
         { label: "Vendedor", value: 1 },
@@ -52,7 +57,6 @@ const UsersList = () => {
             document_type_id: user.individual.document_type.id.toString(),
             document: user.individual.document,
             phone: user.individual.phone,
-            address: user.individual.address,
             individual_type_id: user.individual.individual_type.id,
             state: user.state
         };
@@ -78,7 +82,6 @@ const UsersList = () => {
             setIndividual({
                 name: "",
                 email: "",
-                address: "",
                 document: "",
                 phone: "",
                 document_type_id: "",
@@ -117,7 +120,6 @@ const UsersList = () => {
             setIndividual({
                 name: "",
                 email: "",
-                address: "",
                 document: "",
                 phone: "",
                 document_type_id: "",
@@ -130,12 +132,24 @@ const UsersList = () => {
         }
     };
 
-    const toggleStatus = async (id, currentStatus) => {
+    // Función para mostrar el modal de confirmación
+    const confirmToggleStatus = (id, currentStatus) => {
+        setUserToToggle({ id, currentStatus });
+        setConfirmModalOpen(true);
+    };
+
+    // Función para realizar el cambio de estado después de la confirmación
+    const executeStatusChange = async () => {
+        if (!userToToggle) return;
+
         try {
-            await handleChangeStatus(id, !currentStatus);
+            await handleChangeStatus(userToToggle.id, !userToToggle.currentStatus);
             fetchUsers();
         } catch (error) {
             console.error("Error cambiando estado:", error);
+        } finally {
+            setConfirmModalOpen(false);
+            setUserToToggle(null);
         }
     };
 
@@ -190,7 +204,7 @@ const UsersList = () => {
                 const status = user.state ? 'active' : 'inactive';
                 return (
                     <button
-                        onClick={() => toggleStatus(user.id, user.state)}
+                        onClick={() => confirmToggleStatus(user.id, user.state)}
                         className={`px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${STATUS_BADGES[status]}`}
                     >
                         {user.state ? (
@@ -242,9 +256,12 @@ const UsersList = () => {
                     <p className="text-sm text-gray-600">
                         {user.individual.document_type.acronym} {user.individual.document}
                     </p>
-                    <span className={`px-2 py-1 text-xs ${STATUS_BADGES[status]}`}>
+                    <button
+                        onClick={() => confirmToggleStatus(user.id, user.state)}
+                        className={`px-2 py-1 text-xs flex items-center gap-1 ${STATUS_BADGES[status]}`}
+                    >
                         {user.state ? 'Activo' : 'Inactivo'}
-                    </span>
+                    </button>
                 </div>
             </div>
         );
@@ -282,6 +299,22 @@ const UsersList = () => {
                 </div>
             </div>
 
+            {/* Modal de confirmación para activar/desactivar usuario */}
+            <ConfirmationModal
+                isOpen={confirmModalOpen}
+                onConfirm={executeStatusChange}
+                onCancel={() => {
+                    setConfirmModalOpen(false);
+                    setUserToToggle(null);
+                }}
+                title={userToToggle?.currentStatus ? "Desactivar Usuario" : "Activar Usuario"}
+                message={userToToggle?.currentStatus
+                    ? "¿Estás seguro que deseas desactivar este usuario? No podrá acceder al sistema mientras esté inactivo."
+                    : "¿Estás seguro que deseas activar este usuario? Esto le permitirá acceder al sistema nuevamente."}
+                confirmText={userToToggle?.currentStatus ? "Desactivar" : "Activar"}
+                confirmButtonColor={userToToggle?.currentStatus ? "danger" : "success"}
+            />
+
             <Modal
                 isOpen={showEditModal}
                 onClose={() => {
@@ -291,7 +324,6 @@ const UsersList = () => {
                     setIndividual({
                         name: "",
                         email: "",
-                        address: "",
                         document: "",
                         phone: "",
                         document_type_id: "",
@@ -363,14 +395,6 @@ const UsersList = () => {
                         />
                     </div>
 
-                    <Input
-                        showIcon={false}
-                        label="Dirección"
-                        name="address"
-                        value={individual.address}
-                        onChange={handleChange}
-                        required
-                    />
 
                     {validationError && (
                         <div className="mt-2">
@@ -404,7 +428,6 @@ const UsersList = () => {
                     setIndividual({
                         name: "",
                         email: "",
-                        address: "",
                         document: "",
                         phone: "",
                         document_type_id: "",
@@ -483,16 +506,6 @@ const UsersList = () => {
                             required
                         />
                     </div>
-
-                    <Input
-                        showIcon={false}
-                        label="Dirección"
-                        name="address"
-                        value={individual.address}
-                        onChange={handleChange}
-                        required
-                    />
-
                     {registerError && (
                         <div className="mt-4">
                             <ErrorMessage message={registerError.message} />

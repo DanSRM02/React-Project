@@ -10,6 +10,7 @@ const RoutesSidebar = {
         { to: '/vendor/home', label: 'Inicio' },
         { to: '/vendor/products', label: 'Productos' },
         { to: '/vendor/orders', label: 'Órdenes' },
+        { to: '/vendor/reports', label: 'Reportes' },
         { to: '/vendor/account', label: 'Mi Cuenta' },
         { to: '/logout', label: 'Cerrar Sesión' },
     ],
@@ -23,7 +24,9 @@ const RoutesSidebar = {
     gerente: [
         { to: '/manager/home', label: 'Inicio' },
         { to: '/manager/product', label: 'Productos' },
+        { to: '/manager/orders', label: 'Órdenes' },
         { to: '/manager/users', label: 'Usuarios' },
+        { to: '/manager/reports', label: 'Reportes' },        
         { to: '/manager/account', label: 'Mi Cuenta' },
         { to: '/logout', label: 'Cerrar Sesión' },
     ],

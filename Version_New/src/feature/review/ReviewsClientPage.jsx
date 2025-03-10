@@ -7,16 +7,16 @@ import { useAuth } from "../../contexts/AuthContext";
 import { FaStar, FaEdit, FaTrash, FaUserCircle } from "react-icons/fa";
 
 const ReviewsPage = () => {
-    const { reviews, loading, error, fetchReviews, deleteReview } = useReviews();
+    const { reviews, loading, error, fetchReviews, deactivateReview } = useReviews();
     const { user } = useAuth();
 
     useEffect(() => {
         fetchReviews();
     }, [fetchReviews]);
 
-    const handleDelete = async (reviewId) => {
+    const handleDeactivate = async (reviewId) => {
         if (window.confirm("¿Estás seguro de querer eliminar esta reseña?")) {
-            await deleteReview(reviewId);
+            await deactivateReview(reviewId);
         }
     };
 
@@ -138,20 +138,13 @@ const ReviewsPage = () => {
                                 </p>
 
                                 {review.user?.id === user?.id && (
-                                    <div className="flex gap-3 pt-4 border-t border-gray-100">
+                                    <div className="flex gap-3 pt-4 border-t border-gray-100">                                        
                                         <button
-                                            onClick={() => {/* Implementar edición */ }}
-                                            className="flex items-center gap-2 px-4 py-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
-                                        >
-                                            <FaEdit className="w-4 h-4" />
-                                            Editar
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(review.id)}
+                                            onClick={() => handleDeactivate(review.id)}
                                             className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                         >
                                             <FaTrash className="w-4 h-4" />
-                                            Eliminar
+                                            Desactivar
                                         </button>
                                     </div>
                                 )}

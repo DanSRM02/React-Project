@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { addDelivery, updateDelivery, findDelivery, findDeliveryById, togglerStatus as apiTogglerStatus } from '../services/deliveryService';
+import { addDelivery, updateDelivery, findDelivery, findDeliveryById, togglerStatus as apiTogglerStatus, startDelivery as startDeliveryAPI } from '../services/deliveryService';
 
 export const useDeliveries = () => {
     const [loadingAdd, setLoadingAdd] = useState(false);
@@ -9,7 +9,6 @@ export const useDeliveries = () => {
     const [errorUpdate, setErrorUpdate] = useState(null);
     const [errorFind, setErrorFind] = useState(null);
     const [deliveries, setDeliveries] = useState([]);
-
     const handleAddDelivery = async (deliveryData) => {
         setLoadingAdd(true);
         setErrorAdd(null);
@@ -21,6 +20,20 @@ export const useDeliveries = () => {
             throw error;
         } finally {
             setLoadingAdd(false);
+        }
+    };
+
+    const startDelivery = async (deliveryId, coordinates) => {
+        setLoadingUpdate(true);
+        setErrorUpdate(null);
+        try {
+            const result = await startDeliveryAPI(deliveryId, coordinates);
+            return result;
+        } catch (error) {
+            setErrorUpdate(error.message);
+            throw error;
+        } finally {
+            setLoadingUpdate(false);
         }
     };
 
@@ -58,7 +71,7 @@ export const useDeliveries = () => {
         setErrorFind(null);
         try {
             const result = await findDelivery(deliveryId);
-            setCurrentDelivery(result.data);
+            setDeliveries(result.data);
             return result;
         } catch (error) {
             setErrorFind(error.message);
@@ -102,6 +115,7 @@ export const useDeliveries = () => {
         updateDelivery: handleUpdateDelivery,
         findDelivery: handleFindDelivery,
         findDeliveryById: handleFindDeliveryById,
+        startDelivery,
 
         // Helpers
         resetErrors: () => {

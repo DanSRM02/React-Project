@@ -11,16 +11,14 @@ import { registerSchema } from "../../utils/validation/validationSchema";
 
 const Register = () => {
     const { individual, handleChange, registerIndividual, loading, error } = useRegisterIndividual();
-    const { documentTypes, loading: loadingDocs, error: errorDocs } = useDocumentTypes();
-    const { individualTypes, loading: loadingIndTypes, error: errorIndTypes } = useIndividualTypes();
+    const { documentTypes, loading: loadingDocs, error: errorDocs } = useDocumentTypes();    
     const [modalData, setModalData] = useState({
         isOpen: false,
         title: "",
         message: "",
         onConfirm: null,
     });
-    const navigate = useNavigate();
-    const location = useLocation();
+    const navigate = useNavigate();    
 
     const onFormSubmit = async (values) => {
         console.log("Form submitted with values:", values);
@@ -126,27 +124,7 @@ const Register = () => {
                                     )}
                                 </Field>
                                 <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
-                            </div>
-
-                            <div>
-                                <Label htmlFor="address">Dirección</Label>
-                                <Field name="address">
-                                    {({ field }) => (
-                                        <Input
-                                            {...field}
-                                            id="address"
-                                            placeholder="Ingresa tu dirección"
-                                            showIcon={false}
-                                            required
-                                            onChange={(e) => {
-                                                handleChange(e);
-                                                formikHandleChange(e);
-                                            }}
-                                        />
-                                    )}
-                                </Field>
-                                <ErrorMessage name="address" component="div" className="text-red-500 text-sm" />
-                            </div>
+                            </div>                            
 
                             <div>
                                 <Label htmlFor="phone">Teléfono</Label>

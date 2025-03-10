@@ -7,6 +7,11 @@ export const useUsers = (autoFetch = true) => {
     const [users, setUsers] = useState([]);
     const [deliveriesActive, setDeliveriesActive] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
+    const [addressState, setAddressState] = useState({
+        loading: false,
+        error: null,
+        address: null
+    });
 
     // Estados de carga
     const [isLoading, setIsLoading] = useState({
@@ -77,21 +82,51 @@ export const useUsers = (autoFetch = true) => {
         }
     };
 
-    const handleChangePassword = async (id, userData) => {
-        setIsLoading(prev => ({ ...prev, single: true }));
-        setError(prev => ({ ...prev, single: null }));
+    const handleChangePassword = async (id, userData) => {        
+        setIsLoading(prev => ({ ...prev, update: true }));
+        setError(prev => ({ ...prev, update: null }));
 
         try {
             const response = await changePassword(id, userData);
-            setSelectedUser(response.data);
-            return response;
+            return response.data;
         } catch (err) {
-            setError(prev => ({ ...prev, single: err }));
+            setError(prev => ({ ...prev, update: err }));
             throw err;
         } finally {
-            setIsLoading(prev => ({ ...prev, single: false }));
+            setIsLoading(prev => ({ ...prev, update: false }));
         }
     }
+
+    const handleUpdateAddress = async (userId, addressData) => {
+        setAddressState(prev => ({ ...prev, loading: true, error: null }));
+
+        try {
+            // Validación de coordenadas
+            if (!validateCoordinates(addressData.latitude, addressData.longitude)) {
+                throw new Error('Coordenadas inválidas');
+            }
+
+            const response = await userService.updateAddress(userId, addressData);
+            setAddressState({
+                loading: false,
+                error: null,
+                address: response.data
+            });
+            return response.data;
+        } catch (error) {
+            setAddressState({
+                loading: false,
+                error: error.response?.data?.message || error.message,
+                address: null
+            });
+            throw error;
+        }
+    };
+
+    const validateCoordinates = (lat, lng) => {
+        return lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
+    };
+
 
     const handleChangeStatus = async (id, status) => {
         setIsLoading(prev => ({ ...prev, single: true }));
@@ -158,6 +193,8 @@ export const useUsers = (autoFetch = true) => {
         deliveriesActive,
         isLoading,
         error,
+        addressState,
+        setAddressState,
 
         // Acciones
         fetchUsers,
@@ -167,6 +204,7 @@ export const useUsers = (autoFetch = true) => {
         handleChangePassword,
         handleChangeStatus,
         fetchDeliveriesActive,
+        handleUpdateAddress,
 
         // Helpers
         resetErrors: () => setError({

@@ -6,7 +6,7 @@ export const loginSchema = Yup.object().shape({
         .email("Email inválido")
         .required("El email es obligatorio"),
     password: Yup.string()
-        .min(8, "La contraseña debe tener al menos 8 caracteres")
+        .min(6, "La contraseña debe tener al menos 8 caracteres")
         .max(16, "La contraseña no puede exceder los 16 caracteres")
         .required("La contraseña es obligatoria"),
 });
@@ -19,9 +19,6 @@ export const registerSchema = Yup.object().shape({
     email: Yup.string()
         .email("Correo electrónico inválido")
         .required("El correo es obligatorio"),
-    address: Yup.string()
-        .min(5, "La dirección debe tener al menos 5 caracteres")
-        .required("La dirección es obligatoria"),
     phone: Yup.string()
         .matches(/^[0-9]+$/, "El teléfono debe contener solo números")
         .min(7, "El teléfono debe tener al menos 7 dígitos")
@@ -33,6 +30,29 @@ export const registerSchema = Yup.object().shape({
         .matches(/^[0-9]+$/, "El documento debe contener solo números")
         .min(6, "El documento debe tener al menos 6 dígitos")
         .required("El número de documento es obligatorio"),
+});
+
+export const reviewSchema = Yup.object().shape({
+    title: Yup.string()
+        .min(5, 'El título debe tener al menos 5 caracteres')
+        .max(100, 'El título no puede exceder los 100 caracteres')
+        .required('El título es requerido'),
+
+    description: Yup.string()
+        .min(20, 'La descripción debe tener al menos 20 caracteres')
+        .max(500, 'La descripción no puede exceder los 500 caracteres')
+        .required('La descripción es requerida'),
+
+    rating: Yup.number()
+        .typeError('Debe seleccionar una calificación válida')
+        .integer('La calificación debe ser un número entero')
+        .min(1, 'La calificación mínima es 1 estrella')
+        .max(5, 'La calificación máxima es 5 estrellas')
+        .required('La calificación es requerida'),
+
+    productId: Yup.number()
+        .typeError('Debe seleccionar un producto válido')
+        .required('Debe seleccionar un producto')
 });
 
 export const passwordChangeSchema = Yup.object().shape({

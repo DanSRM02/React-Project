@@ -13,12 +13,12 @@ import {
 import { useAuth } from "../../contexts/AuthContext";
 import { useDeliveries } from "../../hooks/useDeliveries";
 import { DeliveryStatusBadge } from "../../components/UI/bagde/DeliveryStatusBagde";
-import { OrderDetailsModal } from "../../components/UI/order/OrderDetailsModal";
-import { CLIENT_STATES } from "../../utils/constans/states";
 import { formatCurrency } from "../../utils/formatHelpers";
+import LocationPicker from "../../components/UI/map/LocationPicker";
 
 const DeliveriesPage = () => {
-    const [showDetailsModal, setShowDetailsModal] = useState(false);
+    const [selectedDelivery, setSelectedDelivery] = useState(null);
+    const [showLocationPicker, setShowLocationPicker] = useState(false);
     const { user } = useAuth();
     const {
         findDeliveryById,
@@ -26,12 +26,9 @@ const DeliveriesPage = () => {
         errorFind,
         togglerStatus,
         deliveries,
-        setDeliveries
+        setDeliveries,
+        startDelivery
     } = useDeliveries();
-
-
-    console.log(deliveries);
-
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -55,12 +52,21 @@ const DeliveriesPage = () => {
         fetchDeliveries();
     }, [user.id, findDeliveryById]);
 
-    const handleViewDetails = async (orderId) => {
+    const handleStartDelivery = async (coordinates) => {
         try {
-            await fetchOrderDetails(orderId);
-            setShowDetailsModal(true);
+            console.log(selectedDelivery);            
+            
+            await startDelivery(selectedDelivery.delivery_id, coordinates);
+            setDeliveries(prev => prev.map(d =>
+                d.delivery_id === selectedDelivery.delivery_id
+                    ? { ...d, delivery_state: 'ON_THE_WAY' }
+                    : d
+            ));
         } catch (error) {
-            console.error("Error cargando detalles:", error);
+            console.error("Error al iniciar entrega:", error);
+        } finally {
+            setShowLocationPicker(false);
+            setSelectedDelivery(null);
         }
     };
 
@@ -296,13 +302,23 @@ const DeliveriesPage = () => {
                             <div className="w-full md:w-auto">
                                 {delivery.delivery_state === 'READY_TO_DISPATCH' && (
                                     <button
-                                        onClick={() => handleStateChange(delivery.delivery_id, 'ON_THE_WAY')}
+                                        onClick={() => {
+                                            setSelectedDelivery(delivery);
+                                            setShowLocationPicker(true);
+                                        }}
                                         className="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg
-                               font-medium flex items-center justify-center gap-2 transition-colors"
+                     font-medium flex items-center justify-center gap-2 transition-colors"
                                     >
                                         <FaTruckMoving className="text-xl" />
                                         Iniciar Entrega
                                     </button>
+                                )}
+
+                                {showLocationPicker && (
+                                    <LocationPicker
+                                        onConfirm={handleStartDelivery}
+                                        onCancel={() => setShowLocationPicker(false)}
+                                    />
                                 )}
 
                                 {delivery.delivery_state === 'ON_THE_WAY' && (
@@ -345,14 +361,6 @@ const DeliveriesPage = () => {
                         <h3 className="text-xl font-medium text-gray-900">Sin entregas completadas</h3>
                         <p className="mt-2 text-gray-500">Aún no has completado ninguna entrega</p>
                     </div>
-                )}
-                {showDetailsModal && (
-                    <OrderDetailsModal
-                        isOpen={showDetailsModal}
-                        order={currentOrder}
-                        onClose={() => setShowDetailsModal(false)}
-                        clientStates={CLIENT_STATES} // Asegúrate de definir CLIENT_STATES
-                    />
                 )}
 
             </div>

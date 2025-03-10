@@ -41,14 +41,14 @@ const OrdersClientPage = () => {
     }, [fetchAllOrders]);
 
     const handleViewDetails = async (orderId) => {
-        try {                        
+        try {
             await fetchOrderDetails(orderId);
-            setShowDetailsModal(true);            
+            setShowDetailsModal(true);
         } catch (error) {
             console.error("Error cargando detalles:", error);
         }
-    };    
-    
+    };
+
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
             <div className="bg-white rounded-xl shadow-sm p-6 flex flex-wrap justify-between items-center gap-4">
@@ -93,7 +93,21 @@ const OrdersClientPage = () => {
                     <div className="lg:col-span-2 space-y-6">
                         {filteredOrders.length === 0 ? (
                             <div className="bg-white rounded-xl p-8 text-center shadow-sm">
-                                {/* ... (mismo contenido de estado vacío) */}
+                                <div className="max-w-md mx-auto">
+                                    <svg className="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                    </svg>
+                                    <h3 className="mt-4 text-lg font-medium text-gray-900">No hay órdenes registradas</h3>
+                                    <p className="mt-2 text-sm text-gray-500">Tus próximas compras aparecerán aquí.</p>
+                                    <div className="mt-6">
+                                        <a
+                                            href="/products"
+                                            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
+                                        >
+                                            Comenzar a comprar
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         ) : (
                             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -170,7 +184,7 @@ const OrdersClientPage = () => {
                     isOpen={showDetailsModal}
                     order={currentOrder}
                     onClose={() => setShowDetailsModal(false)}
-                    clientStates={CLIENT_STATES} 
+                    clientStates={CLIENT_STATES}
                 />
             )}
         </div>

@@ -17,6 +17,21 @@ export const userService = {
         }
     },
 
+    updateAddress: async (id, addressData) => {
+        try {
+            console.log("updateAddress - Actualizando dirección:", id, addressData);
+            const response = await apiClient.put(
+                `user/${id}/new-address`,
+                {data: addressData}
+            );
+            console.log("updateAddress - Respuesta:", response.data);
+            return response.data;
+        } catch (error) {
+            console.error("updateAddress - Error:", error);
+            throw error;
+        }
+    },
+
     // Actualizar usuario
     updateUser: async (id, userData) => {
         try {

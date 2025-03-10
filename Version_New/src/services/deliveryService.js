@@ -28,6 +28,20 @@ export const findDeliveryById = async (deliveryId) => {
     }
 };
 
+export const startDelivery = async (deliveryId, location) => {
+    try {
+        console.log("data que va back",location);
+        
+        const response = await apiClient.patch(`/delivery/${deliveryId}/start-delivery`, { data: location });
+        return response.data;
+    } catch (error) {
+        const errorMessage = error.response?.data?.message
+            || error.message
+            || `Error desconocido al actualizar domiciliario ID: ${deliveryId}`;
+        throw new Error(errorMessage);
+    }
+};
+
 export const togglerStatus = async (id, status) => {
     try {
         console.log("enviando datos al back togglerStatus", status);

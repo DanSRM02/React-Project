@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormik } from 'formik';
 import ConfirmationModal from "../../components/UI/alert/ConfirmationModal";
 import { useOrders } from "../../hooks/useOrders";
@@ -10,14 +10,26 @@ import { ProductSection } from "../../components/UI/product/ProductSection";
 import { InfoAlert } from "../../components/UI/alert/InfoAlert";
 import { ErrorAlert } from "../../components/UI/alert/ErrorAlert";
 import { useAutoClearAlert } from "./hooks/useAutoClearAlert";
+import { useAuth } from "../../contexts/AuthContext";
+import { Navigate } from "react-router-dom";
 
 const CreateOrderPage = () => {
+    const { hasAddress, authLoading } = useAuth();        
     const { variants, variantsLoading, error: variantsError } = useProductVariants();
     const { createOrder, orderLoading, error: orderError } = useOrders();
     const [isConfirmModalOpen, setIsConfirmModalOpen] = React.useState(false);
-    
+
     // Mejora: Hook personalizado para limpiar alertas automáticamente
     const [orderStatus, setOrderStatus, clearStatus] = useAutoClearAlert(5000);
+
+    if (authLoading) {
+        return <Loader message="Verificando datos de usuario..." />;
+    }        
+
+    // Redirección condicional directa en el render
+    if (!hasAddress) {
+        return <Navigate to="/client/account" replace />;
+    }
 
     const formik = useFormik({
         initialValues: {
@@ -66,15 +78,15 @@ const CreateOrderPage = () => {
 
     const handleSelectVariant = (variantId, maxStock) => {
         const isSelected = formik.values.selectedVariants.includes(variantId);
-        
+
         formik.setValues({
-            selectedVariants: isSelected 
+            selectedVariants: isSelected
                 ? formik.values.selectedVariants.filter(id => id !== variantId)
                 : [...formik.values.selectedVariants, variantId],
             orderQuantities: {
                 ...formik.values.orderQuantities,
-                ...(isSelected 
-                    ? { [variantId]: undefined } 
+                ...(isSelected
+                    ? { [variantId]: undefined }
                     : { [variantId]: 1 }
                 )
             }
@@ -94,11 +106,10 @@ const CreateOrderPage = () => {
 
             {/* Alertas de estado */}
             {orderStatus && (
-                <div className={`p-4 mb-6 rounded-lg border-l-4 ${
-                    orderStatus.type === "success" 
-                        ? "bg-emerald-50 border-emerald-500 text-emerald-800"
-                        : "bg-red-50 border-red-500 text-red-800"
-                }`}>
+                <div className={`p-4 mb-6 rounded-lg border-l-4 ${orderStatus.type === "success"
+                    ? "bg-emerald-50 border-emerald-500 text-emerald-800"
+                    : "bg-red-50 border-red-500 text-red-800"
+                    }`}>
                     <p className="font-medium">{orderStatus.message}</p>
                 </div>
             )}

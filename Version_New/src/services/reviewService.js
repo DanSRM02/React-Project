@@ -48,15 +48,15 @@ const reviewService = {
             throw error;
         }
     },
-
-    deleteReview: async (reviewId) => {
+    
+    deactivateReviewAPI: async (reviewId) => {
         try {
-            console.debug(`Eliminando reseña ${reviewId}`);
-            const response = await apiClient.delete(`/review/delete/${reviewId}`);
-            console.debug('Respuesta de deleteReview:', response);
+            console.debug(`Desactivando reseña ${reviewId}`);
+            const response = await apiClient.post(`/review/deactivate/${reviewId}`);
+            console.debug('Respuesta de deactivateReview:', response);
             return response.data;
         } catch (error) {
-            console.error('Error en deleteReview:', error);
+            console.error('Error en deactivateReview:', error);
             throw error;
         }
     }

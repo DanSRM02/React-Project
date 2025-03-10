@@ -1,115 +1,139 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useFormik } from "formik";
 import { useReviews } from "../../hooks/useReviews";
 import { useProductVariants } from "../../hooks/useProductVariants";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import { reviewSchema } from "../../utils/validation/validationSchema";
+
 
 const CreateReviewPage = () => {
+    const { user } = useAuth();
     const { addReview, loading, error } = useReviews();
     const navigate = useNavigate();
     const { variants, loading: productLoading, error: errorProduct, fetchVariants } = useProductVariants();
+
+    const formik = useFormik({
+        initialValues: {
+            title: "",
+            description: "",
+            rating: "",
+            productId: ""
+        },
+        validationSchema: reviewSchema,
+        onSubmit: async (values, { resetForm }) => {
+            const reviewData = {
+                data: {
+                    ...values,
+                    rating: Number(values.rating),
+                    product_id: Number(values.productId),
+                    state: true,
+                    user_id: user.id
+                }
+            };
+
+            try {
+                await addReview(reviewData);
+                resetForm();
+                navigate("/client/reviews");
+            } catch (err) {
+                // El error se maneja en el hook
+            }
+        }
+    });
 
     useEffect(() => {
         fetchVariants();
     }, []);
 
-    // Estados para los campos del formulario
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [rating, setRating] = useState("");
-    const [productId, setProductId] = useState("");
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        // Crear objeto con la estructura requerida por la API
-        const reviewData = {
-            data: {
-                title,
-                description,
-                rating: Number(rating),
-                product_id: Number(productId),
-                state: true, // Valor por defecto
-                user_id: 1 // Temporal - debería obtenerse del contexto de autenticación
-            }
-        };
-
-        try {
-            await addReview(reviewData);
-            navigate("/client/reviews");
-            // Resetear formulario después de enviar
-            setTitle("");
-            setDescription("");
-            setRating("");
-            setProductId("");
-        } catch (err) {
-            // El error ya se maneja en el hook
-        }
-    };
-
     return (
         <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
             <h1 className="text-3xl font-bold text-amber-600 mb-8">Crear Nueva Reseña</h1>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Grupo de Campos */}
+            <form onSubmit={formik.handleSubmit} className="space-y-6">
                 <div className="space-y-4">
-                    {/* Título */}
+                    {/* Campo Título */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Título
                         </label>
                         <input
                             type="text"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            className="w-full px-4 py-2 border border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-                            required
+                            name="title"
+                            value={formik.values.title}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 ${formik.errors.title && formik.touched.title
+                                    ? "border-red-500 focus:ring-red-500"
+                                    : "border-amber-300 focus:ring-amber-500"
+                                }`}
                         />
+                        {formik.errors.title && formik.touched.title && (
+                            <div className="text-red-500 text-sm mt-1">{formik.errors.title}</div>
+                        )}
                     </div>
 
-                    {/* Descripción */}
+                    {/* Campo Descripción */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Descripción
                         </label>
                         <textarea
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            className="w-full px-4 py-2 border border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 h-32"
-                            required
+                            name="description"
+                            value={formik.values.description}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 h-32 ${formik.errors.description && formik.touched.description
+                                    ? "border-red-500 focus:ring-red-500"
+                                    : "border-amber-300 focus:ring-amber-500"
+                                }`}
                         />
+                        {formik.errors.description && formik.touched.description && (
+                            <div className="text-red-500 text-sm mt-1">{formik.errors.description}</div>
+                        )}
                     </div>
 
-                    {/* Calificación */}
+                    {/* Campo Calificación */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Calificación
                         </label>
                         <select
-                            value={rating}
-                            onChange={(e) => setRating(e.target.value)}
-                            className="w-full px-4 py-2 border border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white"
-                            required
+                            name="rating"
+                            value={formik.values.rating}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 bg-white ${formik.errors.rating && formik.touched.rating
+                                    ? "border-red-500 focus:ring-red-500"
+                                    : "border-amber-300 focus:ring-amber-500"
+                                }`}
                         >
                             <option value="">Selecciona una calificación</option>
                             {[1, 2, 3, 4, 5].map((num) => (
-                                <option key={num} value={num} className="flex items-center">
+                                <option key={num} value={num}>
                                     {Array(num).fill('★').join('')} ({num} Estrella{num > 1 ? 's' : ''})
                                 </option>
                             ))}
                         </select>
+                        {formik.errors.rating && formik.touched.rating && (
+                            <div className="text-red-500 text-sm mt-1">{formik.errors.rating}</div>
+                        )}
                     </div>
 
-                    {/* Producto */}
+                    {/* Campo Producto */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Seleccionar Producto
                         </label>
                         <select
-                            value={productId}
-                            onChange={(e) => setProductId(e.target.value)}
-                            className="w-full px-4 py-2 border border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white"
-                            required
+                            name="productId"
+                            value={formik.values.productId}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 bg-white ${formik.errors.productId && formik.touched.productId
+                                    ? "border-red-500 focus:ring-red-500"
+                                    : "border-amber-300 focus:ring-amber-500"
+                                }`}
                         >
                             <option value="">Selecciona un producto</option>
                             {variants?.map((product) => (
@@ -118,13 +142,16 @@ const CreateReviewPage = () => {
                                 </option>
                             ))}
                         </select>
+                        {formik.errors.productId && formik.touched.productId && (
+                            <div className="text-red-500 text-sm mt-1">{formik.errors.productId}</div>
+                        )}
                     </div>
                 </div>
 
                 {/* Botón de enviar */}
                 <button
                     type="submit"
-                    disabled={loading}
+                    disabled={loading || !formik.isValid}
                     className="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {loading ? "Enviando..." : "Publicar Reseña"}
@@ -140,4 +167,4 @@ const CreateReviewPage = () => {
     );
 };
 
-export default CreateReviewPage;    
+export default CreateReviewPage;
